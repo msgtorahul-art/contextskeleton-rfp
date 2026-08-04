@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function Sidebar() {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loadingBilling, setLoadingBilling] = useState(false);
 
-  const fetchUserInfo = () => {
+  const fetchUserInfo = useCallback(() => {
     fetch('/api/user/me')
       .then((res) => {
         if (res.status === 401) {
@@ -32,7 +32,7 @@ export default function Sidebar() {
         }
       })
       .catch((err) => console.error('Error fetching user info:', err));
-  };
+  }, [router]);
 
   useEffect(() => {
     fetchUserInfo();
@@ -40,7 +40,7 @@ export default function Sidebar() {
     return () => {
       window.removeEventListener('billing-update', fetchUserInfo);
     };
-  }, [pathname, router]);
+  }, [fetchUserInfo]);
 
   const handleLogout = async () => {
     try {
