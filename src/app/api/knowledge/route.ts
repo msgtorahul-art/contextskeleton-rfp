@@ -7,7 +7,7 @@ import { db } from '@/lib/db';
 import { getEmbedding } from '@/lib/vector';
 import { PDFParse } from 'pdf-parse';
 
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB File Size Limit
+const MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024; // 15MB File Size Limit
 
 // Helper to chunk text
 function chunkText(text: string, chunkSize = 1000, overlap = 200): string[] {
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     // 1. File Size Validation
     if (file.size > MAX_FILE_SIZE_BYTES) {
-      return NextResponse.json({ error: 'File size exceeds maximum limit of 10MB.' }, { status: 400 });
+      return NextResponse.json({ error: 'File size exceeds maximum limit of 15MB.' }, { status: 400 });
     }
 
     const filename = file.name;
@@ -92,20 +92,22 @@ export async function POST(req: NextRequest) {
 
     insertDoc.run(documentId, session.userId, filename, 'database_stored', createdAt);
 
-    // 4. Chunk text and generate vector embeddings with rate-limit throttling
+    // 4. Parallel batch processing for high-speed document ingestion
     const rawChunks = chunkText(extractedText);
     const textChunks = rawChunks.slice(0, 100); // Cap max 100 chunks per doc
     
-    for (let i = 0; i < textChunks.length; i++) {
-      const textChunk = textChunks[i];
-      const embedding = await getEmbedding(textChunk);
-      const chunkId = crypto.randomUUID();
-      insertChunk.run(chunkId, documentId, session.userId, textChunk, JSON.stringify(embedding));
-      
-      // Throttle slightly every 5 chunks to remain safely under API limits
-      if (i > 0 && i % 5 === 0) {
-        await new Promise((res) => setTimeout(res, 250));
-      }
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < textChunks.length; i += BATCH_SIZE) {
+      const batch = textChunks.slice(i, i + BATCH_SIZE);
+      const batchEmbeddings = await Promise.all(batch.map((chunk) => getEmbedding(chunk)));
+
+      const saveBatch = db.transaction(() => {
+        for (let j = 0; j < batch.length; j++) {
+          const chunkId = crypto.randomUUID();
+          insertChunk.run(chunkId, documentId, session.userId, batch[j], JSON.stringify(batchEmbeddings[j]));
+        }
+      });
+      saveBatch();
     }
 
     return NextResponse.json({ message: 'Document processed successfully', documentId, chunksCount: textChunks.length }, { status: 201 });
