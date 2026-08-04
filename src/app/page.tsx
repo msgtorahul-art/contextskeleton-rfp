@@ -53,7 +53,7 @@ export default function LandingPage() {
   const mainServices = [
     {
       id: 'service-rfp',
-      badge: 'Flagship Core Product',
+      badge: 'B2B Tender Teams',
       badgeColor: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
       title: 'Autonomous RFP & Tender Engine',
       icon: FileText,
@@ -66,30 +66,48 @@ export default function LandingPage() {
         'Single-click Microsoft Word (.docx) export',
         'Collaborative reviewer workspace',
       ],
-      ctaText: 'Launch Proposal Builder',
+      ctaText: 'Launch RFP Workspace',
       ctaHref: '/projects',
     },
     {
       id: 'service-consent',
-      badge: 'NZ & Global Compliance',
+      badge: 'Architects & Builders',
       badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
       title: 'AI Building Consent Auditor',
       icon: ShieldCheck,
       iconColor: 'text-emerald-400',
       glowColor: 'hover:border-emerald-500/50 hover:shadow-emerald-500/10',
-      tagline: 'Audit blueprints and architectural specs against NZBC Building Code prior to council submission.',
+      tagline: 'Audit blueprints and specs against NZBC Building Code prior to council submission.',
       highlights: [
         'Evaluates NZBC E2 (Moisture) & H1 (Energy)',
         'Flags critical RFI rejection risks',
         'Generates producer statement (PS1/PS3) lists',
         'Reduces council approval delays by weeks',
       ],
-      ctaText: 'Audit Building Consent ($750/mo)',
+      ctaText: 'Launch Building Auditor',
       ctaHref: '/consent',
     },
     {
+      id: 'service-security',
+      badge: 'CISOs & SaaS Security',
+      badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+      title: 'SOC2 & ISO 27001 Security Resolver',
+      icon: Lock,
+      iconColor: 'text-rose-400',
+      glowColor: 'hover:border-rose-500/50 hover:shadow-rose-500/10',
+      tagline: 'Automate vendor risk assessments grounded in SOC 2 policies and ISO security controls.',
+      highlights: [
+        'SOC 2 Type II & ISO 27001 control mapping',
+        'Grounded policy section citations',
+        'Confidence ratings & compliance status',
+        'Single-click CSV / Excel spreadsheet export',
+      ],
+      ctaText: 'Launch Security Resolver',
+      ctaHref: '/security-questionnaire',
+    },
+    {
       id: 'service-knowledge',
-      badge: 'Vector Infrastructure',
+      badge: 'Vector Knowledge Hub',
       badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
       title: 'Enterprise Vector Knowledge Base',
       icon: Database,
@@ -102,12 +120,12 @@ export default function LandingPage() {
         'Automatic PDF, DOCX, and TXT chunking',
         'Multi-tenant enterprise security boundaries',
       ],
-      ctaText: 'Build Knowledge Base',
+      ctaText: 'Manage Knowledge Base',
       ctaHref: '/knowledge',
     },
     {
       id: 'service-skeleton',
-      badge: 'Developer Tooling',
+      badge: 'Developers & AI Agents',
       icon: Layers,
       iconColor: 'text-cyan-400',
       badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
@@ -116,7 +134,7 @@ export default function LandingPage() {
       highlights: [
         'AST-level structural AST code & doc folding',
         'Cuts prompt token costs by up to 92%',
-        'Built-in MCP server for AI agent workflows',
+        'Built-in MCP server for Claude & AI agents',
         'Preserves 100% context for LLM logic',
       ],
       ctaText: 'Use Token Skeletonizer',
@@ -139,14 +157,13 @@ export default function LandingPage() {
           </div>
           <div>
             <span className="font-extrabold text-white text-lg tracking-tight block">ContextSkeleton</span>
-            <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Platform</span>
+            <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Product Suite</span>
           </div>
         </div>
 
         <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-400">
-          <a href="#services" className="hover:text-white transition">Products & Services</a>
+          <a href="#services" className="hover:text-white transition">Independent Products</a>
           <a href="#workflow" className="hover:text-white transition">How It Works</a>
-          <a href="#calculator" className="hover:text-white transition">ROI Calculator</a>
           <a href="#pricing" className="hover:text-white transition">Pricing</a>
           <a href="#contact" className="hover:text-white transition">Contact</a>
         </div>
@@ -169,27 +186,27 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO SECTION WITH TOP PRODUCTS GRID (ABOVE THE FOLD) */}
+      {/* HERO SECTION WITH SEPARATED PRODUCTS SHOWCASE (ABOVE THE FOLD) */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
-            <Sparkles className="h-4 w-4" /> Enterprise Autonomous AI Platform
+            <Sparkles className="h-4 w-4" /> Dedicated Autonomous AI Products
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
-            Single Platform.<br />
+            Specialized Autonomous AI.<br />
             <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              All Enterprise AI Products & Services.
+              Independent Solutions for Every User.
             </span>
           </h1>
 
           <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
-            From automated RFP proposal drafting to AI building consent pre-auditing, vector knowledge bases, and token skeletonization—access all tools on one domain.
+            Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
           </p>
         </div>
 
-        {/* TOP PRODUCT & SERVICES SHOWCASE GRID (IMMEDIATELY VISIBLE AT TOP) */}
-        <section id="services" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* INDEPENDENT PRODUCTS GRID */}
+        <section id="services" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mainServices.map((s) => {
             const Icon = s.icon;
             return (
@@ -251,8 +268,8 @@ export default function LandingPage() {
             <span className="text-xs text-slate-500 font-medium">NZBC & Grounded Fact Verification</span>
           </div>
           <div>
-            <span className="text-3xl font-extrabold text-white block">.docx</span>
-            <span className="text-xs text-slate-500 font-medium">Direct Microsoft Word Export</span>
+            <span className="text-3xl font-extrabold text-white block">.docx & .csv</span>
+            <span className="text-xs text-slate-500 font-medium">Word & Excel Exporters</span>
           </div>
           <div>
             <span className="text-3xl font-extrabold text-white block">$0/mo</span>
@@ -261,56 +278,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS WORKFLOW */}
-      <section id="workflow" className="max-w-6xl mx-auto px-6 py-20 z-10 relative">
-        <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Automated Architecture</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white">How ContextSkeleton Works</h2>
-          <p className="text-slate-400 mt-3 text-sm">Three seamless steps to automate your entire tender proposal & building audit pipeline.</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="glass-panel p-8 rounded-3xl relative">
-            <span className="text-5xl font-extrabold text-violet-500/20 absolute top-6 right-6">01</span>
-            <div className="h-12 w-12 rounded-2xl bg-violet-600/10 flex items-center justify-center mb-6">
-              <Database className="h-6 w-6 text-violet-400" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Upload Source Knowledge</h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              Upload past bids, architectural specs, ISO policies, and brochures into Turso Cloud Vector Storage.
-            </p>
-          </div>
-
-          <div className="glass-panel p-8 rounded-3xl relative">
-            <span className="text-5xl font-extrabold text-indigo-500/20 absolute top-6 right-6">02</span>
-            <div className="h-12 w-12 rounded-2xl bg-indigo-600/10 flex items-center justify-center mb-6">
-              <Sparkles className="h-6 w-6 text-indigo-400" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Run AI Proposals & Audits</h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              Select RFP drafting or NZBC building consent pre-auditing. Gemini 2.5 Flash evaluates specs against verified standards.
-            </p>
-          </div>
-
-          <div className="glass-panel p-8 rounded-3xl relative">
-            <span className="text-5xl font-extrabold text-cyan-500/20 absolute top-6 right-6">03</span>
-            <div className="h-12 w-12 rounded-2xl bg-cyan-600/10 flex items-center justify-center mb-6">
-              <Download className="h-6 w-6 text-cyan-400" />
-            </div>
-            <h3 className="text-xl font-bold text-white mb-2">Export Professional Reports</h3>
-            <p className="text-slate-400 text-xs leading-relaxed">
-              Click once to download formatted `.docx` Word proposals or PDF consent audit reports ready for client/council submission.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* COMMERCIAL PRICING SECTION */}
       <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Pricing Plans</h2>
-          <p className="text-slate-400 mt-3 text-sm">Select a plan tailored for RFP proposal teams or Building Consent firms.</p>
+          <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Independent Product Subscriptions</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Product Plans</h2>
+          <p className="text-slate-400 mt-3 text-sm">Select a plan tailored specifically for your organization's workflow.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -328,13 +301,13 @@ export default function LandingPage() {
                   <CheckCircle2 className="h-4 w-4 text-violet-500" /> 10 Free Platform Generations
                 </li>
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> RFP Engine & Building Consent Auditor
+                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Access All 5 Product Workspaces
                 </li>
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-500" /> Vector document indexing
                 </li>
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Microsoft Word exporter
+                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Word & Excel exporters
                 </li>
               </ul>
             </div>
@@ -423,7 +396,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ENTERPRISE CONTACT & CUSTOMER INQUIRY SECTION */}
+      {/* ENTERPRISE CONTACT SECTION */}
       <section id="contact" className="max-w-4xl mx-auto px-6 py-16 z-10 relative">
         <div className="glass-panel p-10 md:p-12 rounded-3xl border-violet-500/20 text-center">
           <div className="h-12 w-12 rounded-2xl bg-violet-600/10 flex items-center justify-center mx-auto mb-6">
