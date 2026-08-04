@@ -1,3 +1,22 @@
+import nodemailer from 'nodemailer';
+
+// Create Hostinger / Custom SMTP Transporter
+function getTransporter() {
+  const host = process.env.SMTP_HOST || 'smtp.hostinger.com';
+  const port = parseInt(process.env.SMTP_PORT || '465', 10);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!user || !pass) return null;
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure: port === 465,
+    auth: { user, pass },
+  });
+}
+
 export async function sendWelcomeEmail(email: string): Promise<boolean> {
   const subject = "Welcome to ContextSkeleton - 10 Free Proposal & Building Audit Credits! 🚀";
   const html = `
@@ -82,38 +101,25 @@ export async function sendCustomerInquiryNotification(name: string, email: strin
 }
 
 async function deliverEmail(to: string, subject: string, html: string): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'ContextSkeleton <onboarding@resend.dev>';
+  const transporter = getTransporter();
+  const fromEmail = process.env.SMTP_USER || 'support@contextskeleton.com';
 
-  if (!apiKey) {
-    console.log(`[Email Service - Sandbox] Email to ${to} subject "${subject}". Set RESEND_API_KEY in Vercel for live dispatch.`);
+  if (!transporter) {
+    console.log(`[Email Service - Sandbox] Email to ${to} subject "${subject}". Set SMTP_USER & SMTP_PASS in Vercel for live Hostinger email dispatch.`);
     return true;
   }
 
   try {
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [to],
-        subject,
-        html,
-      }),
+    await transporter.sendMail({
+      from: `ContextSkeleton <${fromEmail}>`,
+      to,
+      subject,
+      html,
     });
-
-    if (!res.ok) {
-      const errText = await res.text();
-      console.error('[Resend Email Error]:', errText);
-      return false;
-    }
-
+    console.log(`[Hostinger SMTP] Email delivered successfully to ${to}`);
     return true;
   } catch (error) {
-    console.error(`[Email Service Exception]:`, error);
+    console.error(`[Hostinger SMTP Error]:`, error);
     return false;
   }
 }
