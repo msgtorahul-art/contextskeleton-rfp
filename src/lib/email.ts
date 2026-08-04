@@ -1,5 +1,4 @@
 export async function sendWelcomeEmail(email: string): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
   const subject = "Welcome to ContextSkeleton - 10 Free Proposal & Building Audit Credits! 🚀";
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
@@ -65,7 +64,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
 }
 
 export async function sendCustomerInquiryNotification(name: string, email: string, subject: string, message: string): Promise<boolean> {
-  const companyOwnerEmail = "msgtorahul@gmail.com";
+  const companySupportEmail = "support@contextskeleton.com";
   const emailSubject = `[Customer Inquiry / Complaint] ${subject} from ${name}`;
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
@@ -79,7 +78,7 @@ export async function sendCustomerInquiryNotification(name: string, email: strin
     </div>
   `;
 
-  return deliverEmail(companyOwnerEmail, emailSubject, html);
+  return deliverEmail(companySupportEmail, emailSubject, html);
 }
 
 async function deliverEmail(to: string, subject: string, html: string): Promise<boolean> {

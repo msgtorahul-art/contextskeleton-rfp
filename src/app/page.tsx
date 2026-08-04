@@ -431,12 +431,12 @@ export default function LandingPage() {
           </div>
           <h2 className="text-3xl font-extrabold text-white mb-3">Customer Support, Enquiries & Complaints</h2>
           <p className="text-slate-400 text-xs max-w-xl mx-auto mb-8">
-            Have questions, complaints, or custom enterprise requirements? Send a message directly to our engineering team.
+            Have questions, complaints, or custom enterprise requirements? Send a message directly to <strong>support@contextskeleton.com</strong>.
           </p>
 
           {supportStatus === 'SUCCESS' ? (
             <div className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-300 text-xs font-semibold">
-              ✓ Thank you! Your message has been dispatched directly to our leadership team at <strong>msgtorahul@gmail.com</strong>.
+              ✓ Thank you! Your message has been dispatched directly to our official support team at <strong>support@contextskeleton.com</strong>.
             </div>
           ) : (
             <form onSubmit={handleSupportSubmit} className="max-w-lg mx-auto text-left space-y-4">
@@ -504,7 +504,7 @@ export default function LandingPage() {
                 ) : (
                   <>
                     <Send className="h-4 w-4" />
-                    Send Message to Management
+                    Send Message to support@contextskeleton.com
                   </>
                 )}
               </button>
@@ -529,7 +529,7 @@ export default function LandingPage() {
             <Link href="/auth" className="hover:text-white transition">Platform Login</Link>
             <a href="#services" className="hover:text-white transition">Products &amp; Services</a>
             <a href="#pricing" className="hover:text-white transition">Pricing</a>
-            <a href="mailto:msgtorahul@gmail.com" className="hover:text-white transition">Support (msgtorahul@gmail.com)</a>
+            <a href="mailto:support@contextskeleton.com" className="hover:text-white transition">Support (support@contextskeleton.com)</a>
           </div>
         </div>
       </footer>
