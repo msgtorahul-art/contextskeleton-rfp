@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 import { db } from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
+import { sendWelcomeEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +29,9 @@ export async function POST(req: NextRequest) {
     db.prepare('INSERT INTO users (id, email, password, subscription_status, credits) VALUES (?, ?, ?, ?, ?)')
       .run(userId, email, hashedPassword, 'inactive', 10);
       
+    // Trigger welcome email asynchronously
+    sendWelcomeEmail(email).catch((err) => console.error('Failed to trigger welcome email:', err));
+
     return NextResponse.json({ message: 'User registered successfully', userId }, { status: 201 });
   } catch (error) {
     console.error('Registration API error:', error);
