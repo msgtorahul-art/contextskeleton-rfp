@@ -64,7 +64,7 @@ export async function sendPasswordResetEmail(email: string, token: string): Prom
 }
 
 export async function sendCustomerInquiryNotification(name: string, email: string, subject: string, message: string): Promise<boolean> {
-  const companySupportEmail = "support@contextskeleton.com";
+  const companySupportEmail = process.env.NOTIFICATION_EMAIL || "support@contextskeleton.com";
   const emailSubject = `[Customer Inquiry / Complaint] ${subject} from ${name}`;
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
@@ -83,6 +83,7 @@ export async function sendCustomerInquiryNotification(name: string, email: strin
 
 async function deliverEmail(to: string, subject: string, html: string): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'ContextSkeleton <onboarding@resend.dev>';
 
   if (!apiKey) {
     console.log(`[Email Service - Sandbox] Email to ${to} subject "${subject}". Set RESEND_API_KEY in Vercel for live dispatch.`);
@@ -97,16 +98,22 @@ async function deliverEmail(to: string, subject: string, html: string): Promise<
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'ContextSkeleton <support@contextskeleton.com>',
+        from: fromEmail,
         to: [to],
         subject,
         html,
       }),
     });
 
-    return res.ok;
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('[Resend Email Error]:', errText);
+      return false;
+    }
+
+    return true;
   } catch (error) {
-    console.error(`[Email Service Error]:`, error);
+    console.error(`[Email Service Exception]:`, error);
     return false;
   }
 }
