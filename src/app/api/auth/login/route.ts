@@ -11,10 +11,11 @@ export async function POST(req: NextRequest) {
     }
     
     // Retrieve user from DB
-    const user = db.prepare('SELECT id, email, password FROM users WHERE email = ?').get(email) as {
+    const user = db.prepare('SELECT id, email, password, email_verified FROM users WHERE email = ?').get(email) as {
       id: string;
       email: string;
       password: string;
+      email_verified: number;
     } | undefined;
     
     if (!user) {
@@ -27,6 +28,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
     
+    // Check if email is verified
+    if (user.email_verified === 0) {
+      return NextResponse.json({ 
+        error: 'Please verify your email address before logging in.',
+        requiresVerification: true,
+        email: user.email,
+      }, { status: 403 });
+    }
+
     // Sign JWT token
     const token = signToken({ userId: user.id, email: user.email });
     

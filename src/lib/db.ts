@@ -16,7 +16,11 @@ db.exec(`
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     subscription_status TEXT NOT NULL DEFAULT 'inactive',
-    credits INTEGER NOT NULL DEFAULT 10
+    credits INTEGER NOT NULL DEFAULT 10,
+    email_verified INTEGER NOT NULL DEFAULT 1,
+    verification_code TEXT,
+    reset_token TEXT,
+    reset_token_expiry TEXT
   );
 
   CREATE TABLE IF NOT EXISTS documents (
@@ -33,7 +37,7 @@ db.exec(`
     document_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     content TEXT NOT NULL,
-    embedding TEXT NOT NULL, -- JSON string of the float array
+    embedding TEXT NOT NULL,
     FOREIGN KEY(document_id) REFERENCES documents(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
   );
@@ -52,10 +56,25 @@ db.exec(`
     user_id TEXT NOT NULL,
     question_text TEXT NOT NULL,
     drafted_answer TEXT,
-    status TEXT NOT NULL DEFAULT 'pending', -- 'pending', 'drafted', 'approved'
+    status TEXT NOT NULL DEFAULT 'pending',
     FOREIGN KEY(project_id) REFERENCES projects(id),
     FOREIGN KEY(user_id) REFERENCES users(id)
   );
+
+  CREATE TABLE IF NOT EXISTS inquiries (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
 `);
+
+// Apply column additions gracefully if database already exists
+try { db.exec("ALTER TABLE users ADD COLUMN email_verified INTEGER NOT NULL DEFAULT 1;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN verification_code TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN reset_token TEXT;"); } catch (e) {}
+try { db.exec("ALTER TABLE users ADD COLUMN reset_token_expiry TEXT;"); } catch (e) {}
 
 console.log('SQLite database initialized successfully at:', DB_PATH);

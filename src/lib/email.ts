@@ -1,43 +1,92 @@
 export async function sendWelcomeEmail(email: string): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
-
-  const subject = "Welcome to ContextSkeleton - 10 Free Proposal Credits Activated! 🚀";
+  const subject = "Welcome to ContextSkeleton - 10 Free Proposal & Building Audit Credits! 🚀";
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
       <div style="text-align: center; margin-bottom: 24px;">
         <h1 style="color: #a855f7; font-size: 28px; margin: 0;">ContextSkeleton</h1>
-        <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Autonomous B2B RFP & Tender Response Engine</p>
+        <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Unified B2B RFP & AI Building Consent Platform</p>
       </div>
 
       <h2 style="color: #ffffff; font-size: 20px;">Welcome aboard!</h2>
       <p style="color: #cbd5e1; font-size: 14px; line-height: 1.6;">
-        Your account is ready with <strong>10 Free Proposal Drafting Credits</strong>.
+        Your account is active with <strong>10 Free Platform Credits</strong>.
       </p>
-
-      <div style="background-color: #0f172a; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin: 20px 0;">
-        <h3 style="color: #818cf8; font-size: 16px; margin-top: 0;">Quick 3-Step Setup Guide:</h3>
-        <ol style="color: #94a3b8; font-size: 13px; line-height: 1.8; padding-left: 20px;">
-          <li><strong style="color: #f8fafc;">Upload Source Docs:</strong> Go to <a href="https://contextskeleton.com/knowledge" style="color: #a855f7;">Knowledge Base</a> and upload past bids, ISO policies, or brochures.</li>
-          <li><strong style="color: #f8fafc;">Create a Project:</strong> Paste your incoming RFP questions.</li>
-          <li><strong style="color: #f8fafc;">Export to Word:</strong> Click "Export to Word (.docx)" for a ready-to-submit tender response!</li>
-        </ol>
-      </div>
 
       <div style="text-align: center; margin-top: 30px;">
         <a href="https://contextskeleton.com/dashboard" style="background-color: #7c3aed; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; padding: 12px 24px; border-radius: 10px; display: inline-block;">
           Go to Dashboard &rarr;
         </a>
       </div>
-
-      <hr style="border: 0; border-top: 1px solid #1e293b; margin: 30px 0;" />
-      <p style="color: #64748b; font-size: 11px; text-align: center;">
-        Need custom enterprise setup or private database clusters? Reply directly to this email or visit <a href="https://contextskeleton.com" style="color: #a855f7;">contextskeleton.com</a>.
-      </p>
     </div>
   `;
 
+  return deliverEmail(email, subject, html);
+}
+
+export async function sendVerificationEmail(email: string, code: string): Promise<boolean> {
+  const subject = `Verify Your Email Code: ${code} - ContextSkeleton`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
+      <h2 style="color: #a855f7; font-size: 22px; margin-top: 0;">Email Verification Required</h2>
+      <p style="color: #cbd5e1; font-size: 14px;">Please use the 6-digit verification code below to complete your registration:</p>
+      <div style="background-color: #1e1b4b; color: #a855f7; font-size: 32px; font-weight: bold; letter-spacing: 6px; text-align: center; padding: 16px; border-radius: 12px; margin: 20px 0;">
+        ${code}
+      </div>
+      <p style="color: #94a3b8; font-size: 12px;">Or click the link below to verify automatically:</p>
+      <div style="text-align: center; margin-top: 16px;">
+        <a href="https://contextskeleton.com/auth?mode=verify&code=${code}&email=${encodeURIComponent(email)}" style="background-color: #7c3aed; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 13px; padding: 10px 20px; border-radius: 8px; display: inline-block;">
+          Verify Email Now &rarr;
+        </a>
+      </div>
+    </div>
+  `;
+
+  return deliverEmail(email, subject, html);
+}
+
+export async function sendPasswordResetEmail(email: string, token: string): Promise<boolean> {
+  const subject = "Reset Your Password - ContextSkeleton";
+  const resetUrl = `https://contextskeleton.com/auth?mode=reset&token=${token}&email=${encodeURIComponent(email)}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
+      <h2 style="color: #38bdf8; font-size: 22px; margin-top: 0;">Password Reset Request</h2>
+      <p style="color: #cbd5e1; font-size: 14px;">We received a request to reset your password for ContextSkeleton.</p>
+      <div style="text-align: center; margin: 24px 0;">
+        <a href="${resetUrl}" style="background-color: #0284c7; color: #ffffff; text-decoration: none; font-weight: bold; font-size: 14px; padding: 12px 24px; border-radius: 10px; display: inline-block;">
+          Reset My Password &rarr;
+        </a>
+      </div>
+      <p style="color: #64748b; font-size: 11px;">If you did not request a password reset, please ignore this email.</p>
+    </div>
+  `;
+
+  return deliverEmail(email, subject, html);
+}
+
+export async function sendCustomerInquiryNotification(name: string, email: string, subject: string, message: string): Promise<boolean> {
+  const companyOwnerEmail = "msgtorahul@gmail.com";
+  const emailSubject = `[Customer Inquiry / Complaint] ${subject} from ${name}`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #090b11; color: #f8fafc; padding: 30px; border-radius: 16px; border: 1px solid #1e293b;">
+      <h2 style="color: #f43f5e; font-size: 20px; margin-top: 0;">New Customer Inquiry / Complaint Received</h2>
+      <p style="color: #cbd5e1; font-size: 13px;"><strong>From:</strong> ${name} (&lt;${email}&gt;)</p>
+      <p style="color: #cbd5e1; font-size: 13px;"><strong>Subject:</strong> ${subject}</p>
+      <div style="background-color: #0f172a; padding: 16px; border-radius: 10px; border: 1px solid #334155; color: #f8fafc; font-size: 14px; line-height: 1.6; margin: 16px 0;">
+        ${message.replace(/\n/g, '<br/>')}
+      </div>
+      <p style="color: #94a3b8; font-size: 12px;">Reply directly to this email to contact the customer.</p>
+    </div>
+  `;
+
+  return deliverEmail(companyOwnerEmail, emailSubject, html);
+}
+
+async function deliverEmail(to: string, subject: string, html: string): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+
   if (!apiKey) {
-    console.log(`[Email Service - Sandbox] Welcome email queued for ${email}. (Set RESEND_API_KEY in Vercel to send live emails)`);
+    console.log(`[Email Service - Sandbox] Email to ${to} subject "${subject}". Set RESEND_API_KEY in Vercel for live dispatch.`);
     return true;
   }
 
@@ -49,21 +98,14 @@ export async function sendWelcomeEmail(email: string): Promise<boolean> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'ContextSkeleton <onboarding@contextskeleton.com>',
-        to: [email],
+        from: 'ContextSkeleton <support@contextskeleton.com>',
+        to: [to],
         subject,
         html,
       }),
     });
 
-    if (res.ok) {
-      console.log(`[Email Service] Live welcome email sent successfully to ${email}`);
-      return true;
-    } else {
-      const errText = await res.text();
-      console.error(`[Email Service] Failed to send email via Resend:`, errText);
-      return false;
-    }
+    return res.ok;
   } catch (error) {
     console.error(`[Email Service Error]:`, error);
     return false;

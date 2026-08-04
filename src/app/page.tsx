@@ -4,11 +4,51 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send
 } from 'lucide-react';
 
 export default function LandingPage() {
   const [calcPages, setCalcPages] = useState(30);
+
+  // Support & Complaint Form state
+  const [supportName, setSupportName] = useState('');
+  const [supportEmail, setSupportEmail] = useState('');
+  const [supportSubject, setSupportSubject] = useState('Enterprise Sales & Support Inquiry');
+  const [supportMessage, setSupportMessage] = useState('');
+  const [supportLoading, setSupportLoading] = useState(false);
+  const [supportStatus, setSupportStatus] = useState('');
+
+  const handleSupportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSupportLoading(true);
+    setSupportStatus('');
+
+    try {
+      const res = await fetch('/api/support', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: supportName,
+          email: supportEmail,
+          subject: supportSubject,
+          message: supportMessage,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setSupportStatus('SUCCESS');
+        setSupportMessage('');
+      } else {
+        alert(data.error || 'Failed to send message.');
+      }
+    } catch (err) {
+      console.error('Support submit error:', err);
+      alert('An unexpected error occurred.');
+    } finally {
+      setSupportLoading(false);
+    }
+  };
 
   const mainServices = [
     {
@@ -44,7 +84,7 @@ export default function LandingPage() {
         'Generates producer statement (PS1/PS3) lists',
         'Reduces council approval delays by weeks',
       ],
-      ctaText: 'Audit Building Consent',
+      ctaText: 'Audit Building Consent ($750/mo)',
       ctaHref: '/consent',
     },
     {
@@ -265,55 +305,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ROI CALCULATOR */}
-      <section id="calculator" className="max-w-5xl mx-auto px-6 py-16 z-10 relative">
-        <div className="glass-panel p-10 md:p-14 rounded-3xl border-indigo-500/30">
-          <div className="max-w-2xl mx-auto text-center mb-10">
-            <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-2">Enterprise Value</span>
-            <h2 className="text-3xl font-extrabold text-white mb-3">Calculate Monthly Time Saved</h2>
-            <p className="text-slate-400 text-xs">Estimate how many engineering, proposal, and consent audit hours ContextSkeleton saves your team.</p>
-          </div>
-
-          <div className="max-w-xl mx-auto bg-slate-950/80 p-8 rounded-2xl border border-slate-900 mb-8">
-            <label className="flex justify-between text-xs font-bold text-slate-300 mb-3">
-              <span>Tender Questionnaire Pages & Consent Specs Per Month:</span>
-              <span className="text-violet-400 text-sm font-extrabold">{calcPages} Pages</span>
-            </label>
-            <input
-              type="range"
-              min="5"
-              max="200"
-              value={calcPages}
-              onChange={(e) => setCalcPages(parseInt(e.target.value))}
-              className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-violet-500 mb-6"
-            />
-
-            <div className="grid grid-cols-2 gap-4 text-center border-t border-slate-900 pt-6">
-              <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase block mb-1">Manual Evaluation Time</span>
-                <span className="text-2xl font-extrabold text-slate-400">{calcPages * 1.5} Hours</span>
-              </div>
-              <div>
-                <span className="text-violet-400 text-[10px] font-bold uppercase block mb-1">With ContextSkeleton</span>
-                <span className="text-2xl font-extrabold text-emerald-400">{Math.round(calcPages * 0.12)} Hours</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <span className="inline-block text-xs font-bold text-slate-300 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full text-emerald-400">
-              ⚡ You save approx. {Math.round(calcPages * 1.38)} hours of team productivity every month!
-            </span>
-          </div>
-        </div>
-      </section>
-
       {/* COMMERCIAL PRICING SECTION */}
       <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Pricing Plans</h2>
-          <p className="text-slate-400 mt-3 text-sm">One subscription unlocks all products & tools across the platform.</p>
+          <p className="text-slate-400 mt-3 text-sm">Select a plan tailored for RFP proposal teams or Building Consent firms.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -350,25 +347,25 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* Professional Plan (Popular) */}
+          {/* RFP Professional Plan */}
           <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-violet-500/40 relative overflow-hidden shadow-2xl shadow-violet-500/10">
             <div className="absolute top-0 right-0 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-              Most Popular
+              RFP Engine
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-2">Growth & Sales</span>
-              <h3 className="text-2xl font-bold text-white mb-3">Professional Plan</h3>
+              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-2">Growth & Proposals</span>
+              <h3 className="text-2xl font-bold text-white mb-3">RFP Pro Plan</h3>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-extrabold text-white">$499</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Unlimited Platform Access
+                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Unlimited RFP Proposal Drafts
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Full Building Consent & RFP Exporter
+                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Full Microsoft Word (.docx) Exporter
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-400" /> Isolated Turso Cloud Vector Storage
@@ -383,60 +380,136 @@ export default function LandingPage() {
               href="/auth?mode=register"
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/20"
             >
-              Get Started Now
+              Get Started ($499/mo)
             </Link>
           </div>
 
-          {/* Enterprise Plan */}
-          <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-slate-900">
+          {/* AI Building Consent Professional Plan */}
+          <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-2xl shadow-emerald-500/10">
+            <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
+              Consent Auditor
+            </div>
+
             <div>
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest block mb-2">Large Enterprise</span>
-              <h3 className="text-2xl font-bold text-white mb-3">Enterprise Custom</h3>
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-2">Architectural & Builders</span>
+              <h3 className="text-2xl font-bold text-white mb-3">Consent Auditor Pro</h3>
               <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-white">Custom</span>
+                <span className="text-4xl font-extrabold text-white">$750</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-3 mb-8">
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-cyan-400" /> Dedicated Turso / Postgres Cluster
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Unlimited NZBC Pre-Consent Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-cyan-400" /> Custom SAML / Okta / Azure AD SSO
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> NZBC E2, H1, B1, G12 Clause Checkers
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-cyan-400" /> Custom LLM model fine-tuning
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Critical RFI Risk Warnings & Producer Statements
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-cyan-400" /> 99.9% SLA & Dedicated Support
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> PDF Pre-Submission Audit Exporter
                 </li>
               </ul>
             </div>
-            <a
-              href="#contact"
-              className="w-full inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-semibold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer"
+            <Link
+              id="pricing-consent"
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer shadow-lg shadow-emerald-500/20"
             >
-              Contact Enterprise Sales
-            </a>
+              Get Started ($750/mo)
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ENTERPRISE CONTACT SECTION */}
+      {/* ENTERPRISE CONTACT & CUSTOMER INQUIRY SECTION */}
       <section id="contact" className="max-w-4xl mx-auto px-6 py-16 z-10 relative">
         <div className="glass-panel p-10 md:p-12 rounded-3xl border-violet-500/20 text-center">
           <div className="h-12 w-12 rounded-2xl bg-violet-600/10 flex items-center justify-center mx-auto mb-6">
             <Mail className="h-6 w-6 text-violet-400" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white mb-3">Have Custom Enterprise Requirements?</h2>
+          <h2 className="text-3xl font-extrabold text-white mb-3">Customer Support, Enquiries & Complaints</h2>
           <p className="text-slate-400 text-xs max-w-xl mx-auto mb-8">
-            Contact our engineering team for custom deployment options, private cloud VPC setups, or dedicated data security compliance reviews.
+            Have questions, complaints, or custom enterprise requirements? Send a message directly to our engineering team.
           </p>
-          <a
-            href="mailto:contact@contextskeleton.com?subject=Enterprise%20AI%20Platform%20Inquiry"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3.5 px-8 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/10"
-          >
-            Email Enterprise Engineering
-            <ArrowRight className="h-4 w-4" />
-          </a>
+
+          {supportStatus === 'SUCCESS' ? (
+            <div className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-300 text-xs font-semibold">
+              ✓ Thank you! Your message has been dispatched directly to our leadership team at <strong>msgtorahul@gmail.com</strong>.
+            </div>
+          ) : (
+            <form onSubmit={handleSupportSubmit} className="max-w-lg mx-auto text-left space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Your Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={supportName}
+                    onChange={(e) => setSupportName(e.target.value)}
+                    placeholder="Rahul Gautam"
+                    className="w-full glass-input rounded-xl p-3 text-xs text-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Your Email</label>
+                  <input
+                    type="email"
+                    required
+                    value={supportEmail}
+                    onChange={(e) => setSupportEmail(e.target.value)}
+                    placeholder="name@company.com"
+                    className="w-full glass-input rounded-xl p-3 text-xs text-white"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Subject</label>
+                <select
+                  value={supportSubject}
+                  onChange={(e) => setSupportSubject(e.target.value)}
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200"
+                >
+                  <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
+                  <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
+                  <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
+                  <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Message</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={supportMessage}
+                  onChange={(e) => setSupportMessage(e.target.value)}
+                  placeholder="Type your message, complaint, or enquiry here..."
+                  className="w-full glass-input rounded-xl p-3 text-xs text-white resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={supportLoading}
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition shadow-lg shadow-violet-500/10 cursor-pointer"
+              >
+                {supportLoading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Sending Message...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Send Message to Management
+                  </>
+                )}
+              </button>
+            </form>
+          )}
         </div>
       </section>
 
@@ -456,7 +529,7 @@ export default function LandingPage() {
             <Link href="/auth" className="hover:text-white transition">Platform Login</Link>
             <a href="#services" className="hover:text-white transition">Products &amp; Services</a>
             <a href="#pricing" className="hover:text-white transition">Pricing</a>
-            <a href="mailto:contact@contextskeleton.com" className="hover:text-white transition">Support</a>
+            <a href="mailto:msgtorahul@gmail.com" className="hover:text-white transition">Support (msgtorahul@gmail.com)</a>
           </div>
         </div>
       </footer>
