@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, LogOut, Loader2, Sparkles, CreditCard, Globe } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -69,8 +69,10 @@ export default function Sidebar() {
 
   const navItems = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Knowledge Base', href: '/knowledge', icon: Database },
-    { name: 'RFP Projects', href: '/projects', icon: FileText },
+    { name: 'RFP & Tender Engine', href: '/projects', icon: FileText },
+    { name: 'Building Consent Auditor', href: '/consent', icon: ShieldCheck },
+    { name: 'Vector Knowledge Base', href: '/knowledge', icon: Database },
+    { name: 'Token Skeletonizer', href: '/skeletonizer', icon: Layers },
     { name: 'Public Site & Pricing', href: '/?preview=true', icon: Globe },
   ];
 
@@ -79,12 +81,12 @@ export default function Sidebar() {
       <div className="space-y-8">
         {/* Brand */}
         <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white text-lg">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-violet-500/20">
             C
           </div>
           <div>
-            <span className="font-bold text-white text-lg block">ContextSkeleton</span>
-            <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider block">Enterprise Hub</span>
+            <span className="font-bold text-white text-lg block tracking-tight">ContextSkeleton</span>
+            <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Platform</span>
           </div>
         </div>
 
@@ -96,13 +98,13 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`w-full flex items-center gap-3.5 py-3.5 px-4 rounded-xl text-sm font-semibold transition-all cursor-pointer ${
+                className={`w-full flex items-center gap-3.5 py-3 px-3.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-violet-600/10 text-violet-400 border-l-2 border-violet-500 pl-3.5'
+                    ? 'bg-violet-600/10 text-violet-400 border-l-2 border-violet-500 pl-3'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
                 }`}
               >
-                <item.icon className={`h-4.5 w-4.5 ${isActive ? 'text-violet-400' : 'text-slate-400'}`} />
+                <item.icon className={`h-4 w-4 ${isActive ? 'text-violet-400' : 'text-slate-400'}`} />
                 {item.name}
               </Link>
             );
@@ -130,7 +132,7 @@ export default function Sidebar() {
             
             <div className="mb-3">
               {user.subscription_status === 'active' ? (
-                <span className="text-sm font-bold text-white block">Unlimited Drafts</span>
+                <span className="text-sm font-bold text-white block">Unlimited Platform Access</span>
               ) : (
                 <div className="flex items-baseline gap-1">
                   <span className="text-xl font-bold text-white">{user.credits}</span>

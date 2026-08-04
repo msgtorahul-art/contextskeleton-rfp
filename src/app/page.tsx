@@ -27,7 +27,25 @@ export default function LandingPage() {
         'Collaborative reviewer workspace',
       ],
       ctaText: 'Launch Proposal Builder',
-      ctaHref: '/auth?mode=register',
+      ctaHref: '/projects',
+    },
+    {
+      id: 'service-consent',
+      badge: 'NZ & Global Compliance',
+      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      title: 'AI Building Consent Auditor',
+      icon: ShieldCheck,
+      iconColor: 'text-emerald-400',
+      glowColor: 'hover:border-emerald-500/50 hover:shadow-emerald-500/10',
+      tagline: 'Audit blueprints and architectural specs against NZBC Building Code prior to council submission.',
+      highlights: [
+        'Evaluates NZBC E2 (Moisture) & H1 (Energy)',
+        'Flags critical RFI rejection risks',
+        'Generates producer statement (PS1/PS3) lists',
+        'Reduces council approval delays by weeks',
+      ],
+      ctaText: 'Audit Building Consent',
+      ctaHref: '/consent',
     },
     {
       id: 'service-knowledge',
@@ -45,7 +63,7 @@ export default function LandingPage() {
         'Multi-tenant enterprise security boundaries',
       ],
       ctaText: 'Build Knowledge Base',
-      ctaHref: '/auth?mode=register',
+      ctaHref: '/knowledge',
     },
     {
       id: 'service-skeleton',
@@ -62,24 +80,7 @@ export default function LandingPage() {
         'Preserves 100% context for LLM logic',
       ],
       ctaText: 'Use Token Skeletonizer',
-      ctaHref: '/auth?mode=register',
-    },
-    {
-      id: 'service-enterprise',
-      badge: 'B2B Custom Services',
-      icon: Cpu,
-      iconColor: 'text-emerald-400',
-      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-      glowColor: 'hover:border-emerald-500/50 hover:shadow-emerald-500/10',
-      tagline: 'Custom RAG pipelines, private cloud database hosting, and LLM fine-tuning.',
-      highlights: [
-        'Dedicated Turso / Postgres cloud clusters',
-        'Custom fine-tuned LLM models (Gemini / Claude)',
-        'SAML, Okta, & Azure AD SSO integration',
-        '99.9% uptime SLA & dedicated engineering',
-      ],
-      ctaText: 'Contact Enterprise Team',
-      ctaHref: '#contact',
+      ctaHref: '/skeletonizer',
     },
   ];
 
@@ -98,7 +99,7 @@ export default function LandingPage() {
           </div>
           <div>
             <span className="font-extrabold text-white text-lg tracking-tight block">ContextSkeleton</span>
-            <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Autonomous AI Hub</span>
+            <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Platform</span>
           </div>
         </div>
 
@@ -132,18 +133,18 @@ export default function LandingPage() {
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
-            <Sparkles className="h-4 w-4" /> Enterprise Autonomous AI & RAG Proposal Suite
+            <Sparkles className="h-4 w-4" /> Enterprise Autonomous AI Platform
           </div>
 
           <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
-            Win B2B Tenders Faster.<br />
+            Single Platform.<br />
             <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              All Products & Services Under One Roof.
+              All Enterprise AI Products & Services.
             </span>
           </h1>
 
           <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
-            From automated RFP proposal drafting to vector document indexing and token skeletonization—explore our complete suite of AI products below.
+            From automated RFP proposal drafting to AI building consent pre-auditing, vector knowledge bases, and token skeletonization—access all tools on one domain.
           </p>
         </div>
 
@@ -203,11 +204,11 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
             <span className="text-3xl font-extrabold text-white block">92%</span>
-            <span className="text-xs text-slate-500 font-medium">Faster Proposal Drafting</span>
+            <span className="text-xs text-slate-500 font-medium">Faster Proposal & Audit Completion</span>
           </div>
           <div>
             <span className="text-3xl font-extrabold text-white block">100%</span>
-            <span className="text-xs text-slate-500 font-medium">Fact-Grounded (Zero Hallucinations)</span>
+            <span className="text-xs text-slate-500 font-medium">NZBC & Grounded Fact Verification</span>
           </div>
           <div>
             <span className="text-3xl font-extrabold text-white block">.docx</span>
@@ -225,7 +226,7 @@ export default function LandingPage() {
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Automated Architecture</span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white">How ContextSkeleton Works</h2>
-          <p className="text-slate-400 mt-3 text-sm">Three seamless steps to automate your entire tender proposal pipeline.</p>
+          <p className="text-slate-400 mt-3 text-sm">Three seamless steps to automate your entire tender proposal & building audit pipeline.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -236,7 +237,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-xl font-bold text-white mb-2">Upload Source Knowledge</h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Upload past bids, security questionnaires, ISO policies, and brochures. Our engine parses and indexes them into Turso Cloud Vector Storage.
+              Upload past bids, architectural specs, ISO policies, and brochures into Turso Cloud Vector Storage.
             </p>
           </div>
 
@@ -245,9 +246,9 @@ export default function LandingPage() {
             <div className="h-12 w-12 rounded-2xl bg-indigo-600/10 flex items-center justify-center mb-6">
               <Sparkles className="h-6 w-6 text-indigo-400" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Run Grounded AI Drafting</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Run AI Proposals & Audits</h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Paste incoming RFP questions. Gemini 2.5 Flash retrieves exact matching facts from your knowledge base and drafts answers with source citations.
+              Select RFP drafting or NZBC building consent pre-auditing. Gemini 2.5 Flash evaluates specs against verified standards.
             </p>
           </div>
 
@@ -256,9 +257,9 @@ export default function LandingPage() {
             <div className="h-12 w-12 rounded-2xl bg-cyan-600/10 flex items-center justify-center mb-6">
               <Download className="h-6 w-6 text-cyan-400" />
             </div>
-            <h3 className="text-xl font-bold text-white mb-2">Export to Microsoft Word</h3>
+            <h3 className="text-xl font-bold text-white mb-2">Export Professional Reports</h3>
             <p className="text-slate-400 text-xs leading-relaxed">
-              Review and approve generated answers in our reviewer workspace, then click once to download a formatted `.docx` Word proposal ready for submission.
+              Click once to download formatted `.docx` Word proposals or PDF consent audit reports ready for client/council submission.
             </p>
           </div>
         </div>
@@ -270,12 +271,12 @@ export default function LandingPage() {
           <div className="max-w-2xl mx-auto text-center mb-10">
             <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-2">Enterprise Value</span>
             <h2 className="text-3xl font-extrabold text-white mb-3">Calculate Monthly Time Saved</h2>
-            <p className="text-slate-400 text-xs">Estimate how many engineering and proposal hours ContextSkeleton saves your team.</p>
+            <p className="text-slate-400 text-xs">Estimate how many engineering, proposal, and consent audit hours ContextSkeleton saves your team.</p>
           </div>
 
           <div className="max-w-xl mx-auto bg-slate-950/80 p-8 rounded-2xl border border-slate-900 mb-8">
             <label className="flex justify-between text-xs font-bold text-slate-300 mb-3">
-              <span>Tender Questionnaire Pages Per Month:</span>
+              <span>Tender Questionnaire Pages & Consent Specs Per Month:</span>
               <span className="text-violet-400 text-sm font-extrabold">{calcPages} Pages</span>
             </label>
             <input
@@ -289,7 +290,7 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-2 gap-4 text-center border-t border-slate-900 pt-6">
               <div>
-                <span className="text-slate-500 text-[10px] font-bold uppercase block mb-1">Manual Response Time</span>
+                <span className="text-slate-500 text-[10px] font-bold uppercase block mb-1">Manual Evaluation Time</span>
                 <span className="text-2xl font-extrabold text-slate-400">{calcPages * 1.5} Hours</span>
               </div>
               <div>
@@ -312,7 +313,7 @@ export default function LandingPage() {
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
           <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Pricing Plans</h2>
-          <p className="text-slate-400 mt-3 text-sm">Choose the right plan to scale your tender proposals.</p>
+          <p className="text-slate-400 mt-3 text-sm">One subscription unlocks all products & tools across the platform.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -327,13 +328,13 @@ export default function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> 10 Free Proposal Generations
+                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> 10 Free Platform Generations
+                </li>
+                <li className="flex items-center gap-2 text-slate-400 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> RFP Engine & Building Consent Auditor
                 </li>
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-500" /> Vector document indexing
-                </li>
-                <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> PDF & DOCX file uploads
                 </li>
                 <li className="flex items-center gap-2 text-slate-400 text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-500" /> Microsoft Word exporter
@@ -364,10 +365,10 @@ export default function LandingPage() {
               </div>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Unlimited RFP Generations
+                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Unlimited Platform Access
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Full Microsoft Word (.docx) Exporter
+                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Full Building Consent & RFP Exporter
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
                   <CheckCircle2 className="h-4 w-4 text-violet-400" /> Isolated Turso Cloud Vector Storage
@@ -430,7 +431,7 @@ export default function LandingPage() {
             Contact our engineering team for custom deployment options, private cloud VPC setups, or dedicated data security compliance reviews.
           </p>
           <a
-            href="mailto:contact@contextskeleton.com?subject=Enterprise%20RFP%20Engine%20Inquiry"
+            href="mailto:contact@contextskeleton.com?subject=Enterprise%20AI%20Platform%20Inquiry"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3.5 px-8 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/10"
           >
             Email Enterprise Engineering
@@ -453,7 +454,7 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-6 text-slate-400 text-xs">
             <Link href="/auth" className="hover:text-white transition">Platform Login</Link>
-            <a href="#services" className="hover:text-white transition">Products & Services</a>
+            <a href="#services" className="hover:text-white transition">Products &amp; Services</a>
             <a href="#pricing" className="hover:text-white transition">Pricing</a>
             <a href="mailto:contact@contextskeleton.com" className="hover:text-white transition">Support</a>
           </div>
