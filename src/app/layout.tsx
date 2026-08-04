@@ -1,5 +1,18 @@
 import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "ContextSkeleton | Autonomous RFP Engine & Enterprise Vector Hub",
@@ -75,7 +88,7 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className={`dark scroll-smooth ${plusJakartaSans.variable} ${outfit.variable}`}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
