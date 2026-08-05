@@ -57,7 +57,14 @@ export default function ProjectsPage() {
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!projectName.trim() || !questionsInput.trim()) return;
+    if (!projectName.trim()) {
+      setError('Please enter a Tender Name for your RFP project.');
+      return;
+    }
+    if (!questionsInput.trim()) {
+      setError('Please enter at least one questionnaire item (one per line).');
+      return;
+    }
 
     setCreating(true);
     setError('');
