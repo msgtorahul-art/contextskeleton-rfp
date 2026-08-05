@@ -11,6 +11,7 @@ export default function BuildingConsentAuditorPage() {
   const [buildingType, setBuildingType] = useState('Residential Multi-Unit');
   const [specificationText, setSpecificationText] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [result, setResult] = useState<{
     summary: string;
     items: Array<{
@@ -26,6 +27,7 @@ export default function BuildingConsentAuditorPage() {
   const handleAudit = async () => {
     if (!specificationText.trim()) return;
     setLoading(true);
+    setError('');
 
     try {
       const res = await fetch('/api/consent', {
@@ -34,15 +36,18 @@ export default function BuildingConsentAuditorPage() {
         body: JSON.stringify({ buildingType, specificationText }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(rawText); } catch (e) {}
+
       if (res.ok) {
         setResult(data);
       } else {
-        alert(data.error || 'Failed to run consent audit');
+        setError(data.error || 'Failed to run consent audit. Please check your specifications.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Audit submission error:', err);
-      alert('An unexpected error occurred.');
+      setError(err.message || 'An unexpected error occurred during building consent audit.');
     } finally {
       setLoading(false);
     }
@@ -100,10 +105,10 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
         <div className="flex justify-between items-center mb-8 border-b border-slate-900 pb-6">
           <div>
             <div className="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 rounded-full text-xs font-semibold mb-2">
-              <ShieldCheck className="h-3.5 w-3.5" /> AI Building Consent & Plan Auditor
+              <ShieldCheck className="h-3.5 w-3.5" /> AI Building Consent &amp; Plan Auditor
             </div>
             <h1 className="text-3xl font-extrabold text-white">Council Consent Pre-Audit Engine</h1>
-            <p className="text-slate-400 text-xs mt-1">Audit architectural drawings & specs against NZBC Building Code prior to council submission.</p>
+            <p className="text-slate-400 text-xs mt-1">Audit architectural drawings &amp; specs against NZBC Building Code prior to council submission.</p>
           </div>
 
           <button
@@ -121,7 +126,7 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
             <div className="glass-panel p-6 rounded-3xl space-y-4">
               <h2 className="text-sm font-bold text-white flex items-center gap-2">
                 <Building className="h-4 w-4 text-violet-400" />
-                Building Type & Scope
+                Building Type &amp; Scope
               </h2>
 
               <select
@@ -157,7 +162,7 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
             <div className="glass-panel p-6 rounded-3xl space-y-4">
               <h2 className="text-sm font-bold text-white flex items-center gap-2">
                 <FileText className="h-4 w-4 text-emerald-400" />
-                Architectural Specs & Drawings Notes
+                Architectural Specs &amp; Drawings Notes
               </h2>
 
               <textarea
@@ -166,6 +171,12 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
                 placeholder="Paste specification notes, cladding specs, insulation R-values, window schedules, or structural notes..."
                 className="w-full h-64 bg-slate-950 border border-slate-900 rounded-2xl p-4 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 resize-none leading-relaxed"
               />
+
+              {error && (
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+                  {error}
+                </div>
+              )}
 
               <button
                 onClick={handleAudit}
@@ -194,7 +205,7 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
                 <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-6">
                   <h2 className="text-sm font-bold text-white flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-emerald-400" />
-                    Audit Summary & Clause Findings
+                    Audit Summary &amp; Clause Findings
                   </h2>
 
                   {result && (

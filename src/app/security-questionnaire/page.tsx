@@ -123,7 +123,7 @@ export default function SecurityQuestionnairePage() {
     <div className="flex min-h-screen bg-slate-950 text-slate-100">
       <Sidebar />
 
-      <main className="flex-1 p-8 overflow-y-auto">
+      <main className="pl-80 flex-1 p-10 min-h-screen">
         <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900 pb-6">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs font-semibold mb-2">

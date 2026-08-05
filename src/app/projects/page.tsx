@@ -25,8 +25,11 @@ export default function ProjectsPage() {
   const fetchProjects = async () => {
     try {
       const res = await fetch('/api/rfp');
+      const rawText = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(rawText); } catch (e) {}
+
       if (res.ok) {
-        const data = await res.json();
         setProjects(data.projects || []);
       }
     } catch (err) {
@@ -59,7 +62,6 @@ export default function ProjectsPage() {
     setCreating(true);
     setError('');
 
-    // Split questions input by newlines and filter out empty items
     const questions = questionsInput
       .split('\n')
       .map((q) => q.trim())
@@ -76,14 +78,19 @@ export default function ProjectsPage() {
         }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(rawText); } catch (e) {}
 
       if (!res.ok) {
         throw new Error(data.error || 'Failed to create project');
       }
 
-      // Navigate to project workspace
-      router.push(`/projects/${data.projectId}`);
+      if (data.projectId) {
+        router.push(`/projects/${data.projectId}`);
+      } else {
+        fetchProjects();
+      }
     } catch (err: any) {
       setError(err.message || 'Error creating RFP project');
     } finally {

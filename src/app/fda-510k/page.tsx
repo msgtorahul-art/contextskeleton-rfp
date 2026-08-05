@@ -13,6 +13,7 @@ export default function Fda510kResolverPage() {
   const [predicateDevice, setPredicateDevice] = useState('');
   const [specifications, setSpecifications] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [result, setResult] = useState<{
     summary: string;
     predicateComparison: string;
@@ -29,6 +30,7 @@ export default function Fda510kResolverPage() {
   const handleResolve = async () => {
     if (!deviceName.trim() || !specifications.trim()) return;
     setLoading(true);
+    setError('');
 
     try {
       const res = await fetch('/api/fda-510k', {
@@ -42,15 +44,18 @@ export default function Fda510kResolverPage() {
         }),
       });
 
-      const data = await res.json();
+      const rawText = await res.text();
+      let data: any = {};
+      try { data = JSON.parse(rawText); } catch (e) {}
+
       if (res.ok) {
         setResult(data);
       } else {
-        alert(data.error || 'Failed to run FDA 510(k) analysis.');
+        setError(data.error || 'Failed to run FDA 510(k) analysis.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('FDA 510k Analysis Error:', err);
-      alert('An unexpected error occurred.');
+      setError(err.message || 'An unexpected error occurred during FDA 510(k) analysis.');
     } finally {
       setLoading(false);
     }
@@ -190,6 +195,12 @@ Mechanical Testing: ASTM F1717 static compression, tension, and fatigue testing.
                 className="w-full glass-input rounded-xl p-3 text-xs text-white resize-none"
               />
             </div>
+
+            {error && (
+              <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+                {error}
+              </div>
+            )}
 
             <button
               onClick={handleResolve}
