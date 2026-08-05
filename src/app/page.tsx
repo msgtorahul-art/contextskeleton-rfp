@@ -149,7 +149,7 @@ export default function LandingPage() {
       <div className="absolute top-[35%] right-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-cyan-600/10 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* Top Navigation Navbar - LOGO WRAPPED IN LINK TO HOMEPAGE */}
+      {/* Top Navigation Navbar */}
       <nav className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center z-30 relative border-b border-slate-900/80 backdrop-blur-md bg-slate-950/80 sticky top-0">
         <Link href="/" className="flex items-center gap-3 group">
           <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg shadow-violet-500/20 group-hover:scale-105 transition duration-300">
@@ -188,23 +188,32 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO SECTION WITH SEPARATED PRODUCTS SHOWCASE (REVERTED IMAGE) */}
+      {/* HERO SECTION WITH AI NEURAL BRAIN BACKGROUND IMAGE */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
-        <div className="text-center max-w-4xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
-            <Sparkles className="h-4 w-4" /> Dedicated Autonomous AI Products
+        <div className="relative text-center max-w-5xl mx-auto mb-16 p-10 md:p-16 rounded-3xl border border-cyan-500/30 overflow-hidden shadow-2xl shadow-cyan-500/10">
+          {/* Text-free AI Neural Brain background image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity pointer-events-none"
+            style={{ backgroundImage: `url('/hero-bg.png')` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950 pointer-events-none" />
+
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
+              <Sparkles className="h-4 w-4" /> Dedicated Autonomous AI Products
+            </div>
+
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
+              Specialized Autonomous AI.<br />
+              <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+                Independent Solutions for Every User.
+              </span>
+            </h1>
+
+            <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
+              Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
+            </p>
           </div>
-
-          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
-            Specialized Autonomous AI.<br />
-            <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              Independent Solutions for Every User.
-            </span>
-          </h1>
-
-          <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
-            Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
-          </p>
         </div>
 
         {/* INDEPENDENT PRODUCTS GRID */}
