@@ -58,10 +58,6 @@ export const metadata: Metadata = {
     title: "ContextSkeleton | Autonomous RFP Engine",
     description: "Automate B2B tender proposals with grounded RAG vector search & Word export.",
     images: ["https://contextskeleton.com/og-image.png"],
-    creator: "@contextskeleton",
-  },
-  alternates: {
-    canonical: "https://contextskeleton.com",
   },
 };
 
@@ -80,8 +76,8 @@ export default function RootLayout({
       "@type": "AggregateOffer",
       "priceCurrency": "USD",
       "lowPrice": "0",
-      "highPrice": "499",
-      "offerCount": "2"
+      "highPrice": "750",
+      "offerCount": "4"
     },
     "description": "Autonomous RFP & Tender Response Engine powered by Grounded AI Vector Search and Microsoft Word Exporter.",
     "url": "https://contextskeleton.com"

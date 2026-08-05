@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Sidebar from '@/components/Sidebar';
 import { 
-  Layers, Code, Copy, Check, Sparkles, Loader2, ArrowRight, FileCode 
+  Layers, Code, Copy, Check, Sparkles, Loader2, ArrowRight, FileCode, Key
 } from 'lucide-react';
 
 export default function TokenSkeletonizerPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [codeText, setCodeText] = useState('');
   const [language, setLanguage] = useState('TypeScript');
   const [loading, setLoading] = useState(false);
@@ -17,6 +19,12 @@ export default function TokenSkeletonizerPage() {
     skeletonTokens: number;
     tokenReductionPercent: string;
   } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/user/me')
+      .then((res) => res.ok && setIsLoggedIn(true))
+      .catch(() => setIsLoggedIn(false));
+  }, []);
 
   const handleSkeletonize = async () => {
     if (!codeText.trim()) return;
@@ -92,9 +100,29 @@ export class AnalyticsTracker {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
-      <Sidebar />
+      {isLoggedIn && <Sidebar />}
 
-      <main className="pl-80 flex-1 p-10 min-h-screen">
+      <main className={`flex-1 p-8 min-h-screen ${isLoggedIn ? 'pl-80' : 'max-w-6xl mx-auto'}`}>
+        {/* Top bar for public visitors */}
+        {!isLoggedIn && (
+          <nav className="flex justify-between items-center mb-8 border-b border-slate-900 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
+                C
+              </div>
+              <div>
+                <span className="font-bold text-white text-base block">ContextSkeleton</span>
+                <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block -mt-1">Free Developer Tool</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Link href="/auth" className="text-xs text-slate-400 hover:text-white font-semibold">Sign In</Link>
+              <Link href="/auth?mode=register" className="bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-xs py-2 px-4 rounded-xl">Start Free Trial</Link>
+            </div>
+          </nav>
+        )}
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8 border-b border-slate-900 pb-6">
           <div>

@@ -9,10 +9,19 @@ export function middleware(req: NextRequest) {
   const isApiRoute = pathname.startsWith('/api');
   const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next');
   const isRootPage = pathname === '/';
-  const isPublicPage = pathname === '/privacy' || pathname === '/terms' || pathname === '/skeletonizer';
+  
+  // Publicly accessible product marketing & legal pages
+  const isPublicPage = 
+    pathname === '/privacy' || 
+    pathname === '/terms' || 
+    pathname === '/skeletonizer' || 
+    pathname === '/consent' || 
+    pathname === '/security-questionnaire' || 
+    pathname === '/knowledge';
+
   const isSandboxCallback = pathname.startsWith('/api/billing/sandbox-callback');
 
-  // Do not restrict static files, Next.js assets, auth APIs, public legal pages, or skeletonizer
+  // Do not restrict static files, Next.js assets, auth APIs, public product/legal pages
   if (isStaticFile || isPublicPage || (isApiRoute && (pathname.includes('/auth') || isSandboxCallback))) {
     return NextResponse.next();
   }
@@ -25,7 +34,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Redirect unauthenticated users trying to access protected paths to /auth
+  // Redirect unauthenticated users trying to access protected internal paths (e.g. /projects, /dashboard) to /auth
   if (!token && !isAuthPage && !isRootPage && !isPublicPage) {
     const loginUrl = new URL('/auth', req.url);
     return NextResponse.redirect(loginUrl);
