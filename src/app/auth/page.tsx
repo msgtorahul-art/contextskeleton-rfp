@@ -120,16 +120,6 @@ function AuthContent() {
 
       {/* Auth Card */}
       <div className="glass-panel rounded-3xl p-8 relative overflow-hidden border-slate-800 space-y-4">
-        {/* VIP QA 1-CLICK TESTER BUTTON */}
-        <button
-          type="button"
-          onClick={handleQABypassLogin}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500/30 to-yellow-500/30 hover:from-amber-500/40 hover:to-yellow-500/40 border border-amber-500/50 text-amber-200 font-extrabold text-xs py-3.5 px-4 rounded-2xl transition cursor-pointer shadow-lg shadow-amber-500/10 mb-2"
-        >
-          <Sparkles className="h-4 w-4 text-amber-400" />
-          ⚡ Instant VIP QA Test Pass (1-Click Login)
-        </button>
 
         {/* Card header selector */}
         <div className="flex border-b border-slate-800 pb-3 pt-2">

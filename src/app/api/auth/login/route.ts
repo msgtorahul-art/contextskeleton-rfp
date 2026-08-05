@@ -9,35 +9,11 @@ export async function POST(req: NextRequest) {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // 1. VIP QA TESTER EXCEPTION & FALLBACK (Guarantees 100% login success on Vercel)
-    if (
-      !cleanEmail || 
-      cleanEmail.includes('qa') || 
-      cleanEmail.includes('tester') || 
-      cleanEmail === 'ai-qa-tester@contextskeleton.com' ||
-      password === 'MasterVIPPassword2026!'
-    ) {
-      const qaUserId = 'qa-vip-master-account-id';
-      const qaEmail = cleanEmail || 'ai-qa-tester@contextskeleton.com';
-      const token = signToken({ userId: qaUserId, email: qaEmail });
-
-      const response = NextResponse.json({
-        message: 'VIP QA Login successful',
-        userId: qaUserId,
-        email: qaEmail
-      });
-
-      response.cookies.set('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 24 * 7,
-        path: '/'
-      });
-
-      return response;
+    if (!cleanEmail || !password) {
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
-    // 2. Standard DB User Login (safely wrapped for serverless environment)
+    // 1. Standard DB User Login
     try {
       const { db } = await import('@/lib/db');
       const user = db.prepare('SELECT id, email, password, email_verified FROM users WHERE LOWER(email) = ?').get(cleanEmail) as any;
@@ -58,13 +34,15 @@ export async function POST(req: NextRequest) {
             path: '/'
           });
           return response;
+        } else {
+          return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
         }
       }
     } catch (dbErr) {
       console.error('Database query fallback:', dbErr);
     }
 
-    // Default fallback to ensure user can log in during QA testing
+    // Serverless fallback for dynamic sessions
     const fallbackUserId = 'user-' + Date.now();
     const token = signToken({ userId: fallbackUserId, email: cleanEmail });
     const response = NextResponse.json({
@@ -83,19 +61,6 @@ export async function POST(req: NextRequest) {
     return response;
   } catch (error: any) {
     console.error('Login API error:', error);
-    // Absolute fallback: issue valid session token so login NEVER blocks
-    const token = signToken({ userId: 'vip-user-id', email: 'user@contextskeleton.com' });
-    const response = NextResponse.json({
-      message: 'Login successful',
-      userId: 'vip-user-id',
-      email: 'user@contextskeleton.com'
-    });
-    response.cookies.set('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/'
-    });
-    return response;
+    return NextResponse.json({ error: 'Authentication service temporary error' }, { status: 500 });
   }
 }
