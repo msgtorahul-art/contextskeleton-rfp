@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import { getSession } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { getProjectFromPersistentStore, QuestionRecord } from '@/lib/persistentStore';
 
 export async function GET(req: NextRequest) {
   const session = getSession(req);
@@ -18,32 +19,36 @@ export async function GET(req: NextRequest) {
 
   try {
     let projectName = '';
+    let questions: Array<{ question_text: string; drafted_answer?: string | null; status: string }> = [];
     
-    // 1. Try DB first for project
+    // 1. Try SQLite DB first
     try {
       const dbProj = db.prepare('SELECT name FROM projects WHERE id = ? AND user_id = ?')
         .get(projectId, session.userId) as { name: string } | undefined;
-      if (dbProj) projectName = dbProj.name;
+      if (dbProj) {
+        projectName = dbProj.name;
+        questions = db.prepare(`
+          SELECT question_text, drafted_answer, status 
+          FROM questions 
+          WHERE project_id = ? AND user_id = ?
+          ORDER BY id ASC
+        `).all(projectId, session.userId) as any[];
+      }
     } catch (e) {}
 
-    // Fallback if db returned empty
+    // 2. Fallback to persistent disk store
+    const persistentData = getProjectFromPersistentStore(projectId);
+    if (!projectName && persistentData.project) {
+      projectName = persistentData.project.name;
+    }
+    if ((!questions || questions.length === 0) && persistentData.questions && persistentData.questions.length > 0) {
+      questions = persistentData.questions;
+    }
+
     if (!projectName) {
-      // Import from rfp route memory cache dynamically if needed or query fallback
       projectName = 'Enterprise RFP Tender Proposal';
     }
 
-    // 2. Fetch questions from DB first
-    let questions: Array<{ question_text: string; drafted_answer: string | null; status: string }> = [];
-    try {
-      questions = db.prepare(`
-        SELECT question_text, drafted_answer, status 
-        FROM questions 
-        WHERE project_id = ? AND user_id = ?
-        ORDER BY id ASC
-      `).all(projectId, session.userId) as { question_text: string; drafted_answer: string | null; status: string }[];
-    } catch (e) {}
-
-    // If DB questions are empty, provide a fail-safe array
     if (!questions || questions.length === 0) {
       questions = [
         {

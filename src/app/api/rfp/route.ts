@@ -5,12 +5,17 @@ import { getSession } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { findSimilarChunks } from '@/lib/vector';
 import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
+import { 
+  saveProjectToPersistentStore, 
+  getProjectFromPersistentStore, 
+  getAllProjectsFromPersistentStore, 
+  updateQuestionInPersistentStore,
+  deleteProjectFromPersistentStore,
+  ProjectRecord,
+  QuestionRecord
+} from '@/lib/persistentStore';
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-// Serverless fallback memory cache for projects and questions across lambda cold-starts
-const memoryProjects: Map<string, { id: string; user_id: string; name: string; created_at: string }> = new Map();
-const memoryQuestions: Map<string, Array<{ id: string; project_id: string; user_id: string; question_text: string; drafted_answer?: string; status: string }>> = new Map();
 
 export async function GET(req: NextRequest) {
   const session = getSession(req);
@@ -26,6 +31,7 @@ export async function GET(req: NextRequest) {
       let project: any = null;
       let questions: any[] = [];
       
+      // 1. Try SQLite first
       try {
         project = db.prepare('SELECT * FROM projects WHERE id = ? AND user_id = ?').get(projectId, session.userId);
         if (project) {
@@ -33,12 +39,13 @@ export async function GET(req: NextRequest) {
         }
       } catch (e) {}
 
-      if (!project && memoryProjects.has(projectId)) {
-        project = memoryProjects.get(projectId);
+      // 2. Fallback to persistent disk store if empty or not found
+      const persistentData = getProjectFromPersistentStore(projectId);
+      if (!project && persistentData.project) {
+        project = persistentData.project;
       }
-
-      if ((!questions || questions.length === 0) && memoryQuestions.has(projectId)) {
-        questions = memoryQuestions.get(projectId) || [];
+      if ((!questions || questions.length === 0) && persistentData.questions && persistentData.questions.length > 0) {
+        questions = persistentData.questions;
       }
 
       if (!project) {
@@ -47,15 +54,28 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({ project, questions: questions || [] });
     } else {
-      let projects: any[] = [];
+      let dbProjects: any[] = [];
       try {
-        projects = db.prepare('SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC').all(session.userId) as any[];
+        dbProjects = db.prepare('SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC').all(session.userId) as any[];
       } catch (e) {}
 
-      const memList = Array.from(memoryProjects.values()).filter((p) => p.user_id === session.userId);
-      const combined = [...projects, ...memList.filter(mp => !projects.some(p => p.id === mp.id))];
+      const persistentProjects = getAllProjectsFromPersistentStore(session.userId);
+      const combinedMap = new Map<string, ProjectRecord>();
 
-      return NextResponse.json({ projects: combined });
+      for (const p of dbProjects) {
+        combinedMap.set(p.id, p);
+      }
+      for (const p of persistentProjects) {
+        if (!combinedMap.has(p.id)) {
+          combinedMap.set(p.id, p);
+        }
+      }
+
+      const projectsList = Array.from(combinedMap.values()).sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
+      return NextResponse.json({ projects: projectsList });
     }
   } catch (error) {
     console.error('Error fetching RFP data:', error);
@@ -90,16 +110,15 @@ export async function POST(req: NextRequest) {
       const projectId = crypto.randomUUID();
       const createdAt = new Date().toISOString();
 
-      const newProject = { id: projectId, user_id: session.userId, name: name.trim(), created_at: createdAt };
-      const newQuestionsList: Array<{ id: string; project_id: string; user_id: string; question_text: string; drafted_answer?: string; status: string }> = [];
+      const newProject: ProjectRecord = { id: projectId, user_id: session.userId, name: name.trim(), created_at: createdAt };
+      const newQuestionsList: QuestionRecord[] = [];
 
-      // 1. Build questions list first
       for (const questionText of parsedQuestions) {
         const questionId = crypto.randomUUID();
         newQuestionsList.push({ id: questionId, project_id: projectId, user_id: session.userId, question_text: questionText, status: 'pending' });
       }
 
-      // 2. Try DB insertion
+      // Try DB insertion
       try {
         const insertProject = db.prepare('INSERT INTO projects (id, user_id, name, created_at) VALUES (?, ?, ?, ?)');
         insertProject.run(projectId, session.userId, name.trim(), createdAt);
@@ -109,12 +128,11 @@ export async function POST(req: NextRequest) {
           insertQuestion.run(qObj.id, projectId, session.userId, qObj.question_text, 'pending');
         }
       } catch (dbErr) {
-        console.error('DB project insert warning, falling back to memory store:', dbErr);
+        console.error('DB project insert warning, relying on persistent store:', dbErr);
       }
 
-      // 3. Store in memory cache
-      memoryProjects.set(projectId, newProject);
-      memoryQuestions.set(projectId, newQuestionsList);
+      // Guarantee cross-lambda persistence via disk-backed store
+      saveProjectToPersistentStore(newProject, newQuestionsList);
 
       return NextResponse.json({ message: 'Project created successfully', projectId }, { status: 201 });
     }
@@ -140,8 +158,10 @@ export async function POST(req: NextRequest) {
       } catch (e) {}
 
       if (!questionText) {
-        for (const qList of memoryQuestions.values()) {
-          const found = qList.find(q => q.id === questionId);
+        const persistentProjects = getAllProjectsFromPersistentStore(session.userId);
+        for (const proj of persistentProjects) {
+          const data = getProjectFromPersistentStore(proj.id);
+          const found = data.questions?.find(q => q.id === questionId);
           if (found) {
             questionText = found.question_text;
             break;
@@ -192,14 +212,7 @@ Drafted Tender Answer:`;
           .run(answerText, 'drafted', questionId, session.userId);
       } catch (e) {}
 
-      for (const qList of memoryQuestions.values()) {
-        const found = qList.find(q => q.id === questionId);
-        if (found) {
-          found.drafted_answer = answerText;
-          found.status = 'drafted';
-        }
-      }
-
+      updateQuestionInPersistentStore(questionId, answerText, 'drafted');
       decrementCredits(session.userId);
 
       return NextResponse.json({ draftedAnswer: answerText, sourcesUsed: similarChunks });
@@ -231,8 +244,7 @@ export async function DELETE(req: NextRequest) {
       db.prepare('DELETE FROM projects WHERE id = ? AND user_id = ?').run(projectId, session.userId);
     } catch (e) {}
 
-    memoryProjects.delete(projectId);
-    memoryQuestions.delete(projectId);
+    deleteProjectFromPersistentStore(projectId);
 
     return NextResponse.json({ message: 'Project deleted successfully.' });
   } catch (error) {
