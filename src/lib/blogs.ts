@@ -198,8 +198,7 @@ export const BLOG_POSTS: BlogPost[] = [
     metaDescription: 'Discover how CFOs and tax accountants automate R&D Tax Credit technical justifications for NZ IRD (15% RDTI), Australian ATO, and US IRS Section 41 audits.',
     content: `
 <h2>The Risk of Tax Audit Claws</h2>
-<p>Claiming government R&D tax subsidies (such as the New Zealand IRD 15% R&D Tax Incentive, Australian ATO R&D Tax Incentive, or US IRS Section 41 Credit) provides vital non-dilutive capital for tech and manufacturing firms.</p>
-<p>However, tax authorities frequently audit claims and demand detailed technical justification logs demonstrating that developer hours were spent resolving "technological uncertainties" through a "systematic investigation".</p>
+<p>Claiming government R&D tax subsidies provides vital non-dilutive capital for tech and manufacturing firms.</p>
 
 <h2>Automated Technical Justification & Audit Defense</h2>
 <p>The <strong>ContextSkeleton R&D Tax Credit & Audit Risk Analyzer</strong> processes developer Jira tickets, engineering sprint notes, and payroll expense manifests to classify activities into statutory tax buckets:</p>
@@ -208,9 +207,36 @@ export const BLOG_POSTS: BlogPost[] = [
   <li><strong>Supporting R&D:</strong> Direct supporting activities required for core experiments.</li>
   <li><strong>Ineligible Operational Work:</strong> Standard bug fixes or routine software maintenance.</li>
 </ul>
+    `,
+  },
+  {
+    slug: 'automating-scope-1-2-3-carbon-reporting-eu-csrd',
+    title: 'Automating Scope 1, 2, and 3 Carbon Reporting for EU CSRD Compliance',
+    excerpt: 'Mandatory climate disclosure regulations require auditing supply chain vendor emissions. Discover how AI parses logistics manifests and utility data.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '9 min read',
+    category: 'ESG & Climate Compliance',
+    author: 'Sustainability Engineering Lab',
+    product: 'ESG & CSRD Climate Auditor',
+    targetProduct: 'ESG & CSRD Climate Auditor ($599/mo)',
+    ctaHref: '/esg',
+    ctaText: 'Launch CSRD Climate Engine',
+    metaDescription: 'Discover how Sustainability Officers and CROs automate Scope 1, 2, and 3 GHG emissions disclosures for EU CSRD and ISSB IFRS S2 compliance.',
+    content: `
+<h2>The Corporate Sustainability Mandate</h2>
+<p>The European Union's Corporate Sustainability Reporting Directive (CSRD) and global ISSB IFRS S2 standards make carbon disclosure mandatory for over 50,000 global enterprises and their supply chain partners.</p>
 
-<h2>Spreadsheet & Technical Archive Export</h2>
-<p>Finance teams can generate formal technical defense narratives and export structured CSV audit spreadsheets formatted for instant submission to tax advisors and government auditors.</p>
+<h2>Scope 1, 2, & 3 Automated Audit Engine</h2>
+<p>The <strong>ContextSkeleton ESG & CSRD Climate Auditor</strong> parses supplier sustainability manifests, logistics fuel logs, and utility data:</p>
+<ul>
+  <li><strong>Scope 1 Direct Emissions:</strong> Audits fleet diesel consumption, natural gas heating, and industrial process emissions.</li>
+  <li><strong>Scope 2 Indirect Energy:</strong> Calculates electricity grid carbon intensity and thermal power consumption.</li>
+  <li><strong>Scope 3 Upstream Supply Chain:</strong> Evaluates logistics vendors, raw material suppliers, and business travel.</li>
+</ul>
+
+<h2>Spreadsheet & Audit Scorecard Export</h2>
+<p>Sustainability directors can export structured CSV spreadsheets formatted for instant integration into corporate CSRD and ISSB annual climate disclosures.</p>
     `,
   },
 ];

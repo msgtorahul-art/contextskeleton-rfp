@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -140,6 +140,24 @@ export default function LandingPage() {
       ],
       ctaText: 'Launch R&D Tax Analyzer',
       ctaHref: '/rd-tax',
+    },
+    {
+      id: 'service-esg',
+      badge: 'Enterprise ESG & Climate',
+      badgeColor: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
+      title: 'AI ESG & CSRD Climate Disclosure Auditor',
+      icon: Leaf,
+      iconColor: 'text-teal-400',
+      glowColor: 'hover:border-teal-500/50 hover:shadow-teal-500/10',
+      tagline: 'Audit Scope 1, 2, & 3 supply chain carbon footprints for EU CSRD, ISSB, and GRI reporting.',
+      highlights: [
+        'Scope 1, 2, & 3 GHG emissions calculator',
+        'EU CSRD & ISSB framework mapping',
+        'Actionable decarbonization recommendations',
+        'Single-click CSV audit spreadsheet export',
+      ],
+      ctaText: 'Launch ESG Climate Auditor',
+      ctaHref: '/esg',
     },
     {
       id: 'service-knowledge',
@@ -447,7 +465,7 @@ export default function LandingPage() {
           {/* 5. R&D Tax Credit Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
             <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #5 (Finance)
+              Product #5
             </div>
 
             <div>
@@ -477,36 +495,36 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 6. Vector Knowledge Base Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
-            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6
+          {/* 6. ESG & CSRD Climate Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-teal-500/40 relative overflow-hidden shadow-xl shadow-teal-500/10">
+            <div className="absolute top-0 right-0 bg-teal-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #6 (ESG)
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Knowledge Infrastructure</span>
-              <h3 className="text-xl font-bold text-white mb-2">Vector Storage Pro</h3>
+              <span className="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Enterprise Sustainability</span>
+              <h3 className="text-xl font-bold text-white mb-2">ESG Climate Pro</h3>
               <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$299</span>
+                <span className="text-3xl font-extrabold text-white">$599</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Isolated Turso Vector DB Storage
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> Unlimited CSRD Scope 1-3 Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Automatic PDF/DOCX Parsing
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> EU CSRD & ISSB IFRS S2 Mappings
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> High-speed Semantic Search API
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> CSV Audit Spreadsheet Export
                 </li>
               </ul>
             </div>
             <Link
               href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get Vector Pro ($299/mo)
+              Get ESG Climate Pro ($599/mo)
             </Link>
           </div>
         </div>
@@ -565,6 +583,7 @@ export default function LandingPage() {
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
                   <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
+                  <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>
