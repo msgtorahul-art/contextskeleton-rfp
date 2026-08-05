@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { ShieldAlert, ArrowLeft, FileText, Scale, CheckCircle2 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Terms of Service | ContextSkeleton',
+  title: 'Terms of Service | ContextSkeleton Enterprise AI',
   description: 'Terms of Service and Professional Disclaimer for ContextSkeleton Enterprise AI Platform.',
+  alternates: {
+    canonical: 'https://contextskeleton.com/terms',
+  },
 };
 
 export default function TermsOfServicePage() {

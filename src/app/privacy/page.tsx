@@ -3,8 +3,11 @@ import Link from 'next/link';
 import { ShieldCheck, ArrowLeft, Lock, Database, Mail } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy | ContextSkeleton',
+  title: 'Privacy Policy | ContextSkeleton Enterprise AI',
   description: 'Privacy Policy and data security practices for ContextSkeleton Enterprise AI Platform.',
+  alternates: {
+    canonical: 'https://contextskeleton.com/privacy',
+  },
 };
 
 export default function PrivacyPolicyPage() {

@@ -59,6 +59,9 @@ export const metadata: Metadata = {
     description: "Automate B2B tender proposals with grounded RAG vector search & Word export.",
     images: ["https://contextskeleton.com/og-image.png"],
   },
+  alternates: {
+    canonical: "https://contextskeleton.com",
+  },
 };
 
 export default function RootLayout({
