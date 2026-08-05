@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import { FileText, Plus, Loader2, ArrowRight, ClipboardList, Trash2 } from 'lucide-react';
+import { FileText, Plus, Loader2, ArrowRight, ClipboardList, Trash2, AlertCircle } from 'lucide-react';
 
 interface ProjectInfo {
   id: string;
@@ -24,14 +24,39 @@ export default function ProjectsPage() {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch('/api/rfp');
-      const rawText = await res.text();
-      let data: any = {};
-      try { data = JSON.parse(rawText); } catch (e) {}
+      let serverProjects: ProjectInfo[] = [];
+      try {
+        const res = await fetch('/api/rfp');
+        if (res.ok) {
+          const data = await res.json();
+          serverProjects = data.projects || [];
+        }
+      } catch (e) {}
 
-      if (res.ok) {
-        setProjects(data.projects || []);
+      // Dual-layer client-side storage sync to eliminate Vercel serverless lambda TTL expiry
+      let localProjects: ProjectInfo[] = [];
+      if (typeof window !== 'undefined') {
+        const localRaw = localStorage.getItem('cs_rfp_projects_v1');
+        if (localRaw) {
+          try { localProjects = JSON.parse(localRaw); } catch (e) {}
+        }
       }
+
+      const combinedMap = new Map<string, ProjectInfo>();
+      for (const p of serverProjects) {
+        combinedMap.set(p.id, p);
+      }
+      for (const p of localProjects) {
+        if (!combinedMap.has(p.id)) {
+          combinedMap.set(p.id, p);
+        }
+      }
+
+      const mergedProjects = Array.from(combinedMap.values()).sort(
+        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+
+      setProjects(mergedProjects);
     } catch (err) {
       console.error('Failed to fetch projects:', err);
     } finally {
@@ -42,13 +67,21 @@ export default function ProjectsPage() {
   const handleDeleteProject = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     try {
-      const res = await fetch(`/api/rfp?projectId=${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchProjects();
+      await fetch(`/api/rfp?projectId=${id}`, { method: 'DELETE' });
+    } catch (err) {}
+
+    if (typeof window !== 'undefined') {
+      const localRaw = localStorage.getItem('cs_rfp_projects_v1');
+      if (localRaw) {
+        try {
+          const localProjects = JSON.parse(localRaw).filter((p: any) => p.id !== id);
+          localStorage.setItem('cs_rfp_projects_v1', JSON.stringify(localProjects));
+          localStorage.removeItem(`cs_rfp_questions_${id}`);
+        } catch (e) {}
       }
-    } catch (err) {
-      console.error('Delete project failed:', err);
     }
+
+    fetchProjects();
   };
 
   useEffect(() => {
@@ -58,11 +91,11 @@ export default function ProjectsPage() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!projectName.trim()) {
-      setError('Please enter a Tender Name for your RFP project.');
+      setError('⚠️ Validation Error: Please enter a Tender Name for your RFP project.');
       return;
     }
     if (!questionsInput.trim()) {
-      setError('Please enter at least one questionnaire item (one per line).');
+      setError('⚠️ Validation Error: Please enter at least one requirement question (one per line).');
       return;
     }
 
@@ -74,27 +107,49 @@ export default function ProjectsPage() {
       .map((q) => q.trim())
       .filter((q) => q.length > 0);
 
+    if (questions.length === 0) {
+      setError('⚠️ Validation Error: At least one non-empty requirement line is required.');
+      setCreating(false);
+      return;
+    }
+
     try {
       const res = await fetch('/api/rfp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'create_project',
-          name: projectName,
+          name: projectName.trim(),
           questions,
         }),
       });
 
-      const rawText = await res.text();
-      let data: any = {};
-      try { data = JSON.parse(rawText); } catch (e) {}
+      const data = await res.json();
 
       if (!res.ok) {
         throw new Error(data.error || 'Failed to create project');
       }
 
-      if (data.projectId) {
-        router.push(`/projects/${data.projectId}`);
+      const createdId = data.projectId;
+
+      // Sync into client-side LocalStorage immediately for 100% durable persistence
+      if (createdId && typeof window !== 'undefined') {
+        const newProjObj = { id: createdId, name: projectName.trim(), created_at: new Date().toISOString() };
+        const localRaw = localStorage.getItem('cs_rfp_projects_v1');
+        const localProjects = localRaw ? JSON.parse(localRaw) : [];
+        localStorage.setItem('cs_rfp_projects_v1', JSON.stringify([newProjObj, ...localProjects.filter((p: any) => p.id !== createdId)]));
+        
+        const qListObj = questions.map((qText, idx) => ({
+          id: `local_q_${createdId}_${idx}`,
+          project_id: createdId,
+          question_text: qText,
+          status: 'pending'
+        }));
+        localStorage.setItem(`cs_rfp_questions_${createdId}`, JSON.stringify(qListObj));
+      }
+
+      if (createdId) {
+        router.push(`/projects/${createdId}`);
       } else {
         fetchProjects();
       }
@@ -130,7 +185,8 @@ export default function ProjectsPage() {
                 </h2>
 
                 {error && (
-                  <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold">
+                  <div className="mb-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
                     {error}
                   </div>
                 )}
@@ -143,10 +199,12 @@ export default function ProjectsPage() {
                     <input
                       id="projectName"
                       type="text"
-                      required
                       placeholder="e.g. Wellington Council IT Bid"
                       value={projectName}
-                      onChange={(e) => setProjectName(e.target.value)}
+                      onChange={(e) => {
+                        setProjectName(e.target.value);
+                        if (error) setError('');
+                      }}
                       className="w-full glass-input rounded-xl py-2.5 px-3.5 text-white placeholder-slate-600 text-xs"
                     />
                   </div>
@@ -157,11 +215,13 @@ export default function ProjectsPage() {
                     </label>
                     <textarea
                       id="questions"
-                      required
                       rows={8}
                       placeholder="e.g. Describe your data security standards.&#10;What is your customer support SLA?&#10;List your team key credentials."
                       value={questionsInput}
-                      onChange={(e) => setQuestionsInput(e.target.value)}
+                      onChange={(e) => {
+                        setQuestionsInput(e.target.value);
+                        if (error) setError('');
+                      }}
                       className="w-full glass-input rounded-xl py-2.5 px-3.5 text-white placeholder-slate-600 text-xs font-mono resize-none"
                     />
                   </div>

@@ -48,22 +48,47 @@ export default function ProjectWorkspacePage({ params }: { params: Promise<{ id:
 
   const fetchProjectDetails = async () => {
     try {
-      const res = await fetch(`/api/rfp?projectId=${projectId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setProject(data.project);
-        setQuestions(data.questions || []);
-        
-        // Auto-select first question if none selected
-        if (data.questions && data.questions.length > 0 && !activeQuestion) {
-          selectQuestion(data.questions[0]);
-        } else if (activeQuestion) {
-          // Refresh active question data
-          const updated = data.questions.find((q: Question) => q.id === activeQuestion.id);
-          if (updated) {
-            setActiveQuestion(updated);
-            setEditedAnswer(updated.drafted_answer || '');
-          }
+      let loadedProject: any = null;
+      let loadedQuestions: Question[] = [];
+
+      try {
+        const res = await fetch(`/api/rfp?projectId=${projectId}`);
+        if (res.ok) {
+          const data = await res.json();
+          loadedProject = data.project || null;
+          loadedQuestions = data.questions || [];
+        }
+      } catch (e) {}
+
+      // Fail-safe client-side LocalStorage sync to eliminate Vercel lambda TTL data loss
+      if (!loadedProject && typeof window !== 'undefined') {
+        const localRaw = localStorage.getItem('cs_rfp_projects_v1');
+        if (localRaw) {
+          try {
+            const localProjects = JSON.parse(localRaw);
+            loadedProject = localProjects.find((p: any) => p.id === projectId) || null;
+          } catch (e) {}
+        }
+      }
+
+      if ((!loadedQuestions || loadedQuestions.length === 0) && typeof window !== 'undefined') {
+        const localQRaw = localStorage.getItem(`cs_rfp_questions_${projectId}`);
+        if (localQRaw) {
+          try { loadedQuestions = JSON.parse(localQRaw); } catch (e) {}
+        }
+      }
+
+      setProject(loadedProject);
+      setQuestions(loadedQuestions || []);
+      
+      // Auto-select first question if none selected
+      if (loadedQuestions && loadedQuestions.length > 0 && !activeQuestion) {
+        selectQuestion(loadedQuestions[0]);
+      } else if (activeQuestion && loadedQuestions && loadedQuestions.length > 0) {
+        const updated = loadedQuestions.find((q: Question) => q.id === activeQuestion.id);
+        if (updated) {
+          setActiveQuestion(updated);
+          setEditedAnswer(updated.drafted_answer || '');
         }
       }
     } catch (err) {
