@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -106,6 +106,24 @@ export default function LandingPage() {
       ctaHref: '/security-questionnaire',
     },
     {
+      id: 'service-fda',
+      badge: 'MedTech & Biotech',
+      badgeColor: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
+      title: 'FDA 510(k) MedTech Resolver',
+      icon: Activity,
+      iconColor: 'text-pink-400',
+      glowColor: 'hover:border-pink-500/50 hover:shadow-pink-500/10',
+      tagline: 'Automate FDA 510(k) predicate device substantial equivalence and ISO 13485 audits.',
+      highlights: [
+        '21 CFR Part 820 design controls mapping',
+        'ISO 14971 risk management hazard analysis',
+        'Side-by-side predicate device comparison',
+        'Single-click CSV audit spreadsheet export',
+      ],
+      ctaText: 'Launch MedTech Resolver',
+      ctaHref: '/fda-510k',
+    },
+    {
       id: 'service-knowledge',
       badge: 'Vector Knowledge Hub',
       badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
@@ -163,7 +181,6 @@ export default function LandingPage() {
 
         <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-400">
           <a href="#services" className="hover:text-white transition">Independent Products</a>
-          <a href="#workflow" className="hover:text-white transition">How It Works</a>
           <a href="#pricing" className="hover:text-white transition">Pricing</a>
           <Link href="/blog" className="hover:text-white transition font-semibold text-cyan-400">Blog &amp; SEO Guides</Link>
           <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
@@ -268,29 +285,7 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* METRICS BANNER */}
-      <section className="border-y border-slate-900/80 bg-slate-950/60 py-8 backdrop-blur-sm z-10 relative">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div>
-            <span className="text-3xl font-extrabold text-white block">92%</span>
-            <span className="text-xs text-slate-500 font-medium">Faster Proposal & Audit Completion</span>
-          </div>
-          <div>
-            <span className="text-3xl font-extrabold text-white block">100%</span>
-            <span className="text-xs text-slate-500 font-medium">NZBC & Grounded Fact Verification</span>
-          </div>
-          <div>
-            <span className="text-3xl font-extrabold text-white block">.docx & .csv</span>
-            <span className="text-xs text-slate-500 font-medium">Word & Excel Exporters</span>
-          </div>
-          <div>
-            <span className="text-3xl font-extrabold text-white block">$0/mo</span>
-            <span className="text-xs text-slate-500 font-medium">Free Evaluation Tier</span>
-          </div>
-        </div>
-      </section>
-
-      {/* COMMERCIAL PRICING SECTION - ALL 4 PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION - ALL COMMERCIAL PRODUCTS DISPLAYED */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
@@ -298,7 +293,7 @@ export default function LandingPage() {
           <p className="text-slate-400 mt-3 text-sm">Select the exact product tier tailored for your business needs.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* 1. RFP Engine Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-violet-500/40 relative overflow-hidden shadow-xl shadow-violet-500/10">
             <div className="absolute top-0 right-0 bg-violet-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
@@ -398,10 +393,43 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 4. Vector Knowledge Base Pricing */}
+          {/* 4. FDA 510(k) MedTech Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-pink-500/40 relative overflow-hidden shadow-xl shadow-pink-500/10">
+            <div className="absolute top-0 right-0 bg-pink-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #4 (MedTech)
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-pink-400 uppercase tracking-widest block mb-1">MedTech & Biotech</span>
+              <h3 className="text-xl font-bold text-white mb-2">FDA 510(k) Regulatory Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$999</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> Unlimited 510(k) Equivalence Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> 21 CFR Part 820 & ISO 13485 Checkers
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> CSV Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get MedTech Pro ($999/mo)
+            </Link>
+          </div>
+
+          {/* 5. Vector Knowledge Base Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
             <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #4
+              Product #5
             </div>
 
             <div>
@@ -484,6 +512,7 @@ export default function LandingPage() {
                 >
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
+                  <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>

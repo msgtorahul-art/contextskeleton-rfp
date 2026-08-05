@@ -3,82 +3,56 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { 
-  ShieldCheck, FileText, AlertTriangle, CheckCircle2, XCircle, 
-  Loader2, Sparkles, Download, Building, Layers, ArrowRight, RefreshCw 
+  ShieldCheck, AlertTriangle, CheckCircle2, FileText, Download, 
+  Sparkles, Loader2, FileSpreadsheet, ArrowRight, Building, Check, ShieldAlert
 } from 'lucide-react';
 
-interface ClauseAudit {
-  clause: string;
-  status: 'PASS' | 'WARNING' | 'FAIL';
-  findings: string;
-  missingItems: string[];
-  recommendation: string;
-}
-
-interface AuditReport {
-  overallScore: number;
-  status: 'APPROVED' | 'NEEDS_REVISION' | 'HIGH_RISK';
-  summary: string;
-  clauseAudits: ClauseAudit[];
-  criticalRedFlags: string[];
-  recommendedCouncilDocs: string[];
-}
-
-export default function ConsentAuditorPage() {
-  const [specText, setSpecText] = useState('');
+export default function BuildingConsentAuditorPage() {
   const [buildingType, setBuildingType] = useState('Residential Multi-Unit');
-  const [selectedClauses, setSelectedClauses] = useState<string[]>([
-    'NZBC E2 (External Moisture)',
-    'NZBC H1 (Energy Efficiency)',
-    'NZBC B1 (Structure)',
-    'NZBC G12 (Water Supply)',
-  ]);
+  const [specificationText, setSpecificationText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [report, setReport] = useState<AuditReport | null>(null);
-
-  const toggleClause = (clause: string) => {
-    if (selectedClauses.includes(clause)) {
-      setSelectedClauses(selectedClauses.filter((c) => c !== clause));
-    } else {
-      setSelectedClauses([...selectedClauses, clause]);
-    }
-  };
+  const [result, setResult] = useState<{
+    summary: string;
+    items: Array<{
+      clause: string;
+      topic: string;
+      status: string;
+      riskRating: string;
+      findings: string;
+      recommendation: string;
+    }>;
+  } | null>(null);
 
   const handleAudit = async () => {
-    if (!specText.trim()) return;
+    if (!specificationText.trim()) return;
     setLoading(true);
-    setReport(null);
 
     try {
       const res = await fetch('/api/consent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          specText,
-          buildingType,
-          selectedClauses,
-        }),
+        body: JSON.stringify({ buildingType, specificationText }),
       });
 
       const data = await res.json();
-      if (data.auditReport) {
-        setReport(data.auditReport);
-        window.dispatchEvent(new Event('billing-update'));
+      if (res.ok) {
+        setResult(data);
       } else {
-        alert(data.error || 'Failed to generate consent audit report.');
+        alert(data.error || 'Failed to run consent audit');
       }
     } catch (err) {
-      console.error('Audit Error:', err);
-      alert('An unexpected error occurred during audit.');
+      console.error('Audit submission error:', err);
+      alert('An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
   const loadSampleSpec = () => {
-    setSpecText(`PROJECT SPECIFICATION & ARCHITECTURAL OUTLINE:
-Project: 4-Unit Residential Townhouses, Auckland NZ
-External Cladding: Vertical Cedar Weatherboard with 20mm drained cavity system over rigid air barrier.
+    setSpecificationText(`Project: Proposed 3-Storey Residential Townhouse Complex (Zone: High Wind / Exposure Zone D)
+Cladding Specification:
+- Ground & First Floor: 70mm Clay brick veneer over 50mm cavity on timber framing with RAB board.
+- Second Floor: Vertical Cedar Weatherboard with 20mm drained cavity system over rigid air barrier.
 Roofing: Colorsteel trapezoidal roofing profile at 5-degree pitch with continuous butyl rubber gutters.
 Foundations: Reinforced concrete slab-on-ground to NZS 3604 with R-1.5 perimeter insulation.
 Glazing: Low-E double glazing thermally broken aluminium joinery (R-0.46 overall window system).
@@ -87,11 +61,41 @@ Fire Safety: Interconnected hardwired optical smoke alarms in all bedrooms and e
 Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
   };
 
+  const exportCSV = () => {
+    if (!result) return;
+    let csvContent = 'NZBC Clause,Topic,Status,Risk Rating,Audit Findings,Recommendation\n';
+    result.items.forEach((item) => {
+      csvContent += `"${item.clause}","${item.topic}","${item.status}","${item.riskRating}","${item.findings.replace(/"/g, '""')}","${item.recommendation.replace(/"/g, '""')}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `NZBC_Consent_Audit_${buildingType.replace(/\s+/g, '_')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
       <Sidebar />
 
       <main className="pl-80 flex-1 p-10 min-h-screen">
+        {/* SAFEGUARD & BUSINESS PROTECTION NOTICE BANNER */}
+        <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-3">
+          <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+          <div>
+            <span className="font-bold uppercase tracking-wider block mb-0.5 text-amber-300">
+              ⚠️ BUSINESS SAFEGUARD & LEGAL DISCLAIMER
+            </span>
+            <span>
+              ContextSkeleton is an automated software data processing service. Outputs do NOT constitute legal, architectural, engineering, or certified building code advice and do not replace licensed Registered Architects, Chartered Professional Engineers (CPEng), or official council consent lodgements.
+            </span>
+          </div>
+        </div>
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8 border-b border-slate-900 pb-6">
           <div>
@@ -138,178 +142,133 @@ Insulation: R-4.0 ceiling batts, R-2.8 wall batts.`);
                   {[
                     'NZBC E2 (External Moisture)',
                     'NZBC H1 (Energy Efficiency)',
-                    'NZBC B1 (Structure & Seismic)',
-                    'NZBC G12 (Water Supply & Plumbing)',
-                    'NZBC C1-C6 (Fire Safety)',
-                  ].map((clause) => (
-                    <label
-                      key={clause}
-                      onClick={() => toggleClause(clause)}
-                      className={`flex items-center gap-2.5 p-3 rounded-xl border text-xs font-semibold transition cursor-pointer ${
-                        selectedClauses.includes(clause)
-                          ? 'bg-violet-600/10 border-violet-500/40 text-violet-300'
-                          : 'bg-slate-900/60 border-slate-800/80 text-slate-400'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedClauses.includes(clause)}
-                        onChange={() => {}}
-                        className="rounded border-slate-700 bg-slate-800 text-violet-600 focus:ring-0"
-                      />
-                      {clause}
-                    </label>
+                    'NZBC B1 (Structure & Loadings)',
+                    'NZBC G12 (Water Supplies)',
+                  ].map((code, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-900">
+                      <Check className="h-3.5 w-3.5 text-emerald-400" />
+                      <span>{code}</span>
+                    </div>
                   ))}
                 </div>
               </div>
+            </div>
 
-              <div>
-                <label className="text-xs font-bold text-slate-400 block mb-2">Architectural Specification / Plan Text:</label>
-                <textarea
-                  value={specText}
-                  onChange={(e) => setSpecText(e.target.value)}
-                  placeholder="Paste specification notes, cladding profiles, R-values, membrane specs, or drainage details here..."
-                  className="w-full h-48 bg-slate-900 border border-slate-800 rounded-xl p-4 text-xs text-slate-200 focus:outline-none focus:border-violet-500 resize-none font-mono"
-                />
-              </div>
+            <div className="glass-panel p-6 rounded-3xl space-y-4">
+              <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                <FileText className="h-4 w-4 text-emerald-400" />
+                Architectural Specs & Drawings Notes
+              </h2>
+
+              <textarea
+                value={specificationText}
+                onChange={(e) => setSpecificationText(e.target.value)}
+                placeholder="Paste specification notes, cladding specs, insulation R-values, window schedules, or structural notes..."
+                className="w-full h-64 bg-slate-950 border border-slate-900 rounded-2xl p-4 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 resize-none leading-relaxed"
+              />
 
               <button
                 onClick={handleAudit}
-                disabled={loading || !specText.trim()}
+                disabled={loading || !specificationText.trim()}
                 className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition cursor-pointer shadow-lg shadow-emerald-500/10"
               >
                 {loading ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
-                    Auditing Against NZBC Standards...
+                    Auditing Specs against NZBC Database...
                   </>
                 ) : (
                   <>
                     <ShieldCheck className="h-4 w-4" />
-                    Run Pre-Consent Compliance Audit
+                    Run NZBC Pre-Consent Audit
                   </>
                 )}
               </button>
             </div>
           </div>
 
-          {/* Right Column - Results Display */}
-          <div className="lg:col-span-7">
-            {!report && !loading && (
-              <div className="glass-panel p-12 rounded-3xl text-center border-dashed border-slate-800">
-                <ShieldCheck className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white mb-1">No Audit Generated Yet</h3>
-                <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                  Paste your architectural specs on the left and click "Run Pre-Consent Compliance Audit" to check against NZBC rules.
-                </p>
-              </div>
-            )}
+          {/* Right Column - Results Output */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="glass-panel p-6 rounded-3xl space-y-6 min-h-[600px] flex flex-col justify-between">
+              <div>
+                <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-6">
+                  <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-emerald-400" />
+                    Audit Summary & Clause Findings
+                  </h2>
 
-            {loading && (
-              <div className="glass-panel p-16 rounded-3xl text-center">
-                <Loader2 className="h-10 w-10 text-emerald-400 animate-spin mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-white mb-1">Auditing Specifications</h3>
-                <p className="text-xs text-slate-400">Evaluating cladding cavities, H1 R-values, and producer statement requirements...</p>
-              </div>
-            )}
+                  {result && (
+                    <button
+                      onClick={exportCSV}
+                      className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                    >
+                      <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
+                      Export CSV Audit Report
+                    </button>
+                  )}
+                </div>
 
-            {report && (
-              <div className="space-y-6">
-                {/* Score Header */}
-                <div className="glass-panel p-6 rounded-3xl border-emerald-500/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Pre-Submission Audit Result</span>
-                    <div className="flex items-center gap-3">
-                      <span className="text-3xl font-extrabold text-white">{report.overallScore} / 100</span>
-                      <span className={`text-xs font-bold px-3 py-1 rounded-full border ${
-                        report.status === 'APPROVED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                      }`}>
-                        {report.status}
-                      </span>
+                {result ? (
+                  <div className="space-y-6">
+                    {/* Executive Summary */}
+                    <div className="bg-slate-950 p-5 rounded-2xl border border-slate-900 space-y-2">
+                      <span className="text-[10px] font-extrabold text-emerald-400 uppercase tracking-wider block">Executive Pre-Audit Summary</span>
+                      <p className="text-xs text-slate-300 leading-relaxed font-medium">{result.summary}</p>
+                    </div>
+
+                    {/* Clause-by-Clause Findings */}
+                    <div className="space-y-4">
+                      {result.items.map((item, idx) => {
+                        const isPass = item.status === 'PASS';
+                        return (
+                          <div
+                            key={idx}
+                            className={`p-5 rounded-2xl border transition-all ${
+                              isPass 
+                                ? 'bg-slate-950/80 border-slate-900' 
+                                : 'bg-rose-950/10 border-rose-500/20'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start mb-3">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs font-bold text-white">{item.clause}</span>
+                                <span className="text-xs text-slate-400 font-medium">({item.topic})</span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <span className={`text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full ${
+                                  isPass 
+                                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                                    : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                                }`}>
+                                  {item.status}
+                                </span>
+                                <span className="text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full bg-slate-900 text-slate-400 border border-slate-800">
+                                  Risk: {item.riskRating}
+                                </span>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-300 mb-3 leading-relaxed">
+                              {item.findings}
+                            </p>
+
+                            <div className="bg-slate-950 p-3 rounded-xl border border-slate-900 text-xs text-emerald-300/90 font-mono">
+                              <strong>Recommendation:</strong> {item.recommendation}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-
-                  <button
-                    onClick={() => window.print()}
-                    className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-4 rounded-xl transition cursor-pointer"
-                  >
-                    <Download className="h-3.5 w-3.5 text-violet-400" />
-                    Export Audit Report
-                  </button>
-                </div>
-
-                {/* Summary */}
-                <div className="glass-panel p-6 rounded-3xl">
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Audit Executive Summary</h3>
-                  <p className="text-xs text-slate-200 leading-relaxed font-medium">{report.summary}</p>
-                </div>
-
-                {/* Critical Red Flags */}
-                {report.criticalRedFlags && report.criticalRedFlags.length > 0 && (
-                  <div className="bg-rose-950/40 border border-rose-500/30 p-6 rounded-3xl">
-                    <h3 className="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2 mb-3">
-                      <AlertTriangle className="h-4 w-4" />
-                      Critical Consent Risk Flags (Will Cause Council RFI / Rejection)
-                    </h3>
-                    <ul className="space-y-2">
-                      {report.criticalRedFlags.map((flag, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-xs text-rose-200">
-                          <XCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                          <span>{flag}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Clause Breakdown */}
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Detailed NZBC Clause Evaluations</h3>
-                  {report.clauseAudits.map((ca, idx) => (
-                    <div key={idx} className="glass-panel p-6 rounded-3xl border-slate-800/80 space-y-3">
-                      <div className="flex justify-between items-center">
-                        <h4 className="text-sm font-bold text-white">{ca.clause}</h4>
-                        <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                          ca.status === 'PASS' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                        }`}>
-                          {ca.status}
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-slate-300 leading-relaxed">{ca.findings}</p>
-
-                      {ca.missingItems && ca.missingItems.length > 0 && (
-                        <div className="bg-slate-900/80 p-3 rounded-xl text-xs text-amber-300 space-y-1">
-                          <span className="font-bold block text-[10px] uppercase text-amber-400">Missing Consent Details:</span>
-                          {ca.missingItems.map((m, mIdx) => (
-                            <div key={mIdx}>• {m}</div>
-                          ))}
-                        </div>
-                      )}
-
-                      <div className="text-xs text-emerald-400 font-medium bg-emerald-500/5 p-3 rounded-xl border border-emerald-500/10">
-                        <strong className="block text-[10px] uppercase text-emerald-500 mb-0.5">Remediation Recommendation:</strong>
-                        {ca.recommendation}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Recommended Council Producer Statements */}
-                {report.recommendedCouncilDocs && (
-                  <div className="glass-panel p-6 rounded-3xl border-slate-800">
-                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Required Council Producer Statements & Documentation</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {report.recommendedCouncilDocs.map((doc, idx) => (
-                        <span key={idx} className="bg-violet-600/10 text-violet-300 border border-violet-500/20 text-xs font-semibold px-3 py-1.5 rounded-xl">
-                          {doc}
-                        </span>
-                      ))}
-                    </div>
+                ) : (
+                  <div className="h-[450px] flex flex-col items-center justify-center text-center text-slate-500 border border-dashed border-slate-900 rounded-2xl p-6">
+                    <ShieldCheck className="h-10 w-10 text-slate-700 mb-3" />
+                    <p className="text-xs">Paste architectural specifications on the left to generate an automated NZBC Pre-Consent audit report.</p>
                   </div>
                 )}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </main>
