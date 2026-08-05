@@ -102,237 +102,56 @@ export const BLOG_POSTS: BlogPost[] = [
     `,
   },
   {
-    slug: 'enterprise-vector-knowledge-base-turso',
-    title: 'Building Multi-Tenant Enterprise Vector Knowledge Bases with Turso Cloud',
-    excerpt: 'Turn company PDFs, policy handbooks, and product manuals into high-speed searchable vector intelligence with isolated cloud database boundaries.',
-    publishDate: 'August 1, 2026',
-    date: 'August 1, 2026',
-    readTime: '7 min read',
-    category: 'Knowledge Infrastructure',
-    author: 'Core Vector Engineering',
-    product: 'Vector Knowledge Hub',
-    targetProduct: 'Vector Knowledge Base ($299/mo)',
-    ctaHref: '/knowledge',
-    ctaText: 'Manage Vector Knowledge Base',
-    metaDescription: 'Discover how enterprise knowledge managers build secure vector RAG indexes from company PDFs and documentation.',
-    content: `
-<h2>Unlocking Unstructured Enterprise Data</h2>
-<p>Over 80% of enterprise knowledge remains trapped inside static PDFs, Word documents, and customer support documentation.</p>
-
-<h2>Isolated Turso Cloud Vector Architecture</h2>
-<p><strong>ContextSkeleton Vector Knowledge Hub</strong> provides high-speed semantic similarity search while maintaining strict multi-tenant security boundaries.</p>
-<ul>
-  <li><strong>Automatic Parsing:</strong> Parses PDF, DOCX, and TXT files into semantic chunks.</li>
-  <li><strong>High-Dimensional Embeddings:</strong> Generates vector embeddings for instant semantic search.</li>
-  <li><strong>Multi-Tenant Security:</strong> Ensures customer data is never shared across account boundaries or public AI models.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'llm-token-skeletonizer-cost-reduction',
-    title: 'Reducing LLM Prompt Costs by 92% with Codebase & Document Folding',
-    excerpt: 'Context windows are expensive. Discover how AST-level structural token skeletonization compresses codebases without losing semantic context.',
-    publishDate: 'July 30, 2026',
-    date: 'July 30, 2026',
-    readTime: '4 min read',
-    category: 'Developer Tools',
-    author: 'Open Source Initiative',
-    product: 'Token Skeletonizer (Free)',
-    targetProduct: 'Token Skeletonizer (Free Utility)',
-    ctaHref: '/skeletonizer',
-    ctaText: 'Try Token Skeletonizer (Free)',
-    metaDescription: 'Compress large codebases and documents by up to 92% using AST-level folding to save LLM prompt token costs.',
-    content: `
-<h2>The Problem with Massive LLM Context Windows</h2>
-<p>Passing entire multi-file codebases or 200-page PDF manuals to frontier LLMs incurs high API costs and degrades reasoning performance.</p>
-
-<h2>AST-Level Structural Skeletonization</h2>
-<p>The <strong>ContextSkeleton Token Skeletonizer</strong> is a 100% free open-access utility that strips implementation boilerplate while preserving function signatures and class interfaces.</p>
-<ul>
-  <li><strong>90%+ Token Compression:</strong> Reduces 100k token codebases to 8k tokens.</li>
-  <li><strong>MCP Server Integration:</strong> Integrates directly with Claude Desktop and AI coding assistants.</li>
-  <li><strong>Open Access:</strong> Completely free for developers and engineering teams worldwide.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'accelerating-fda-510k-medical-device-clearances-ai',
-    title: 'Accelerating FDA 510(k) Medical Device Clearances with AI Vector Analysis',
-    excerpt: 'FDA pre-market notifications require matching device specs against predicate devices and ISO 13485 standards. Learn how MedTech teams automate regulatory audits.',
+    slug: 'automating-iso-9001-as9100-aerospace-quality-audits',
+    title: 'Automating ISO 9001 and AS9100 Aerospace Quality Manual Audits and CAPA Root Cause Analysis',
+    excerpt: 'Aerospace supplier non-conformances risk severe customer penalties. Discover how QA directors audit CAPA logs and FAI reports against AS9100D standards.',
     publishDate: 'August 5, 2026',
     date: 'August 5, 2026',
     readTime: '9 min read',
-    category: 'MedTech & FDA Compliance',
-    author: 'Regulatory Affairs Lab',
-    product: 'FDA 510(k) MedTech Resolver',
-    targetProduct: 'FDA 510(k) MedTech Resolver ($999/mo)',
-    ctaHref: '/fda-510k',
-    ctaText: 'Launch MedTech Regulatory Engine',
-    metaDescription: 'Learn how MedTech founders and regulatory affairs directors automate FDA 510(k) substantial equivalence and ISO 13485 quality system gap analysis.',
+    category: 'Aerospace & Quality Systems',
+    author: 'Quality Systems Lab',
+    product: 'ISO 9001 & AS9100 Quality Auditor',
+    targetProduct: 'ISO 9001 & AS9100 Quality Auditor ($899/mo)',
+    ctaHref: '/iso-quality',
+    ctaText: 'Launch Quality System Engine',
+    metaDescription: 'Discover how aerospace quality directors audit non-conformance logs (NCR) and First Article Inspection (FAI) reports against ISO 9001:2015 and AS9100D rules.',
     content: `
-<h2>The MedTech Regulatory Barrier</h2>
-<p>Bringing a Class II medical device or Software as a Medical Device (SaMD) to market requires submitting an FDA 510(k) pre-market notification to establish <strong>Substantial Equivalence</strong> to an existing legally marketed predicate device.</p>
+<h2>The Cost of Quality Non-Conformances in Aerospace</h2>
+<p>In aerospace manufacturing and precision machining, non-conforming parts can trigger customer line stoppages and audit findings from major OEMs.</p>
 
-<h2>Grounded FDA 510(k) Substantial Equivalence Engine</h2>
-<p>The <strong>ContextSkeleton FDA 510(k) & ISO 13485 Resolver</strong> ingests medical device specifications, software lifecycle documentation (IEC 62304), and predicate device parameters.</p>
+<h2>Automated AS9100D & ISO 9001 Clause Verification</h2>
+<p>The <strong>ContextSkeleton ISO 9001 & AS9100 Quality System Auditor</strong> evaluates plant inspection logs and CAPA reports:</p>
 <ul>
-  <li><strong>21 CFR Part 820 Mapping:</strong> Evaluates design controls, biocompatibility, and cybersecurity specifications.</li>
-  <li><strong>Predicate Comparison:</strong> Generates side-by-side predicate device comparison tables.</li>
-  <li><strong>Spreadsheet & Dossier Export:</strong> Exports structured CSV audit spreadsheets ready for regulatory affairs review.</li>
+  <li><strong>AS9102 First Article Inspection:</strong> Validates FAI reports against component drawings.</li>
+  <li><strong>Measurement Traceability:</strong> Checks equipment calibration logs against ISO 9001 Clause 7.1.5.</li>
+  <li><strong>CAPA Root Cause Rationale:</strong> Verifies that corrective actions address systemic causes rather than temporary fixes.</li>
 </ul>
     `,
   },
   {
-    slug: 'automating-rd-tax-credit-justifications-ird-ato-irs',
-    title: 'Automating R&D Tax Credit Justifications for IRD, ATO, and IRS Audits',
-    excerpt: 'Filing for government R&D tax incentives requires documenting technical uncertainties against statutory tax definitions. Learn how AI automates tax audit defense.',
-    publishDate: 'August 5, 2026',
-    date: 'August 5, 2026',
-    readTime: '8 min read',
-    category: 'Corporate Finance & Tax Audit',
-    author: 'Tax & Compliance Research',
-    product: 'R&D Tax Audit Analyzer',
-    targetProduct: 'R&D Tax Audit Analyzer ($650/mo)',
-    ctaHref: '/rd-tax',
-    ctaText: 'Launch R&D Tax Audit Engine',
-    metaDescription: 'Discover how CFOs and tax accountants automate R&D Tax Credit technical justifications for NZ IRD (15% RDTI), Australian ATO, and US IRS Section 41 audits.',
-    content: `
-<h2>The Risk of Tax Audit Claws</h2>
-<p>Claiming government R&D tax subsidies provides vital non-dilutive capital for tech and manufacturing firms.</p>
-
-<h2>Automated Technical Justification & Audit Defense</h2>
-<p>The <strong>ContextSkeleton R&D Tax Credit & Audit Risk Analyzer</strong> processes developer Jira tickets, engineering sprint notes, and payroll expense manifests to classify activities into statutory tax buckets:</p>
-<ul>
-  <li><strong>Eligible Core R&D:</strong> Systematic experimental activities resolving technical uncertainties.</li>
-  <li><strong>Supporting R&D:</strong> Direct supporting activities required for core experiments.</li>
-  <li><strong>Ineligible Operational Work:</strong> Standard bug fixes or routine software maintenance.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'automating-scope-1-2-3-carbon-reporting-eu-csrd',
-    title: 'Automating Scope 1, 2, and 3 Carbon Reporting for EU CSRD Compliance',
-    excerpt: 'Mandatory climate disclosure regulations require auditing supply chain vendor emissions. Discover how AI parses logistics manifests and utility data.',
+    slug: 'automating-sox-404-financial-controls-audits',
+    title: 'Automating SOX 404 Financial Control Audits and Segregation of Duties (SoD) Testing',
+    excerpt: 'Material weaknesses in internal controls over financial reporting risk SEC penalties. Learn how internal auditors audit SOX 404 and SSAE 18 controls.',
     publishDate: 'August 5, 2026',
     date: 'August 5, 2026',
     readTime: '9 min read',
-    category: 'ESG & Climate Compliance',
-    author: 'Sustainability Engineering Lab',
-    product: 'ESG & CSRD Climate Auditor',
-    targetProduct: 'ESG & CSRD Climate Auditor ($599/mo)',
-    ctaHref: '/esg',
-    ctaText: 'Launch CSRD Climate Engine',
-    metaDescription: 'Discover how Sustainability Officers and CROs automate Scope 1, 2, and 3 GHG emissions disclosures for EU CSRD and ISSB IFRS S2 compliance.',
+    category: 'Internal Audit & SOX 404',
+    author: 'Internal Audit Lab',
+    product: 'SOX 404 & SOC 1 Financial Auditor',
+    targetProduct: 'SOX 404 & SOC 1 Financial Auditor ($750/mo)',
+    ctaHref: '/sox-audit',
+    ctaText: 'Launch SOX Audit Engine',
+    metaDescription: 'Discover how internal audit directors and corporate controllers audit SOX Section 404 financial controls and ITGC Segregation of Duties against PCAOB rules.',
     content: `
-<h2>The Corporate Sustainability Mandate</h2>
-<p>The European Union's Corporate Sustainability Reporting Directive (CSRD) and global ISSB IFRS S2 standards make carbon disclosure mandatory for over 50,000 global enterprises and their supply chain partners.</p>
+<h2>The Legal Burden of SOX 404 Compliance</h2>
+<p>Public company CFOs and corporate controllers face strict reporting requirements under Sarbanes-Oxley (SOX) Section 404 to maintain effective Internal Control over Financial Reporting (ICFR).</p>
 
-<h2>Scope 1, 2, & 3 Automated Audit Engine</h2>
-<p>The <strong>ContextSkeleton ESG & CSRD Climate Auditor</strong> parses supplier sustainability manifests, logistics fuel logs, and utility data:</p>
+<h2>Automated ICFR & ITGC Audit Engine</h2>
+<p>The <strong>ContextSkeleton SOC 1 & SOX 404 Financial Controls Auditor</strong> processes journal entry logs and ITGC access reviews:</p>
 <ul>
-  <li><strong>Scope 1 Direct Emissions:</strong> Audits fleet diesel consumption, natural gas heating, and industrial process emissions.</li>
-  <li><strong>Scope 2 Indirect Energy:</strong> Calculates electricity grid carbon intensity and thermal power consumption.</li>
-  <li><strong>Scope 3 Upstream Supply Chain:</strong> Evaluates logistics vendors, raw material suppliers, and business travel.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'automating-patient-eligibility-screening-fda-ema-clinical-trials',
-    title: 'Automating Patient Eligibility Screening for FDA and EMA Clinical Trials',
-    excerpt: 'Screening patient cohorts against 200-page trial protocols causes costly delays. Learn how CROs automate inclusion/exclusion criteria auditing.',
-    publishDate: 'August 5, 2026',
-    date: 'August 5, 2026',
-    readTime: '9 min read',
-    category: 'Pharma & Clinical Operations',
-    author: 'Clinical Operations Lab',
-    product: 'Clinical Trial Resolver',
-    targetProduct: 'Clinical Trial Resolver ($850/mo)',
-    ctaHref: '/clinical-trials',
-    ctaText: 'Launch Clinical Trial Engine',
-    metaDescription: 'Discover how Clinical Research Organizations (CROs) and trial investigators automate patient inclusion/exclusion criteria screening for FDA and EMA protocols.',
-    content: `
-<h2>The Clinical Trial Recruitment Bottleneck</h2>
-<p>Recruiting and screening patient cohorts against complex inclusion and exclusion criteria in 200-page FDA/EMA protocols is one of the most expensive bottlenecks in drug development.</p>
-
-<h2>Automated Protocol Eligibility Matching</h2>
-<p>The <strong>ContextSkeleton Clinical Trial Protocol & Patient Eligibility Resolver</strong> evaluates patient medical records against trial protocols:</p>
-<ul>
-  <li><strong>Biomarker Status:</strong> Evaluates PD-L1, EGFR, ALK, and genetic tumor markers.</li>
-  <li><strong>Prior Line Therapies:</strong> Audits prior treatment regimens and washout periods.</li>
-  <li><strong>Organ Function Labs:</strong> Evaluates liver, kidney, and hematologic lab thresholds against Good Clinical Practice (GCP) guidelines.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'automating-data-protection-impact-assessments-dpia-gdpr-hipaa',
-    title: 'Automating Data Protection Impact Assessments (DPIA) for EU GDPR and HIPAA Compliance',
-    excerpt: 'Failing a GDPR Article 35 DPIA audit risks massive regulatory fines. Discover how DPOs automate PII/PHI subprocessor data flow audits.',
-    publishDate: 'August 5, 2026',
-    date: 'August 5, 2026',
-    readTime: '9 min read',
-    category: 'Data Privacy & DPO Compliance',
-    author: 'Data Privacy Research Lab',
-    product: 'GDPR & HIPAA Privacy Resolver',
-    targetProduct: 'GDPR & HIPAA Privacy Resolver ($550/mo)',
-    ctaHref: '/privacy-dpia',
-    ctaText: 'Launch Privacy DPIA Engine',
-    metaDescription: 'Discover how Data Protection Officers (DPOs) and privacy counsel automate Data Protection Impact Assessments (DPIA) for EU GDPR Article 35 and HIPAA § 164.308 compliance.',
-    content: `
-<h2>The Legal Requirement for DPIAs</h2>
-<p>Under Article 35 of the EU General Data Protection Regulation (GDPR), organizations carrying out high-risk processing of personal data are legally required to conduct a formal <strong>Data Protection Impact Assessment (DPIA)</strong>.</p>
-    `,
-  },
-  {
-    slug: 'automating-aml-kyc-risk-audits-fintech-banking',
-    title: 'Automating AML and KYC Statutory Risk Audits for FinTech and Crypto Banking',
-    excerpt: 'FATF sanctions and structuring violations cause heavy regulatory fines. Learn how compliance officers automate PEP and transaction risk audits.',
-    publishDate: 'August 5, 2026',
-    date: 'August 5, 2026',
-    readTime: '8 min read',
-    category: 'FinTech & Banking Compliance',
-    author: 'Financial Intelligence Lab',
-    product: 'AML & KYC Risk Auditor',
-    targetProduct: 'AML & KYC Risk Auditor ($799/mo)',
-    ctaHref: '/aml-kyc',
-    ctaText: 'Launch AML Audit Engine',
-    metaDescription: 'Discover how FinTech compliance officers and banking risk managers automate AML/KYC statutory risk audits against FATF and US BSA rules.',
-    content: `
-<h2>The Statutory Cost of AML Non-Compliance</h2>
-<p>Financial Action Task Force (FATF) guidelines and the US Bank Secrecy Act (BSA) mandate continuous transaction monitoring and PEP sanctions screening.</p>
-
-<h2>Automated Transaction Velocity & PEP Screening</h2>
-<p>The <strong>ContextSkeleton AML & KYC Anti-Money Laundering Auditor</strong> evaluates onboarding logs and payment manifests:</p>
-<ul>
-  <li><strong>PEP & Sanctions Exposure:</strong> Audits OFAC sanctions lists and Politically Exposed Persons indicators.</li>
-  <li><strong>Structuring Detection:</strong> Identifies smurfing patterns designed to evade the $10,000 currency reporting threshold.</li>
-  <li><strong>Shell Company Triggers:</strong> Evaluates complex multi-layered offshore ownership structures.</li>
-</ul>
-    `,
-  },
-  {
-    slug: 'auditing-osha-1910-iso-45001-workplace-safety-hazards-ai',
-    title: 'Auditing OSHA 1910 and ISO 45001 Workplace Safety Hazards with Vector AI',
-    excerpt: 'Factory floor Lockout/Tagout (LOTO) and machine guarding violations cause severe OSHA fines. Discover how EHS directors automate workplace safety audits.',
-    publishDate: 'August 5, 2026',
-    date: 'August 5, 2026',
-    readTime: '8 min read',
-    category: 'EHS & Workplace Safety',
-    author: 'Safety Engineering Lab',
-    product: 'OSHA & EHS Safety Auditor',
-    targetProduct: 'OSHA & EHS Safety Auditor ($499/mo)',
-    ctaHref: '/ehs-safety',
-    ctaText: 'Launch EHS Safety Engine',
-    metaDescription: 'Discover how Environmental Health & Safety (EHS) managers audit factory floor hazards and LOTO protocols against OSHA 1910 and ISO 45001 standards.',
-    content: `
-<h2>The Workplace Safety Mandate</h2>
-<p>OSHA 1910 General Industry standards require employers to enforce zero-energy verification under Lockout/Tagout (LOTO) protocols and GHS hazard communications for hazardous chemicals.</p>
-
-<h2>Automated OSHA Regulatory Audit Engine</h2>
-<p>The <strong>ContextSkeleton OSHA & EHS Workplace Safety Auditor</strong> processes site inspection notes, machinery logs, and MSDS chemical sheets:</p>
-<ul>
-  <li><strong>OSHA 1910.147 LOTO Verification:</strong> Identifies missing energy-isolating padlocks and lockout procedures.</li>
-  <li><strong>OSHA 1910.1200 Hazard Communication:</strong> Audits chemical SDS availability and GHS pictogram labeling.</li>
-  <li><strong>ISO 45001 Audit Scorecard:</strong> Generates structured CSV safety hazard reports for site safety committees.</li>
+  <li><strong>Segregation of Duties (SoD):</strong> Flags developer write access to financial ledger production databases.</li>
+  <li><strong>Journal Entry Approvals:</strong> Identifies manual journal entries posted without secondary controller sign-off.</li>
+  <li><strong>ITGC Change Management:</strong> Validates database schema migrations against CAB approval tickets.</li>
 </ul>
     `,
   },

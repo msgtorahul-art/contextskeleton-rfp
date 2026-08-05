@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -78,6 +78,8 @@ export default function Sidebar() {
     { name: 'GDPR & HIPAA Privacy Resolver', href: '/privacy-dpia', icon: KeyRound },
     { name: 'AML & KYC Risk Auditor', href: '/aml-kyc', icon: DollarSign },
     { name: 'OSHA & EHS Safety Auditor', href: '/ehs-safety', icon: HardHat },
+    { name: 'ISO 9001 & AS9100 Quality Auditor', href: '/iso-quality', icon: CheckSquare },
+    { name: 'SOX 404 & SOC 1 Financial Auditor', href: '/sox-audit', icon: Briefcase },
     { name: 'Vector Knowledge Base', href: '/knowledge', icon: Database },
     { name: 'Token Skeletonizer', href: '/skeletonizer', icon: Layers },
     { name: 'Public Site & Pricing', href: '/?preview=true', icon: Globe },
@@ -106,7 +108,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition ${
+                className={`flex items-center gap-3 px-3.5 py-2 rounded-2xl text-xs font-semibold transition ${
                   isActive
                     ? 'bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
@@ -172,7 +174,7 @@ export default function Sidebar() {
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-2 rounded-2xl text-xs font-semibold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
         >
           <LogOut className="h-4 w-4" />
           Sign Out

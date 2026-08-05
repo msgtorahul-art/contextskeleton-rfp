@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -122,6 +122,42 @@ export default function LandingPage() {
       ctaHref: '/fda-510k',
     },
     {
+      id: 'service-isoquality',
+      badge: 'Aerospace & Quality QA',
+      badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+      title: 'ISO 9001 & AS9100 Quality Auditor',
+      icon: CheckSquare,
+      iconColor: 'text-blue-400',
+      glowColor: 'hover:border-blue-500/50 hover:shadow-blue-500/10',
+      tagline: 'Audit non-conformances, CAPA root causes, and FAI reports against ISO 9001 and AS9100D standards.',
+      highlights: [
+        'AS9102 First Article Inspection (FAI) audits',
+        'ISO 9001:2015 Clause 8.7 & 10.2 verification',
+        'CAPA root cause & preventive action scorecards',
+        'Single-click CSV quality audit export',
+      ],
+      ctaText: 'Launch Quality Auditor',
+      ctaHref: '/iso-quality',
+    },
+    {
+      id: 'service-soxaudit',
+      badge: 'Internal Audit & Controllers',
+      badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      title: 'SOX 404 & SOC 1 Financial Auditor',
+      icon: Briefcase,
+      iconColor: 'text-emerald-400',
+      glowColor: 'hover:border-emerald-500/50 hover:shadow-emerald-500/10',
+      tagline: 'Audit financial close controls, Segregation of Duties (SoD), and ITGC changes against PCAOB and SSAE 18 rules.',
+      highlights: [
+        'SOX Section 404 ICFR control testing',
+        'Segregation of Duties (SoD) conflict detection',
+        'ITGC change management & access reviews',
+        'Single-click CSV financial audit export',
+      ],
+      ctaText: 'Launch SOX Auditor',
+      ctaHref: '/sox-audit',
+    },
+    {
       id: 'service-rdtax',
       badge: 'Corporate Finance & Tax',
       badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
@@ -215,7 +251,7 @@ export default function LandingPage() {
       id: 'service-esg',
       badge: 'Enterprise ESG & Climate',
       badgeColor: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
-      title: 'AI ESG & CSRD Climate Disclosure Auditor',
+      title: 'AI ESG & CSRD Climate Auditor',
       icon: Leaf,
       iconColor: 'text-teal-400',
       glowColor: 'hover:border-teal-500/50 hover:shadow-teal-500/10',
@@ -392,7 +428,7 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* COMMERCIAL PRICING SECTION - ALL 11 PAID COMMERCIAL PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION - ALL COMMERCIAL PRODUCTS DISPLAYED */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
@@ -434,28 +470,61 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 2. Building Consent Auditor Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-xl shadow-emerald-500/10">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+          {/* 2. ISO 9001 & AS9100 Aerospace Quality Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-blue-500/40 relative overflow-hidden shadow-xl shadow-blue-500/10">
+            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
               Product #2
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">Architects & Builders</span>
-              <h3 className="text-xl font-bold text-white mb-2">Consent Auditor Pro</h3>
+              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block mb-1">Aerospace &amp; Quality QA</span>
+              <h3 className="text-xl font-bold text-white mb-2">ISO Quality Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$899</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> Unlimited AS9100D &amp; ISO 9001 Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> AS9102 First Article Inspection Checks
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> CAPA Root Cause &amp; CSV Audit Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get ISO Quality Pro ($899/mo)
+            </Link>
+          </div>
+
+          {/* 3. SOX 404 & SOC 1 Financial Auditor Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-xl shadow-emerald-500/10">
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #3
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">Internal Audit &amp; Controllers</span>
+              <h3 className="text-xl font-bold text-white mb-2">SOX Controls Pro</h3>
               <div className="flex items-baseline gap-1 mb-4">
                 <span className="text-3xl font-extrabold text-white">$750</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Unlimited NZBC Pre-Audits
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Unlimited SOX 404 &amp; SOC 1 ICFR Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> NZBC E2, H1, B1, G12 Checkers
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Segregation of Duties (SoD) Conflict Checks
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Producer Statements (PS1/PS3)
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> CSV Financial Audit Spreadsheet Export
                 </li>
               </ul>
             </div>
@@ -463,139 +532,7 @@ export default function LandingPage() {
               href="/auth?mode=register"
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get Consent Pro ($750/mo)
-            </Link>
-          </div>
-
-          {/* 3. Security Questionnaire Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
-            <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #3
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block mb-1">CISOs & SaaS Vendors</span>
-              <h3 className="text-xl font-bold text-white mb-2">Security Resolver Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$499</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Unlimited SOC 2 & ISO 27001 Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> CSV / Excel Spreadsheet Export
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Confidence Rating & Control Mapping
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get Security Pro ($499/mo)
-            </Link>
-          </div>
-
-          {/* 4. GDPR & HIPAA Privacy DPIA Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
-            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #4
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">DPOs & Enterprise Privacy</span>
-              <h3 className="text-xl font-bold text-white mb-2">Privacy DPIA Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$550</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Unlimited GDPR & HIPAA DPIA Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Subprocessor DPA & SCC Verification
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> CSV Privacy Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get Privacy Pro ($550/mo)
-            </Link>
-          </div>
-
-          {/* 5. AML & KYC Risk Auditor Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-yellow-500/40 relative overflow-hidden shadow-xl shadow-yellow-500/10">
-            <div className="absolute top-0 right-0 bg-yellow-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #5
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block mb-1">FinTech & Banking Risk</span>
-              <h3 className="text-xl font-bold text-white mb-2">AML Risk Auditor Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$799</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> Unlimited AML & KYC Statutory Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> FATF PEP & Sanctions Screening
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> CSV Risk Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get AML Pro ($799/mo)
-            </Link>
-          </div>
-
-          {/* 6. OSHA & EHS Workplace Safety Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-orange-500/40 relative overflow-hidden shadow-xl shadow-orange-500/10">
-            <div className="absolute top-0 right-0 bg-orange-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest block mb-1">EHS & Industrial Safety</span>
-              <h3 className="text-xl font-bold text-white mb-2">EHS Safety Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$499</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> Unlimited OSHA 1910 Site Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> LOTO & MSDS Hazard Verification
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> CSV Safety Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get EHS Safety Pro ($499/mo)
+              Get SOX Pro ($750/mo)
             </Link>
           </div>
         </div>
@@ -607,7 +544,7 @@ export default function LandingPage() {
           <div className="h-12 w-12 rounded-2xl bg-violet-600/10 flex items-center justify-center mx-auto mb-6">
             <Mail className="h-6 w-6 text-violet-400" />
           </div>
-          <h2 className="text-3xl font-extrabold text-white mb-3">Customer Support, Enquiries & Complaints</h2>
+          <h2 className="text-3xl font-extrabold text-white mb-3">Customer Support, Enquiries &amp; Complaints</h2>
           <p className="text-slate-400 text-xs max-w-xl mx-auto mb-8">
             Have questions, complaints, or custom enterprise requirements? Send a message directly to <strong>support@contextskeleton.com</strong>.
           </p>
@@ -655,6 +592,8 @@ export default function LandingPage() {
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
                   <option value="SOC 2 & ISO 27001 Security Question">SOC 2 & ISO 27001 Security Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
+                  <option value="ISO 9001 & AS9100 Quality Query">ISO 9001 & AS9100 Quality Query</option>
+                  <option value="SOX 404 Financial Control Query">SOX 404 Financial Control Query</option>
                   <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
                   <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
                   <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
