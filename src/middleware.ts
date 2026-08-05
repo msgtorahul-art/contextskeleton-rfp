@@ -9,10 +9,11 @@ export function middleware(req: NextRequest) {
   const isApiRoute = pathname.startsWith('/api');
   const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next');
   const isRootPage = pathname === '/';
+  const isPublicPage = pathname === '/privacy' || pathname === '/terms' || pathname === '/skeletonizer';
   const isSandboxCallback = pathname.startsWith('/api/billing/sandbox-callback');
 
-  // Do not restrict static files, Next.js assets, auth APIs, or sandbox billing callback
-  if (isStaticFile || (isApiRoute && (pathname.includes('/auth') || isSandboxCallback))) {
+  // Do not restrict static files, Next.js assets, auth APIs, public legal pages, or skeletonizer
+  if (isStaticFile || isPublicPage || (isApiRoute && (pathname.includes('/auth') || isSandboxCallback))) {
     return NextResponse.next();
   }
 
@@ -25,7 +26,7 @@ export function middleware(req: NextRequest) {
   }
 
   // Redirect unauthenticated users trying to access protected paths to /auth
-  if (!token && !isAuthPage && !isRootPage) {
+  if (!token && !isAuthPage && !isRootPage && !isPublicPage) {
     const loginUrl = new URL('/auth', req.url);
     return NextResponse.redirect(loginUrl);
   }
@@ -35,13 +36,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api/auth (auth API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
     '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
   ],
 };

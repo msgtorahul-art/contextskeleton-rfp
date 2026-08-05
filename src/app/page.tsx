@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -125,7 +125,7 @@ export default function LandingPage() {
     },
     {
       id: 'service-skeleton',
-      badge: 'Developers & AI Agents',
+      badge: 'Free Developer Tool',
       icon: Layers,
       iconColor: 'text-cyan-400',
       badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
@@ -135,9 +135,9 @@ export default function LandingPage() {
         'AST-level structural AST code & doc folding',
         'Cuts prompt token costs by up to 92%',
         'Built-in MCP server for Claude & AI agents',
-        'Preserves 100% context for LLM logic',
+        '100% Free Open Access Utility',
       ],
-      ctaText: 'Use Token Skeletonizer',
+      ctaText: 'Try Token Skeletonizer (Free)',
       ctaHref: '/skeletonizer',
     },
   ];
@@ -165,7 +165,8 @@ export default function LandingPage() {
           <a href="#services" className="hover:text-white transition">Independent Products</a>
           <a href="#workflow" className="hover:text-white transition">How It Works</a>
           <a href="#pricing" className="hover:text-white transition">Pricing</a>
-          <a href="#contact" className="hover:text-white transition">Contact</a>
+          <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -511,7 +512,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* FOOTER WITH PUBLIC LEGAL LINKS */}
       <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-slate-900/80 text-slate-500 text-xs z-10 relative">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
@@ -523,10 +524,12 @@ export default function LandingPage() {
             <span>&copy; {new Date().getFullYear()} ContextSkeleton. All rights reserved.</span>
           </div>
 
-          <div className="flex items-center gap-6 text-slate-400 text-xs">
+          <div className="flex flex-wrap items-center gap-6 text-slate-400 text-xs">
             <Link href="/auth" className="hover:text-white transition">Platform Login</Link>
             <a href="#services" className="hover:text-white transition">Products &amp; Services</a>
             <a href="#pricing" className="hover:text-white transition">Pricing</a>
+            <Link href="/privacy" className="hover:text-white transition font-semibold text-slate-300">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition font-semibold text-slate-300">Terms of Service</Link>
             <a href="mailto:support@contextskeleton.com" className="hover:text-white transition">Support (support@contextskeleton.com)</a>
           </div>
         </div>
