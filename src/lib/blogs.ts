@@ -182,4 +182,35 @@ export const BLOG_POSTS: BlogPost[] = [
 </ul>
     `,
   },
+  {
+    slug: 'automating-rd-tax-credit-justifications-ird-ato-irs',
+    title: 'Automating R&D Tax Credit Justifications for IRD, ATO, and IRS Audits',
+    excerpt: 'Filing for government R&D tax incentives requires documenting technical uncertainties against statutory tax definitions. Learn how AI automates tax audit defense.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '8 min read',
+    category: 'Corporate Finance & Tax Audit',
+    author: 'Tax & Compliance Research',
+    product: 'R&D Tax Audit Analyzer',
+    targetProduct: 'R&D Tax Audit Analyzer ($650/mo)',
+    ctaHref: '/rd-tax',
+    ctaText: 'Launch R&D Tax Audit Engine',
+    metaDescription: 'Discover how CFOs and tax accountants automate R&D Tax Credit technical justifications for NZ IRD (15% RDTI), Australian ATO, and US IRS Section 41 audits.',
+    content: `
+<h2>The Risk of Tax Audit Claws</h2>
+<p>Claiming government R&D tax subsidies (such as the New Zealand IRD 15% R&D Tax Incentive, Australian ATO R&D Tax Incentive, or US IRS Section 41 Credit) provides vital non-dilutive capital for tech and manufacturing firms.</p>
+<p>However, tax authorities frequently audit claims and demand detailed technical justification logs demonstrating that developer hours were spent resolving "technological uncertainties" through a "systematic investigation".</p>
+
+<h2>Automated Technical Justification & Audit Defense</h2>
+<p>The <strong>ContextSkeleton R&D Tax Credit & Audit Risk Analyzer</strong> processes developer Jira tickets, engineering sprint notes, and payroll expense manifests to classify activities into statutory tax buckets:</p>
+<ul>
+  <li><strong>Eligible Core R&D:</strong> Systematic experimental activities resolving technical uncertainties.</li>
+  <li><strong>Supporting R&D:</strong> Direct supporting activities required for core experiments.</li>
+  <li><strong>Ineligible Operational Work:</strong> Standard bug fixes or routine software maintenance.</li>
+</ul>
+
+<h2>Spreadsheet & Technical Archive Export</h2>
+<p>Finance teams can generate formal technical defense narratives and export structured CSV audit spreadsheets formatted for instant submission to tax advisors and government auditors.</p>
+    `,
+  },
 ];

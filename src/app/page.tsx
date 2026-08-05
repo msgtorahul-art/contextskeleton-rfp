@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -122,6 +122,24 @@ export default function LandingPage() {
       ],
       ctaText: 'Launch MedTech Resolver',
       ctaHref: '/fda-510k',
+    },
+    {
+      id: 'service-rdtax',
+      badge: 'Corporate Finance & Tax',
+      badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+      title: 'AI R&D Tax Credit & Audit Analyzer',
+      icon: Calculator,
+      iconColor: 'text-amber-400',
+      glowColor: 'hover:border-amber-500/50 hover:shadow-amber-500/10',
+      tagline: 'Automate technical justifications and tax audit defense for IRD (15% RDTI), ATO, and IRS Section 41 claims.',
+      highlights: [
+        'Evaluates core systematic experimentation criteria',
+        'Generates tax defense technical narratives',
+        'Flags non-eligible operational activities',
+        'Single-click CSV audit spreadsheet export',
+      ],
+      ctaText: 'Launch R&D Tax Analyzer',
+      ctaHref: '/rd-tax',
     },
     {
       id: 'service-knowledge',
@@ -396,7 +414,7 @@ export default function LandingPage() {
           {/* 4. FDA 510(k) MedTech Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-pink-500/40 relative overflow-hidden shadow-xl shadow-pink-500/10">
             <div className="absolute top-0 right-0 bg-pink-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #4 (MedTech)
+              Product #4
             </div>
 
             <div>
@@ -426,10 +444,43 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 5. Vector Knowledge Base Pricing */}
+          {/* 5. R&D Tax Credit Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
+            <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #5 (Finance)
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Corporate Finance & Tax</span>
+              <h3 className="text-xl font-bold text-white mb-2">R&amp;D Tax Audit Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$650</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Unlimited IRD / ATO / IRS Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Technical Justification Narratives
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> CSV Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get R&amp;D Tax Pro ($650/mo)
+            </Link>
+          </div>
+
+          {/* 6. Vector Knowledge Base Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
             <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #5
+              Product #6
             </div>
 
             <div>
@@ -513,6 +564,7 @@ export default function LandingPage() {
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
+                  <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>
