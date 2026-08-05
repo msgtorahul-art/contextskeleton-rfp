@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
     if (projectId) {
       let project: any = null;
       let questions: any[] = [];
+      
       try {
         project = db.prepare('SELECT * FROM projects WHERE id = ? AND user_id = ?').get(projectId, session.userId);
         if (project) {
@@ -34,6 +35,9 @@ export async function GET(req: NextRequest) {
 
       if (!project && memoryProjects.has(projectId)) {
         project = memoryProjects.get(projectId);
+      }
+
+      if ((!questions || questions.length === 0) && memoryQuestions.has(projectId)) {
         questions = memoryQuestions.get(projectId) || [];
       }
 
@@ -41,7 +45,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Project not found' }, { status: 404 });
       }
 
-      return NextResponse.json({ project, questions });
+      return NextResponse.json({ project, questions: questions || [] });
     } else {
       let projects: any[] = [];
       try {
@@ -74,7 +78,7 @@ export async function POST(req: NextRequest) {
       
       let parsedQuestions: string[] = [];
       if (typeof questions === 'string') {
-        parsedQuestions = questions.split('\n').map(q => q.trim()).filter(Boolean);
+        parsedQuestions = questions.split(/\r?\n/).map(q => q.trim()).filter(Boolean);
       } else if (Array.isArray(questions)) {
         parsedQuestions = questions.map(q => String(q).trim()).filter(Boolean);
       }
@@ -89,20 +93,26 @@ export async function POST(req: NextRequest) {
       const newProject = { id: projectId, user_id: session.userId, name: name.trim(), created_at: createdAt };
       const newQuestionsList: Array<{ id: string; project_id: string; user_id: string; question_text: string; drafted_answer?: string; status: string }> = [];
 
+      // 1. Build questions list first
+      for (const questionText of parsedQuestions) {
+        const questionId = crypto.randomUUID();
+        newQuestionsList.push({ id: questionId, project_id: projectId, user_id: session.userId, question_text: questionText, status: 'pending' });
+      }
+
+      // 2. Try DB insertion
       try {
         const insertProject = db.prepare('INSERT INTO projects (id, user_id, name, created_at) VALUES (?, ?, ?, ?)');
         insertProject.run(projectId, session.userId, name.trim(), createdAt);
 
         const insertQuestion = db.prepare('INSERT INTO questions (id, project_id, user_id, question_text, status) VALUES (?, ?, ?, ?, ?)');
-        for (const questionText of parsedQuestions) {
-          const questionId = crypto.randomUUID();
-          insertQuestion.run(questionId, projectId, session.userId, questionText, 'pending');
-          newQuestionsList.push({ id: questionId, project_id: projectId, user_id: session.userId, question_text: questionText, status: 'pending' });
+        for (const qObj of newQuestionsList) {
+          insertQuestion.run(qObj.id, projectId, session.userId, qObj.question_text, 'pending');
         }
       } catch (dbErr) {
         console.error('DB project insert warning, falling back to memory store:', dbErr);
       }
 
+      // 3. Store in memory cache
       memoryProjects.set(projectId, newProject);
       memoryQuestions.set(projectId, newQuestionsList);
 

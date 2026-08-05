@@ -369,6 +369,7 @@ export default function LandingPage() {
         <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-400">
           <a href="#services" className="hover:text-white transition">Independent Products</a>
           <a href="#pricing" className="hover:text-white transition">Pricing</a>
+          <Link href="/trust" className="hover:text-white transition font-semibold text-emerald-400">Trust &amp; Testing</Link>
           <Link href="/blog" className="hover:text-white transition font-semibold text-cyan-400">Blog &amp; SEO Guides</Link>
           <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
           <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
