@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase, Award } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -71,6 +71,7 @@ export default function Sidebar() {
     { name: 'RFP & Tender Engine', href: '/projects', icon: FileText },
     { name: 'Building Consent Auditor', href: '/consent', icon: ShieldCheck },
     { name: 'Security Questionnaire', href: '/security-questionnaire', icon: Lock },
+    { name: 'GovWin & SBIR Grant Architect', href: '/gov-grant', icon: Award },
     { name: 'FDA 510(k) MedTech Resolver', href: '/fda-510k', icon: Activity },
     { name: 'R&D Tax Audit Analyzer', href: '/rd-tax', icon: Calculator },
     { name: 'ESG & CSRD Climate Auditor', href: '/esg', icon: Leaf },
