@@ -10,18 +10,19 @@ export function middleware(req: NextRequest) {
   const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next');
   const isRootPage = pathname === '/';
   
-  // Publicly accessible product marketing & legal pages
+  // Publicly accessible product marketing, blog, & legal pages
   const isPublicPage = 
     pathname === '/privacy' || 
     pathname === '/terms' || 
     pathname === '/skeletonizer' || 
     pathname === '/consent' || 
     pathname === '/security-questionnaire' || 
-    pathname === '/knowledge';
+    pathname === '/knowledge' || 
+    pathname.startsWith('/blog');
 
   const isSandboxCallback = pathname.startsWith('/api/billing/sandbox-callback');
 
-  // Do not restrict static files, Next.js assets, auth APIs, public product/legal pages
+  // Do not restrict static files, Next.js assets, auth APIs, public product/blog/legal pages
   if (isStaticFile || isPublicPage || (isApiRoute && (pathname.includes('/auth') || isSandboxCallback))) {
     return NextResponse.next();
   }
