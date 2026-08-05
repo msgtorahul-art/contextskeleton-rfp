@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check credits/subscription
     const userDb = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(user.userId) as any;
     if (userDb && userDb.subscription_status !== 'ACTIVE' && userDb.credits <= 0) {
       return NextResponse.json(
@@ -26,7 +25,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Facility name and workplace incident/safety data are required.' }, { status: 400 });
     }
 
-    // Perform vector search over user uploaded MSDS/OSHA safety manuals
     const similarChunks = await findSimilarChunks(user.userId, incidentData, 5);
     const vectorContext = similarChunks.map(c => `[Source Safety Doc: ${c.filename}]\n${c.content}`).join('\n\n');
 
@@ -44,15 +42,20 @@ Safety Incident & Machinery Hazard Manifest: ${incidentData}
 Retrieved Grounding Safety Manual Context:
 ${vectorContext || 'No custom safety manual uploaded. Relying on OSHA 1910 and ISO 45001 standards.'}
 
-Evaluate Lockout/Tagout (LOTO 1910.147), Hazard Communication (MSDS/GHS 1910.1200), Personal Protective Equipment (PPE 1910.132), Fall Protection, and Machine Guarding.
+STRICT ZERO-FABRICATION RULE:
+You must ONLY evaluate the exact hazards, machinery, equipment, and incidents explicitly described in the input or grounding context.
+DO NOT INVENT OR FABRICATE unmentioned equipment or activities (e.g. DO NOT invent cranes, concrete pumps, equipment servicing, or LOTO violations if they were not explicitly mentioned in the user input).
+If a compliance domain (such as LOTO or GHS MSDS) is not described in the user input, set hazardObserved to "No details provided in input for this domain." and status to "DOCUMENTATION_GAP".
+
+Evaluate ONLY provided details against OSHA 1910.147 (LOTO), 1910.1200 (GHS MSDS), 1910.132 (PPE), Fall Protection, and Machine Guarding.
 Return ONLY valid JSON matching this exact structure:
 {
   "summary": "High-level EHS safety risk executive summary, workplace hazard rating, and OSHA compliance status.",
   "hazardRating": "LOW" | "MEDIUM" | "HIGH" | "IMMINENT_DANGER",
   "items": [
     {
-      "safetyCategory": "OSHA 1910.147 — Control of Hazardous Energy (LOTO)",
-      "hazardObserved": "Robotic welding cell operated without verified zero-energy state verification protocol.",
+      "safetyCategory": "OSHA 1910 Standard Category",
+      "hazardObserved": "Exact hazard described in input.",
       "status": "COMPLIANT" | "VIOLATION_HAZARD" | "DOCUMENTATION_GAP",
       "oshaRationale": "Specific rationale referencing OSHA 1910 standards.",
       "correctiveAction": "Actionable step for workplace safety remediation."
@@ -71,15 +74,16 @@ Return ONLY valid JSON matching this exact structure:
     const data = await res.json();
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
-    // Extract JSON block
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Invalid response structure from Gemini API');
     }
 
     const resultJson = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(resultJson.items)) {
+      resultJson.items = [];
+    }
 
-    // Decrement credits if not pro
     if (userDb && userDb.subscription_status !== 'ACTIVE') {
       db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(user.userId);
     }

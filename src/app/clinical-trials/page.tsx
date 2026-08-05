@@ -76,10 +76,15 @@ Exclusion Check: No active endocarditis, no stroke within past 6 months.`);
   };
 
   const exportCSV = () => {
-    if (!result) return;
+    if (!result || !Array.isArray(result.items)) return;
     let csvContent = 'Criteria Type,Requirement,Status,Clinical Rationale,Investigator Action\n';
     result.items.forEach((item) => {
-      csvContent += `"${item.criteriaType}","${item.requirement}","${item.status}","${item.clinicalRationale.replace(/"/g, '""')}","${item.investigatorAction.replace(/"/g, '""')}"\n`;
+      const criteria = (item.criteriaType || '').replace(/"/g, '""');
+      const req = (item.requirement || '').replace(/"/g, '""');
+      const stat = (item.status || '').replace(/"/g, '""');
+      const rat = (item.clinicalRationale || '').replace(/"/g, '""');
+      const act = (item.investigatorAction || '').replace(/"/g, '""');
+      csvContent += `"${criteria}","${req}","${stat}","${rat}","${act}"\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -91,6 +96,8 @@ Exclusion Check: No active endocarditis, no stroke within past 6 months.`);
     link.click();
     document.body.removeChild(link);
   };
+
+  const safeItems = result && Array.isArray(result.items) ? result.items : [];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
@@ -225,7 +232,7 @@ Exclusion Check: No active endocarditis, no stroke within past 6 months.`);
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                         : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                     }`}>
-                      Status: {result.eligibilityStatus}
+                      Status: {result.eligibilityStatus || 'COMPLETED'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed font-medium">{result.summary}</p>
@@ -235,21 +242,23 @@ Exclusion Check: No active endocarditis, no stroke within past 6 months.`);
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Inclusion / Exclusion Checklist</span>
                   
                   <div className="space-y-3">
-                    {result.items.map((item, idx) => (
+                    {safeItems.map((item, idx) => (
                       <div key={idx} className="p-4 rounded-2xl bg-slate-950 border border-slate-900 space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-white">{item.criteriaType}</span>
+                          <span className="text-xs font-bold text-white">{item.criteriaType || 'Protocol Standard'}</span>
                           <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
                             item.status === 'PASS' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                           }`}>
-                            {item.status}
+                            {item.status || 'CHECKED'}
                           </span>
                         </div>
                         <p className="text-xs text-slate-300 font-semibold">{item.requirement}</p>
                         <p className="text-xs text-slate-400">{item.clinicalRationale}</p>
-                        <p className="text-[11px] text-rose-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
-                          Investigator Action: {item.investigatorAction}
-                        </p>
+                        {item.investigatorAction && (
+                          <p className="text-[11px] text-rose-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
+                            Investigator Action: {item.investigatorAction}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>

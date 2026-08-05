@@ -10,11 +10,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check credits/subscription
     const userDb = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(user.userId) as any;
     if (userDb && userDb.subscription_status !== 'ACTIVE' && userDb.credits <= 0) {
       return NextResponse.json(
-        { error: 'Subscription required. Please upgrade to SOX Financial Controls Pro plan to run audit evaluations.' },
+        { error: 'Subscription required. Please upgrade to SOX Controls Pro plan to run ICFR financial audits.' },
         { status: 402 }
       );
     }
@@ -26,36 +25,38 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Company name and financial control manifest are required.' }, { status: 400 });
     }
 
-    // Perform vector search over user uploaded SOX policy docs
     const similarChunks = await findSimilarChunks(user.userId, controlManifest, 5);
-    const vectorContext = similarChunks.map(c => `[Source Control Policy: ${c.filename}]\n${c.content}`).join('\n\n');
+    const vectorContext = similarChunks.map(c => `[Source SOX Doc: ${c.filename}]\n${c.content}`).join('\n\n');
 
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: 'Gemini API key is missing' }, { status: 500 });
     }
 
-    const prompt = `You are a Senior Internal Audit Director evaluating Sarbanes-Oxley (SOX) Section 404 financial reporting controls and SSAE 18 SOC 1 Type II IT General Controls (ITGC).
+    const prompt = `You are a Senior Internal Audit Director evaluating financial controls under SOX Section 404, PCAOB Auditing Standards (AS 2201), and SSAE 18 SOC 1 Type II ITGC standards.
 
-Company Name: ${companyName}
-Audit Standard: ${auditStandard || 'SOX Section 404 / SSAE 18 SOC 1 Type II'}
-Financial Controls & ITGC Manifest: ${controlManifest}
+Company / Enterprise Name: ${companyName}
+Audit Framework Standard: ${auditStandard || 'SOX Section 404 / SSAE 18 SOC 1'}
+Financial Control Audit Log & ITGC Manifest: ${controlManifest}
 
-Retrieved Grounding Control Policy Context:
-${vectorContext || 'No custom control policy uploaded. Relying on PCAOB auditing standards and COSO framework.'}
+Retrieved Grounding Financial Control Context:
+${vectorContext || 'No custom SOX policy uploaded. Relying on PCAOB ICFR and COSO framework guidelines.'}
 
-Evaluate Segregation of Duties (SoD), Financial Close Journal Entry Approvals, ITGC Change Management, User Access Reviews, and Automated Application Controls.
+STRICT ZERO-FABRICATION RULE:
+Evaluate controls strictly against the details provided in the user input.
+DO NOT invent unmentioned financial transactions or IT system access logs.
+
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "High-level SOX 404 audit executive summary, material weakness exposure, and internal control effectiveness.",
-  "controlDeficiencyLevel": "EFFECTIVE" | "SIGNIFICANT_DEFICIENCY" | "MATERIAL_WEAKNESS",
+  "summary": "High-level financial control audit executive summary, deficiency level, and PCAOB compliance rating.",
+  "controlDeficiencyLevel": "EFFECTIVE" | "CONTROL_DEFICIENCY" | "SIGNIFICANT_DEFICIENCY" | "MATERIAL_WEAKNESS",
   "items": [
     {
-      "controlCategory": "ITGC — User Access & Segregation of Duties (SoD)",
-      "controlActivity": "Quarterly user access review for SAP ERP financial ledger.",
-      "status": "EFFECTIVE" | "DEFICIENCY" | "MATERIAL_WEAKNESS",
-      "soxRationale": "Specific rationale referencing COSO framework & PCAOB standards.",
-      "remediationAction": "Actionable step for audit remediation."
+      "controlCategory": "SOX FIN-201 — Journal Entry Approvals",
+      "controlActivity": "Manual journal entry exceeding $500,000 posted without secondary sign-off.",
+      "status": "EFFECTIVE" | "DEFICIENT" | "MATERIAL_WEAKNESS",
+      "soxRationale": "Specific rationale referencing PCAOB standards.",
+      "remediationAction": "Actionable step for internal audit remediation."
     }
   ]
 }`;
@@ -71,15 +72,16 @@ Return ONLY valid JSON matching this exact structure:
     const data = await res.json();
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
-    // Extract JSON block
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Invalid response structure from Gemini API');
     }
 
     const resultJson = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(resultJson.items)) {
+      resultJson.items = [];
+    }
 
-    // Decrement credits if not pro
     if (userDb && userDb.subscription_status !== 'ACTIVE') {
       db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(user.userId);
     }
@@ -87,6 +89,6 @@ Return ONLY valid JSON matching this exact structure:
     return NextResponse.json(resultJson);
   } catch (err: any) {
     console.error('SOX Audit Resolver Error:', err);
-    return NextResponse.json({ error: err.message || 'Failed to process SOX financial controls analysis' }, { status: 500 });
+    return NextResponse.json({ error: err.message || 'Failed to process financial controls audit' }, { status: 500 });
   }
 }

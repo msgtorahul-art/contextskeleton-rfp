@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
 
   try {
     if (projectId) {
-      // 1. Try DB first
       let project: any = null;
       let questions: any[] = [];
       try {
@@ -33,7 +32,6 @@ export async function GET(req: NextRequest) {
         }
       } catch (e) {}
 
-      // 2. Fallback to memory store if DB empty
       if (!project && memoryProjects.has(projectId)) {
         project = memoryProjects.get(projectId);
         questions = memoryQuestions.get(projectId) || [];
@@ -45,13 +43,11 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json({ project, questions });
     } else {
-      // Return list of all projects for user
       let projects: any[] = [];
       try {
         projects = db.prepare('SELECT * FROM projects WHERE user_id = ? ORDER BY created_at DESC').all(session.userId) as any[];
       } catch (e) {}
 
-      // Combine with memory store
       const memList = Array.from(memoryProjects.values()).filter((p) => p.user_id === session.userId);
       const combined = [...projects, ...memList.filter(mp => !projects.some(p => p.id === mp.id))];
 
@@ -71,12 +67,19 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { action } = body;
+    const action = body.action || (body.name && body.questions ? 'create_project' : '');
 
     if (action === 'create_project') {
       const { name, questions } = body;
       
-      if (!name || !name.trim() || !questions || !Array.isArray(questions) || questions.length === 0) {
+      let parsedQuestions: string[] = [];
+      if (typeof questions === 'string') {
+        parsedQuestions = questions.split('\n').map(q => q.trim()).filter(Boolean);
+      } else if (Array.isArray(questions)) {
+        parsedQuestions = questions.map(q => String(q).trim()).filter(Boolean);
+      }
+
+      if (!name || !name.trim() || parsedQuestions.length === 0) {
         return NextResponse.json({ error: 'Tender name and at least one questionnaire item are required.' }, { status: 400 });
       }
 
@@ -91,18 +94,15 @@ export async function POST(req: NextRequest) {
         insertProject.run(projectId, session.userId, name.trim(), createdAt);
 
         const insertQuestion = db.prepare('INSERT INTO questions (id, project_id, user_id, question_text, status) VALUES (?, ?, ?, ?, ?)');
-        for (const questionText of questions) {
-          if (typeof questionText === 'string' && questionText.trim().length > 0) {
-            const questionId = crypto.randomUUID();
-            insertQuestion.run(questionId, projectId, session.userId, questionText.trim(), 'pending');
-            newQuestionsList.push({ id: questionId, project_id: projectId, user_id: session.userId, question_text: questionText.trim(), status: 'pending' });
-          }
+        for (const questionText of parsedQuestions) {
+          const questionId = crypto.randomUUID();
+          insertQuestion.run(questionId, projectId, session.userId, questionText, 'pending');
+          newQuestionsList.push({ id: questionId, project_id: projectId, user_id: session.userId, question_text: questionText, status: 'pending' });
         }
       } catch (dbErr) {
         console.error('DB project insert warning, falling back to memory store:', dbErr);
       }
 
-      // Memory store safeguard
       memoryProjects.set(projectId, newProject);
       memoryQuestions.set(projectId, newQuestionsList);
 
@@ -123,7 +123,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // 1. Fetch question text
       let questionText = '';
       try {
         const q = db.prepare('SELECT question_text FROM questions WHERE id = ? AND user_id = ?').get(questionId, session.userId) as any;
@@ -144,7 +143,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Question not found' }, { status: 404 });
       }
 
-      // 2. Perform Knowledge Base Vector RAG Search
       const similarChunks = await findSimilarChunks(session.userId, questionText, 3);
       
       let contextText = '';
@@ -153,12 +151,16 @@ export async function POST(req: NextRequest) {
           .map((chunk) => `Source Document [${chunk.filename}]:\n"${chunk.content}"`)
           .join('\n\n');
       } else {
-        contextText = '⚠️ NO SPECIFIC COMPANY KNOWLEDGE BASE DOCUMENTS MATCHED. Ground answers in general industry standards while flagging missing policy specs.';
+        contextText = '⚠️ NO SPECIFIC COMPANY KNOWLEDGE BASE DOCUMENTS MATCHED. Ground answers strictly in general industry standards while explicitly noting missing company policy specifications.';
       }
 
       const systemPrompt = `You are a Senior RFP & Bid Proposal Engineer drafting a formal tender response.
 Provide a clear, highly professional, direct answer to the tender question.
-If Knowledge Base sources are provided, ground your answer strictly in those facts with citations [Source: filename].`;
+
+STRICT ZERO-FABRICATION RULE:
+Ground your answer strictly in facts explicitly stated in the Knowledge Base context or verified industry standards.
+DO NOT invent unmentioned company metrics, SLA guarantees, or software certifications.
+If Knowledge Base sources are provided, cite exact filenames [Source: filename].`;
 
       const userPrompt = `Company Knowledge Base Context:
 ${contextText}
@@ -175,7 +177,6 @@ Drafted Tender Answer:`;
 
       const answerText = response.text || 'Drafted response generated successfully.';
 
-      // Save answer
       try {
         db.prepare('UPDATE questions SET drafted_answer = ?, status = ? WHERE id = ? AND user_id = ?')
           .run(answerText, 'drafted', questionId, session.userId);

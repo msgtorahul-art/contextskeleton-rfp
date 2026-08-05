@@ -56,14 +56,14 @@ export default function IsoQualityResolverPage() {
   const loadPreset = (type: string) => {
     if (type === 'aerospace') {
       setPlantName('Apex Precision Aerospace Machining Plant #2');
-      setQualityStandard('AS9100D Aerospace & Defense Quality System');
+      setQualityStandard('AS9100D Aerospace & ISO 9001:2015');
       setAuditData(`Audit Inspection & CAPA Log:
 1. Clause 8.5.2 First Article Inspection (FAI): 12 CNC machined turbine blade components shipped to Boeing without verified AS9102 FAI report documentation attached.
 2. Clause 7.1.5 Measurement Traceability: Torque wrench #TW-804 used on assembly line was past its 12-month calibration expiration date by 14 days.
 3. Clause 8.7 Non-Conforming Material: 4 defectively anodized aluminum wing brackets found unlabelled in standard inventory racks without red containment tag.`);
     } else if (type === 'automotive') {
       setPlantName('Vanguard Automotive Components Manufacturing');
-      setQualityStandard('IATF 16949 / ISO 9001:2015 Automotive Quality System');
+      setQualityStandard('IATF 16949 Automotive Quality Management');
       setAuditData(`Audit Inspection & CAPA Log:
 1. Clause 10.2 Root Cause Analysis: Recurring dimension variance in brake rotor casting resolved via operator training without updating the Control Plan or Failure Mode and Effects Analysis (FMEA).
 2. Clause 8.4 Supplier Evaluation: Tier-2 raw steel supplier delivered coil stock with unverified mill test certificates.`);
@@ -71,10 +71,15 @@ export default function IsoQualityResolverPage() {
   };
 
   const exportCSV = () => {
-    if (!result) return;
+    if (!result || !Array.isArray(result.items)) return;
     let csvContent = 'Clause Section,Non-Conformance,Status,ISO Rationale,CAPA Action\n';
     result.items.forEach((item) => {
-      csvContent += `"${item.clauseSection}","${item.nonConformance}","${item.status}","${item.isoRationale.replace(/"/g, '""')}","${item.capaAction.replace(/"/g, '""')}"\n`;
+      const sec = (item.clauseSection || '').replace(/"/g, '""');
+      const nc = (item.nonConformance || '').replace(/"/g, '""');
+      const stat = (item.status || '').replace(/"/g, '""');
+      const rat = (item.isoRationale || '').replace(/"/g, '""');
+      const capa = (item.capaAction || '').replace(/"/g, '""');
+      csvContent += `"${sec}","${nc}","${stat}","${rat}","${capa}"\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -86,6 +91,8 @@ export default function IsoQualityResolverPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const safeItems = result && Array.isArray(result.items) ? result.items : [];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
@@ -219,7 +226,7 @@ export default function IsoQualityResolverPage() {
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                         : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                     }`}>
-                      Audit Rating: {result.auditRating}
+                      Audit Rating: {result.auditRating || 'EVALUATED'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed font-medium">{result.summary}</p>
@@ -229,21 +236,23 @@ export default function IsoQualityResolverPage() {
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">ISO 9001 / AS9100 Clause Non-Conformance Matrix</span>
                   
                   <div className="space-y-3">
-                    {result.items.map((item, idx) => (
+                    {safeItems.map((item, idx) => (
                       <div key={idx} className="p-4 rounded-2xl bg-slate-950 border border-slate-900 space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-white">{item.clauseSection}</span>
+                          <span className="text-xs font-bold text-white">{item.clauseSection || 'ISO Standard'}</span>
                           <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
                             item.status === 'CONFORMANT' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                           }`}>
-                            {item.status}
+                            {item.status || 'CHECKED'}
                           </span>
                         </div>
                         <p className="text-xs text-slate-300 font-semibold">{item.nonConformance}</p>
                         <p className="text-xs text-slate-400">{item.isoRationale}</p>
-                        <p className="text-[11px] text-blue-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
-                          CAPA Action: {item.capaAction}
-                        </p>
+                        {item.capaAction && (
+                          <p className="text-[11px] text-blue-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
+                            CAPA Action: {item.capaAction}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>

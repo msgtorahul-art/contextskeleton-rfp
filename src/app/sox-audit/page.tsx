@@ -71,10 +71,15 @@ export default function SoxAuditResolverPage() {
   };
 
   const exportCSV = () => {
-    if (!result) return;
+    if (!result || !Array.isArray(result.items)) return;
     let csvContent = 'Control Category,Control Activity,Status,SOX Rationale,Remediation Action\n';
     result.items.forEach((item) => {
-      csvContent += `"${item.controlCategory}","${item.controlActivity}","${item.status}","${item.soxRationale.replace(/"/g, '""')}","${item.remediationAction.replace(/"/g, '""')}"\n`;
+      const cat = (item.controlCategory || '').replace(/"/g, '""');
+      const act = (item.controlActivity || '').replace(/"/g, '""');
+      const stat = (item.status || '').replace(/"/g, '""');
+      const rat = (item.soxRationale || '').replace(/"/g, '""');
+      const rem = (item.remediationAction || '').replace(/"/g, '""');
+      csvContent += `"${cat}","${act}","${stat}","${rat}","${rem}"\n`;
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -86,6 +91,8 @@ export default function SoxAuditResolverPage() {
     link.click();
     document.body.removeChild(link);
   };
+
+  const safeItems = result && Array.isArray(result.items) ? result.items : [];
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans">
@@ -219,7 +226,7 @@ export default function SoxAuditResolverPage() {
                         ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                         : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                     }`}>
-                      Deficiency Level: {result.controlDeficiencyLevel}
+                      Deficiency Level: {result.controlDeficiencyLevel || 'EVALUATED'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed font-medium">{result.summary}</p>
@@ -229,21 +236,23 @@ export default function SoxAuditResolverPage() {
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">PCAOB / COSO Financial Controls Matrix</span>
                   
                   <div className="space-y-3">
-                    {result.items.map((item, idx) => (
+                    {safeItems.map((item, idx) => (
                       <div key={idx} className="p-4 rounded-2xl bg-slate-950 border border-slate-900 space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-xs font-bold text-white">{item.controlCategory}</span>
+                          <span className="text-xs font-bold text-white">{item.controlCategory || 'Control Standard'}</span>
                           <span className={`text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
                             item.status === 'EFFECTIVE' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
                           }`}>
-                            {item.status}
+                            {item.status || 'CHECKED'}
                           </span>
                         </div>
                         <p className="text-xs text-slate-300 font-semibold">{item.controlActivity}</p>
                         <p className="text-xs text-slate-400">{item.soxRationale}</p>
-                        <p className="text-[11px] text-emerald-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
-                          Remediation Action: {item.remediationAction}
-                        </p>
+                        {item.remediationAction && (
+                          <p className="text-[11px] text-emerald-300/90 font-mono bg-slate-900/60 p-2 rounded-xl border border-slate-900">
+                            Remediation Action: {item.remediationAction}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>

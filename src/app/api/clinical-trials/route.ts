@@ -10,7 +10,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Check credits/subscription
     const userDb = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(user.userId) as any;
     if (userDb && userDb.subscription_status !== 'ACTIVE' && userDb.credits <= 0) {
       return NextResponse.json(
@@ -26,7 +25,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Protocol title and patient clinical record are required.' }, { status: 400 });
     }
 
-    // Perform vector search over user uploaded protocol files
     const similarChunks = await findSimilarChunks(user.userId, patientRecord, 5);
     const vectorContext = similarChunks.map(c => `[Source Protocol: ${c.filename}]\n${c.content}`).join('\n\n');
 
@@ -44,7 +42,10 @@ Patient Clinical Summary & Lab History: ${patientRecord}
 Retrieved Protocol Grounding Context:
 ${vectorContext || 'No custom trial protocol files uploaded. Relying on Good Clinical Practice (GCP) guidelines.'}
 
-Evaluate inclusion and exclusion criteria, biomarker thresholds, prior line therapy rules, and organ function labs.
+STRICT ZERO-FABRICATION RULE:
+Evaluate inclusion/exclusion criteria strictly against the patient details provided.
+DO NOT invent unmentioned lab values or medical conditions.
+
 Return ONLY valid JSON matching this exact structure:
 {
   "summary": "High-level patient eligibility summary, overall match score, and trial protocol compliance status.",
@@ -71,15 +72,16 @@ Return ONLY valid JSON matching this exact structure:
     const data = await res.json();
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     
-    // Extract JSON block
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Invalid response structure from Gemini API');
     }
 
     const resultJson = JSON.parse(jsonMatch[0]);
+    if (!Array.isArray(resultJson.items)) {
+      resultJson.items = [];
+    }
 
-    // Decrement credits if not pro
     if (userDb && userDb.subscription_status !== 'ACTIVE') {
       db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(user.userId);
     }
