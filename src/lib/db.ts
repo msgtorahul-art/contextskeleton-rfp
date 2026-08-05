@@ -77,4 +77,24 @@ try { db.exec("ALTER TABLE users ADD COLUMN verification_code TEXT;"); } catch (
 try { db.exec("ALTER TABLE users ADD COLUMN reset_token TEXT;"); } catch (e) {}
 try { db.exec("ALTER TABLE users ADD COLUMN reset_token_expiry TEXT;"); } catch (e) {}
 
+// Seed Master VIP QA Account for automated AI testing & product evaluation
+try {
+  const existingQa = db.prepare('SELECT id FROM users WHERE email = ?').get('ai-qa-tester@contextskeleton.com');
+  if (!existingQa) {
+    db.prepare(`
+      INSERT INTO users (id, email, password, subscription_status, credits, email_verified)
+      VALUES (?, ?, ?, ?, ?, 1)
+    `).run(
+      'qa-vip-master-account-id',
+      'ai-qa-tester@contextskeleton.com',
+      '$2b$10$feqdvGq0iXYHGybWF8h91ukO/8EVcCAGMjTRRf301MWZ99TI9.RPi',
+      'ACTIVE',
+      99999
+    );
+    console.log('✓ Master VIP QA Tester Account seeded successfully (email: ai-qa-tester@contextskeleton.com)');
+  }
+} catch (err) {
+  console.error('QA account seed error:', err);
+}
+
 console.log('SQLite database initialized successfully at:', DB_PATH);

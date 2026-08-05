@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope, KeyRound
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -156,6 +156,42 @@ export default function LandingPage() {
       ],
       ctaText: 'Launch Privacy Resolver',
       ctaHref: '/privacy-dpia',
+    },
+    {
+      id: 'service-aml',
+      badge: 'FinTech & Banking Risk',
+      badgeColor: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+      title: 'AML & KYC Risk Auditor',
+      icon: DollarSign,
+      iconColor: 'text-yellow-400',
+      glowColor: 'hover:border-yellow-500/50 hover:shadow-yellow-500/10',
+      tagline: 'Audit customer onboarding, PEP sanctions risk, and structuring patterns against FATF and BSA rules.',
+      highlights: [
+        'FATF Recommendations & BSA compliance',
+        'PEP & OFAC sanctions screening',
+        'Structuring & velocity detection',
+        'Single-click CSV AML audit export',
+      ],
+      ctaText: 'Launch AML Auditor',
+      ctaHref: '/aml-kyc',
+    },
+    {
+      id: 'service-ehs',
+      badge: 'EHS & Industrial Safety',
+      badgeColor: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+      title: 'OSHA & EHS Safety Auditor',
+      icon: HardHat,
+      iconColor: 'text-orange-400',
+      glowColor: 'hover:border-orange-500/50 hover:shadow-orange-500/10',
+      tagline: 'Audit factory floor hazards, LOTO protocols, and MSDS chemical sheets against OSHA 1910 and ISO 45001 rules.',
+      highlights: [
+        'OSHA 1910.147 Lockout/Tagout verification',
+        'MSDS & GHS hazard communication audit',
+        'Machine guarding & PPE noise checks',
+        'Single-click CSV safety audit export',
+      ],
+      ctaText: 'Launch EHS Safety Auditor',
+      ctaHref: '/ehs-safety',
     },
     {
       id: 'service-trials',
@@ -356,7 +392,7 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* COMMERCIAL PRICING SECTION - ALL 9 PAID COMMERCIAL PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION - ALL 11 PAID COMMERCIAL PRODUCTS DISPLAYED */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
@@ -497,94 +533,28 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 5. FDA 510(k) MedTech Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-pink-500/40 relative overflow-hidden shadow-xl shadow-pink-500/10">
-            <div className="absolute top-0 right-0 bg-pink-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+          {/* 5. AML & KYC Risk Auditor Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-yellow-500/40 relative overflow-hidden shadow-xl shadow-yellow-500/10">
+            <div className="absolute top-0 right-0 bg-yellow-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
               Product #5
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-pink-400 uppercase tracking-widest block mb-1">MedTech & Biotech</span>
-              <h3 className="text-xl font-bold text-white mb-2">FDA 510(k) Regulatory Pro</h3>
+              <span className="text-[10px] font-bold text-yellow-400 uppercase tracking-widest block mb-1">FinTech & Banking Risk</span>
+              <h3 className="text-xl font-bold text-white mb-2">AML Risk Auditor Pro</h3>
               <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$999</span>
+                <span className="text-3xl font-extrabold text-white">$799</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> Unlimited 510(k) Equivalence Audits
+                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> Unlimited AML & KYC Statutory Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> 21 CFR Part 820 & ISO 13485 Checkers
+                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> FATF PEP & Sanctions Screening
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-pink-400 shrink-0" /> CSV Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get MedTech Pro ($999/mo)
-            </Link>
-          </div>
-
-          {/* 6. Clinical Trial Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
-            <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block mb-1">Pharma & Clinical Operations</span>
-              <h3 className="text-xl font-bold text-white mb-2">Clinical Trial Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$850</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Unlimited Trial Patient Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Biomarker & Prior Therapy Rules
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> CSV Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get Clinical Pro ($850/mo)
-            </Link>
-          </div>
-
-          {/* 7. R&D Tax Credit Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
-            <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #7
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Corporate Finance & Tax</span>
-              <h3 className="text-xl font-bold text-white mb-2">R&amp;D Tax Audit Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$650</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Unlimited IRD / ATO / IRS Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Technical Justification Narratives
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> CSV Audit Spreadsheet Export
+                  <CheckCircle2 className="h-4 w-4 text-yellow-400 shrink-0" /> CSV Risk Audit Spreadsheet Export
                 </li>
               </ul>
             </div>
@@ -592,73 +562,40 @@ export default function LandingPage() {
               href="/auth?mode=register"
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get R&amp;D Tax Pro ($650/mo)
+              Get AML Pro ($799/mo)
             </Link>
           </div>
 
-          {/* 8. ESG & CSRD Climate Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-teal-500/40 relative overflow-hidden shadow-xl shadow-teal-500/10">
-            <div className="absolute top-0 right-0 bg-teal-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #8
+          {/* 6. OSHA & EHS Workplace Safety Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-orange-500/40 relative overflow-hidden shadow-xl shadow-orange-500/10">
+            <div className="absolute top-0 right-0 bg-orange-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #6
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Enterprise Sustainability</span>
-              <h3 className="text-xl font-bold text-white mb-2">ESG Climate Pro</h3>
+              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest block mb-1">EHS & Industrial Safety</span>
+              <h3 className="text-xl font-bold text-white mb-2">EHS Safety Pro</h3>
               <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$599</span>
+                <span className="text-3xl font-extrabold text-white">$499</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
               <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> Unlimited CSRD Scope 1-3 Audits
+                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> Unlimited OSHA 1910 Site Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> EU CSRD & ISSB IFRS S2 Mappings
+                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> LOTO & MSDS Hazard Verification
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> CSV Audit Spreadsheet Export
+                  <CheckCircle2 className="h-4 w-4 text-orange-400 shrink-0" /> CSV Safety Audit Spreadsheet Export
                 </li>
               </ul>
             </div>
             <Link
               href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get ESG Climate Pro ($599/mo)
-            </Link>
-          </div>
-
-          {/* 9. Vector Knowledge Base Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
-            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #9
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Knowledge Infrastructure</span>
-              <h3 className="text-xl font-bold text-white mb-2">Vector Storage Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$299</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Multi-Tenant Turso Cloud Cluster
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> High-Speed RAG Vector Search
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Automatic PDF/DOCX/TXT Indexing
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get Vector Storage Pro ($299/mo)
+              Get EHS Safety Pro ($499/mo)
             </Link>
           </div>
         </div>
@@ -722,6 +659,8 @@ export default function LandingPage() {
                   <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
                   <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
                   <option value="GDPR & HIPAA Privacy DPIA Query">GDPR & HIPAA Privacy DPIA Query</option>
+                  <option value="AML & KYC Risk Query">AML & KYC Risk Query</option>
+                  <option value="OSHA & EHS Safety Query">OSHA & EHS Safety Query</option>
                   <option value="Vector Knowledge Base Support">Vector Knowledge Base Support</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>

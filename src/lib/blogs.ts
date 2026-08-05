@@ -279,18 +279,61 @@ export const BLOG_POSTS: BlogPost[] = [
     metaDescription: 'Discover how Data Protection Officers (DPOs) and privacy counsel automate Data Protection Impact Assessments (DPIA) for EU GDPR Article 35 and HIPAA § 164.308 compliance.',
     content: `
 <h2>The Legal Requirement for DPIAs</h2>
-<p>Under Article 35 of the EU General Data Protection Regulation (GDPR), organizations carrying out high-risk processing of personal data (e.g. AI automated decision-making, large-scale biometric data, cross-border cloud processing) are legally required to conduct a formal <strong>Data Protection Impact Assessment (DPIA)</strong>.</p>
+<p>Under Article 35 of the EU General Data Protection Regulation (GDPR), organizations carrying out high-risk processing of personal data are legally required to conduct a formal <strong>Data Protection Impact Assessment (DPIA)</strong>.</p>
+    `,
+  },
+  {
+    slug: 'automating-aml-kyc-risk-audits-fintech-banking',
+    title: 'Automating AML and KYC Statutory Risk Audits for FinTech and Crypto Banking',
+    excerpt: 'FATF sanctions and structuring violations cause heavy regulatory fines. Learn how compliance officers automate PEP and transaction risk audits.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '8 min read',
+    category: 'FinTech & Banking Compliance',
+    author: 'Financial Intelligence Lab',
+    product: 'AML & KYC Risk Auditor',
+    targetProduct: 'AML & KYC Risk Auditor ($799/mo)',
+    ctaHref: '/aml-kyc',
+    ctaText: 'Launch AML Audit Engine',
+    metaDescription: 'Discover how FinTech compliance officers and banking risk managers automate AML/KYC statutory risk audits against FATF and US BSA rules.',
+    content: `
+<h2>The Statutory Cost of AML Non-Compliance</h2>
+<p>Financial Action Task Force (FATF) guidelines and the US Bank Secrecy Act (BSA) mandate continuous transaction monitoring and PEP sanctions screening.</p>
 
-<h2>Automated Privacy & Subprocessor Audit Workflow</h2>
-<p>The <strong>ContextSkeleton GDPR & HIPAA Privacy Resolver</strong> audits system architecture and vendor subprocessor Data Processing Agreements (DPAs):</p>
+<h2>Automated Transaction Velocity & PEP Screening</h2>
+<p>The <strong>ContextSkeleton AML & KYC Anti-Money Laundering Auditor</strong> evaluates onboarding logs and payment manifests:</p>
 <ul>
-  <li><strong>GDPR Article 35 Triggers:</strong> Flags automated profiling, large-scale special category data, and public surveillance.</li>
-  <li><strong>Cross-Border Transfer Mechanics:</strong> Validates EU Standard Contractual Clauses (SCCs) and EU-US Data Privacy Framework status.</li>
-  <li><strong>HIPAA § 164.308 Safeguards:</strong> Audits administrative, physical, and technical safeguards for Protected Health Information (PHI).</li>
+  <li><strong>PEP & Sanctions Exposure:</strong> Audits OFAC sanctions lists and Politically Exposed Persons indicators.</li>
+  <li><strong>Structuring Detection:</strong> Identifies smurfing patterns designed to evade the $10,000 currency reporting threshold.</li>
+  <li><strong>Shell Company Triggers:</strong> Evaluates complex multi-layered offshore ownership structures.</li>
 </ul>
+    `,
+  },
+  {
+    slug: 'auditing-osha-1910-iso-45001-workplace-safety-hazards-ai',
+    title: 'Auditing OSHA 1910 and ISO 45001 Workplace Safety Hazards with Vector AI',
+    excerpt: 'Factory floor Lockout/Tagout (LOTO) and machine guarding violations cause severe OSHA fines. Discover how EHS directors automate workplace safety audits.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '8 min read',
+    category: 'EHS & Workplace Safety',
+    author: 'Safety Engineering Lab',
+    product: 'OSHA & EHS Safety Auditor',
+    targetProduct: 'OSHA & EHS Safety Auditor ($499/mo)',
+    ctaHref: '/ehs-safety',
+    ctaText: 'Launch EHS Safety Engine',
+    metaDescription: 'Discover how Environmental Health & Safety (EHS) managers audit factory floor hazards and LOTO protocols against OSHA 1910 and ISO 45001 standards.',
+    content: `
+<h2>The Workplace Safety Mandate</h2>
+<p>OSHA 1910 General Industry standards require employers to enforce zero-energy verification under Lockout/Tagout (LOTO) protocols and GHS hazard communications for hazardous chemicals.</p>
 
-<h2>Spreadsheet & Audit Scorecard Export</h2>
-<p>DPOs can export structured CSV privacy spreadsheets ready for immediate review by executive boards and supervisory Data Protection Authorities (DPAs).</p>
+<h2>Automated OSHA Regulatory Audit Engine</h2>
+<p>The <strong>ContextSkeleton OSHA & EHS Workplace Safety Auditor</strong> processes site inspection notes, machinery logs, and MSDS chemical sheets:</p>
+<ul>
+  <li><strong>OSHA 1910.147 LOTO Verification:</strong> Identifies missing energy-isolating padlocks and lockout procedures.</li>
+  <li><strong>OSHA 1910.1200 Hazard Communication:</strong> Audits chemical SDS availability and GHS pictogram labeling.</li>
+  <li><strong>ISO 45001 Audit Scorecard:</strong> Generates structured CSV safety hazard reports for site safety committees.</li>
+</ul>
     `,
   },
 ];
