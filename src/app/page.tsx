@@ -8,8 +8,6 @@ import {
 } from 'lucide-react';
 
 export default function LandingPage() {
-  const [calcPages, setCalcPages] = useState(30);
-
   // Support & Complaint Form state
   const [supportName, setSupportName] = useState('');
   const [supportEmail, setSupportEmail] = useState('');
@@ -216,6 +214,7 @@ export default function LandingPage() {
     {
       id: 'service-skeleton',
       badge: 'Free Developer Tool',
+      title: 'Token Skeletonizer',
       icon: Layers,
       iconColor: 'text-cyan-400',
       badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
@@ -357,7 +356,7 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* COMMERCIAL PRICING SECTION - ALL COMMERCIAL PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION - ALL 9 PAID COMMERCIAL PRODUCTS DISPLAYED */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
@@ -468,7 +467,7 @@ export default function LandingPage() {
           {/* 4. GDPR & HIPAA Privacy DPIA Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
             <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #4 (DPIA)
+              Product #4
             </div>
 
             <div>
@@ -534,7 +533,7 @@ export default function LandingPage() {
           {/* 6. Clinical Trial Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
             <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6 (Pharma)
+              Product #6
             </div>
 
             <div>
@@ -561,6 +560,105 @@ export default function LandingPage() {
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
               Get Clinical Pro ($850/mo)
+            </Link>
+          </div>
+
+          {/* 7. R&D Tax Credit Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
+            <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #7
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Corporate Finance & Tax</span>
+              <h3 className="text-xl font-bold text-white mb-2">R&amp;D Tax Audit Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$650</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Unlimited IRD / ATO / IRS Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Technical Justification Narratives
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> CSV Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get R&amp;D Tax Pro ($650/mo)
+            </Link>
+          </div>
+
+          {/* 8. ESG & CSRD Climate Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-teal-500/40 relative overflow-hidden shadow-xl shadow-teal-500/10">
+            <div className="absolute top-0 right-0 bg-teal-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #8
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Enterprise Sustainability</span>
+              <h3 className="text-xl font-bold text-white mb-2">ESG Climate Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$599</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> Unlimited CSRD Scope 1-3 Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> EU CSRD & ISSB IFRS S2 Mappings
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> CSV Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get ESG Climate Pro ($599/mo)
+            </Link>
+          </div>
+
+          {/* 9. Vector Knowledge Base Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
+            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #9
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Knowledge Infrastructure</span>
+              <h3 className="text-xl font-bold text-white mb-2">Vector Storage Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$299</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Multi-Tenant Turso Cloud Cluster
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> High-Speed RAG Vector Search
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Automatic PDF/DOCX/TXT Indexing
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get Vector Storage Pro ($299/mo)
             </Link>
           </div>
         </div>
@@ -616,9 +714,15 @@ export default function LandingPage() {
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200"
                 >
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
+                  <option value="RFP & Tender Engine Inquiry">RFP & Tender Engine Inquiry</option>
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
+                  <option value="SOC 2 & ISO 27001 Security Question">SOC 2 & ISO 27001 Security Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
+                  <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
+                  <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
+                  <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
                   <option value="GDPR & HIPAA Privacy DPIA Query">GDPR & HIPAA Privacy DPIA Query</option>
+                  <option value="Vector Knowledge Base Support">Vector Knowledge Base Support</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>

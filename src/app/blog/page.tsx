@@ -6,6 +6,9 @@ import { BookOpen, ArrowRight, ArrowLeft, Sparkles, Clock, Calendar, User } from
 export const metadata = {
   title: 'Blog & Articles | ContextSkeleton Enterprise AI',
   description: 'Technical articles, compliance guides, and AI product tutorials for ContextSkeleton.',
+  alternates: {
+    canonical: 'https://contextskeleton.com/blog',
+  },
 };
 
 export default function BlogIndexPage() {

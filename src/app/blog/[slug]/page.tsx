@@ -21,6 +21,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     alternates: {
       canonical: `https://contextskeleton.com/blog/${post.slug}`,
     },
+    openGraph: {
+      type: "article",
+      locale: "en_US",
+      url: `https://contextskeleton.com/blog/${post.slug}`,
+      siteName: "ContextSkeleton",
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.publishDate,
+      authors: [post.author],
+      images: [
+        {
+          url: "https://contextskeleton.com/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: ["https://contextskeleton.com/og-image.png"],
+    },
   };
 }
 

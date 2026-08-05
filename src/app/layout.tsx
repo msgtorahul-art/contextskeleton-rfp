@@ -15,13 +15,14 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "ContextSkeleton | Autonomous RFP Engine & Enterprise Vector Hub",
-  description: "Automate B2B tender proposals, RFIs, and security questionnaires with grounded AI RAG vector search and 1-click Microsoft Word (.docx) export.",
+  title: "ContextSkeleton | Unified Autonomous AI Compliance Platform",
+  description: "Specialized autonomous AI products for B2B RFP tenders, NZBC building consent, SOC 2 / ISO 27001 security, FDA 510(k) MedTech, R&D tax credits, ESG climate, clinical trials, and GDPR/HIPAA privacy.",
   metadataBase: new URL("https://contextskeleton.com"),
   keywords: [
-    "RFP Automation", "Tender Software", "B2B Proposal Generator", 
-    "AI Vector Search", "RAG Engine", "Security Questionnaire Automation", 
-    "Word Exporter", "ContextSkeleton", "Enterprise AI"
+    "Autonomous AI Platform", "RFP Automation", "NZBC Building Consent", 
+    "SOC 2 Security Questionnaires", "FDA 510(k) MedTech", "R&D Tax Credit Analyzer", 
+    "EU CSRD Climate Auditor", "Clinical Trial Protocol", "GDPR HIPAA DPIA", 
+    "Vector RAG", "ContextSkeleton"
   ],
   authors: [{ name: "ContextSkeleton Team", url: "https://contextskeleton.com" }],
   creator: "ContextSkeleton",
@@ -42,21 +43,21 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://contextskeleton.com",
     siteName: "ContextSkeleton",
-    title: "ContextSkeleton | Autonomous RFP Engine & Enterprise Vector Hub",
-    description: "Draft 100-page tender questionnaires in minutes grounded in verified facts. Exports formatted Microsoft Word (.docx) documents.",
+    title: "ContextSkeleton | Unified Autonomous AI Compliance Platform",
+    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, security audits, and regulatory engineering.",
     images: [
       {
         url: "https://contextskeleton.com/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ContextSkeleton RFP Engine & Vector RAG Hub",
+        alt: "ContextSkeleton Enterprise AI Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ContextSkeleton | Autonomous RFP Engine",
-    description: "Automate B2B tender proposals with grounded RAG vector search & Word export.",
+    title: "ContextSkeleton | Unified Autonomous AI Platform",
+    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, and regulatory engineering.",
     images: ["https://contextskeleton.com/og-image.png"],
   },
   alternates: {
@@ -79,10 +80,10 @@ export default function RootLayout({
       "@type": "AggregateOffer",
       "priceCurrency": "USD",
       "lowPrice": "0",
-      "highPrice": "750",
-      "offerCount": "4"
+      "highPrice": "999",
+      "offerCount": "10"
     },
-    "description": "Autonomous RFP & Tender Response Engine powered by Grounded AI Vector Search and Microsoft Word Exporter.",
+    "description": "Unified Autonomous AI Compliance Platform providing independent solutions for B2B RFP proposals, building consents, security audits, FDA 510(k), R&D tax, ESG climate, clinical trials, and GDPR/HIPAA privacy.",
     "url": "https://contextskeleton.com"
   };
 
