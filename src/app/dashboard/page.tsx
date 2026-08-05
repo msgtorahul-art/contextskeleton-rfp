@@ -35,26 +35,38 @@ export default function DashboardPage() {
           return;
         }
 
-        const docsData = await docsRes.json();
-        const projectsData = await projectsRes.json();
+        let docsData: any = {};
+        let projectsData: any = {};
+
+        try {
+          const rawDocs = await docsRes.text();
+          docsData = JSON.parse(rawDocs);
+        } catch (e) {}
+
+        try {
+          const rawProjects = await projectsRes.text();
+          projectsData = JSON.parse(rawProjects);
+        } catch (e) {}
 
         const docsCount = docsData.documents?.length || 0;
         const projectsCount = projectsData.projects?.length || 0;
 
-        // Calculate question details
         let totalQ = 0;
         let completedQ = 0;
 
-        if (projectsData.projects) {
+        if (projectsData.projects && Array.isArray(projectsData.projects)) {
           for (const proj of projectsData.projects) {
-            const detailRes = await fetch(`/api/rfp?projectId=${proj.id}`);
-            if (detailRes.ok) {
-              const detailData = await detailRes.json();
-              if (detailData.questions) {
-                totalQ += detailData.questions.length;
-                completedQ += detailData.questions.filter((q: any) => q.status === 'approved' || q.status === 'drafted').length;
+            try {
+              const detailRes = await fetch(`/api/rfp?projectId=${proj.id}`);
+              if (detailRes.ok) {
+                const rawDetail = await detailRes.text();
+                const detailData = JSON.parse(rawDetail);
+                if (detailData.questions && Array.isArray(detailData.questions)) {
+                  totalQ += detailData.questions.length;
+                  completedQ += detailData.questions.filter((q: any) => q.status === 'approved' || q.status === 'drafted').length;
+                }
               }
-            }
+            } catch (e) {}
           }
         }
 

@@ -10,11 +10,12 @@ export function middleware(req: NextRequest) {
   const isStaticFile = pathname.includes('.') || pathname.startsWith('/_next');
   const isRootPage = pathname === '/';
   
-  // Publicly accessible pages (Landing, Free Skeletonizer Tool, Blog, Privacy, Terms)
+  // Publicly accessible pages (Landing, Free Skeletonizer Tool, Blog, Privacy, Terms, Trust)
   const isPublicPage = 
     pathname === '/privacy' || 
     pathname === '/terms' || 
     pathname === '/skeletonizer' || 
+    pathname === '/trust' ||
     pathname.startsWith('/blog');
 
   const isSandboxCallback = pathname.startsWith('/api/billing/sandbox-callback');
