@@ -32,7 +32,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Redirect unauthenticated users trying to access protected workspace routes (/projects, /consent, /security-questionnaire, /fda-510k, /rd-tax, /esg, /knowledge, /dashboard) to /auth
+  // Redirect unauthenticated users trying to access protected workspace routes (/projects, /consent, /security-questionnaire, /fda-510k, /rd-tax, /esg, /clinical-trials, /knowledge, /dashboard) to /auth
   if (!token && !isAuthPage && !isRootPage && !isPublicPage) {
     const loginUrl = new URL('/auth', req.url);
     return NextResponse.redirect(loginUrl);

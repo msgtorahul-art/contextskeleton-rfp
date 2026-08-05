@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -74,6 +74,7 @@ export default function Sidebar() {
     { name: 'FDA 510(k) MedTech Resolver', href: '/fda-510k', icon: Activity },
     { name: 'R&D Tax Audit Analyzer', href: '/rd-tax', icon: Calculator },
     { name: 'ESG & CSRD Climate Auditor', href: '/esg', icon: Leaf },
+    { name: 'Clinical Trial Resolver', href: '/clinical-trials', icon: Stethoscope },
     { name: 'Vector Knowledge Base', href: '/knowledge', icon: Database },
     { name: 'Token Skeletonizer', href: '/skeletonizer', icon: Layers },
     { name: 'Public Site & Pricing', href: '/?preview=true', icon: Globe },

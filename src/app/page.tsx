@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -140,6 +140,24 @@ export default function LandingPage() {
       ],
       ctaText: 'Launch R&D Tax Analyzer',
       ctaHref: '/rd-tax',
+    },
+    {
+      id: 'service-trials',
+      badge: 'Pharma & Clinical Operations',
+      badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+      title: 'Clinical Trial Protocol Resolver',
+      icon: Stethoscope,
+      iconColor: 'text-rose-400',
+      glowColor: 'hover:border-rose-500/50 hover:shadow-rose-500/10',
+      tagline: 'Automate patient inclusion and exclusion criteria screening against FDA and EMA trial protocols.',
+      highlights: [
+        'Biomarker status & lab threshold validation',
+        'Prior line therapy washout audit',
+        'Organ function safety scorecards',
+        'Single-click CSV eligibility export',
+      ],
+      ctaText: 'Launch Trial Resolver',
+      ctaHref: '/clinical-trials',
     },
     {
       id: 'service-esg',
@@ -462,10 +480,43 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 5. R&D Tax Credit Pricing */}
+          {/* 5. Clinical Trial Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
+            <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #5 (Pharma)
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block mb-1">Pharma & Clinical Operations</span>
+              <h3 className="text-xl font-bold text-white mb-2">Clinical Trial Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$850</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Unlimited Trial Patient Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Biomarker & Prior Therapy Rules
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> CSV Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get Clinical Pro ($850/mo)
+            </Link>
+          </div>
+
+          {/* 6. R&D Tax Credit Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
             <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #5
+              Product #6
             </div>
 
             <div>
@@ -492,39 +543,6 @@ export default function LandingPage() {
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
               Get R&amp;D Tax Pro ($650/mo)
-            </Link>
-          </div>
-
-          {/* 6. ESG & CSRD Climate Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-teal-500/40 relative overflow-hidden shadow-xl shadow-teal-500/10">
-            <div className="absolute top-0 right-0 bg-teal-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6 (ESG)
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-teal-400 uppercase tracking-widest block mb-1">Enterprise Sustainability</span>
-              <h3 className="text-xl font-bold text-white mb-2">ESG Climate Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$599</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> Unlimited CSRD Scope 1-3 Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> EU CSRD & ISSB IFRS S2 Mappings
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-teal-400 shrink-0" /> CSV Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get ESG Climate Pro ($599/mo)
             </Link>
           </div>
         </div>
@@ -582,8 +600,7 @@ export default function LandingPage() {
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
-                  <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
-                  <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
+                  <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>

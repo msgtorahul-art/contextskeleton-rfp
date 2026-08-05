@@ -234,9 +234,36 @@ export const BLOG_POSTS: BlogPost[] = [
   <li><strong>Scope 2 Indirect Energy:</strong> Calculates electricity grid carbon intensity and thermal power consumption.</li>
   <li><strong>Scope 3 Upstream Supply Chain:</strong> Evaluates logistics vendors, raw material suppliers, and business travel.</li>
 </ul>
+    `,
+  },
+  {
+    slug: 'automating-patient-eligibility-screening-fda-ema-clinical-trials',
+    title: 'Automating Patient Eligibility Screening for FDA and EMA Clinical Trials',
+    excerpt: 'Screening patient cohorts against 200-page trial protocols causes costly delays. Learn how CROs automate inclusion/exclusion criteria auditing.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '9 min read',
+    category: 'Pharma & Clinical Operations',
+    author: 'Clinical Operations Lab',
+    product: 'Clinical Trial Resolver',
+    targetProduct: 'Clinical Trial Resolver ($850/mo)',
+    ctaHref: '/clinical-trials',
+    ctaText: 'Launch Clinical Trial Engine',
+    metaDescription: 'Discover how Clinical Research Organizations (CROs) and trial investigators automate patient inclusion/exclusion criteria screening for FDA and EMA protocols.',
+    content: `
+<h2>The Clinical Trial Recruitment Bottleneck</h2>
+<p>Recruiting and screening patient cohorts against complex inclusion and exclusion criteria in 200-page FDA/EMA protocols is one of the most expensive bottlenecks in drug development.</p>
+
+<h2>Automated Protocol Eligibility Matching</h2>
+<p>The <strong>ContextSkeleton Clinical Trial Protocol & Patient Eligibility Resolver</strong> evaluates patient medical records against trial protocols:</p>
+<ul>
+  <li><strong>Biomarker Status:</strong> Evaluates PD-L1, EGFR, ALK, and genetic tumor markers.</li>
+  <li><strong>Prior Line Therapies:</strong> Audits prior treatment regimens and washout periods.</li>
+  <li><strong>Organ Function Labs:</strong> Evaluates liver, kidney, and hematologic lab thresholds against Good Clinical Practice (GCP) guidelines.</li>
+</ul>
 
 <h2>Spreadsheet & Audit Scorecard Export</h2>
-<p>Sustainability directors can export structured CSV spreadsheets formatted for instant integration into corporate CSRD and ISSB annual climate disclosures.</p>
+<p>Trial coordinators can export structured CSV patient eligibility spreadsheets formatted for instant review by Principal Investigators and IRB committees.</p>
     `,
   },
 ];
