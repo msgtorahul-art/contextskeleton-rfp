@@ -53,6 +53,8 @@ export default function LandingPage() {
       id: 'service-rfp',
       badge: 'B2B Tender Teams',
       badgeColor: 'bg-violet-500/10 text-violet-400 border-violet-500/20',
+      price: '$499 / mo',
+      priceColor: 'bg-violet-500/10 text-violet-300 border-violet-500/30',
       title: 'Autonomous RFP & Tender Engine',
       icon: FileText,
       iconColor: 'text-violet-400',
@@ -64,13 +66,15 @@ export default function LandingPage() {
         'Single-click Microsoft Word (.docx) export',
         'Collaborative reviewer workspace',
       ],
-      ctaText: 'Launch RFP Workspace',
+      ctaText: 'Launch RFP Workspace ($499/mo)',
       ctaHref: '/projects',
     },
     {
       id: 'service-consent',
       badge: 'Architects & Builders',
       badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      price: '$750 / mo',
+      priceColor: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
       title: 'AI Building Consent Auditor',
       icon: ShieldCheck,
       iconColor: 'text-emerald-400',
@@ -82,13 +86,15 @@ export default function LandingPage() {
         'Generates producer statement (PS1/PS3) lists',
         'Reduces council approval delays by weeks',
       ],
-      ctaText: 'Launch Building Auditor',
+      ctaText: 'Launch Building Auditor ($750/mo)',
       ctaHref: '/consent',
     },
     {
       id: 'service-security',
       badge: 'CISOs & SaaS Security',
       badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+      price: '$499 / mo',
+      priceColor: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
       title: 'SOC2 & ISO 27001 Security Resolver',
       icon: Lock,
       iconColor: 'text-rose-400',
@@ -100,13 +106,15 @@ export default function LandingPage() {
         'Confidence ratings & compliance status',
         'Single-click CSV / Excel spreadsheet export',
       ],
-      ctaText: 'Launch Security Resolver',
+      ctaText: 'Launch Security Resolver ($499/mo)',
       ctaHref: '/security-questionnaire',
     },
     {
       id: 'service-fda',
       badge: 'MedTech & Biotech',
       badgeColor: 'bg-pink-500/10 text-pink-400 border-pink-500/20',
+      price: '$999 / mo',
+      priceColor: 'bg-pink-500/10 text-pink-300 border-pink-500/30',
       title: 'FDA 510(k) MedTech Resolver',
       icon: Activity,
       iconColor: 'text-pink-400',
@@ -118,13 +126,15 @@ export default function LandingPage() {
         'Side-by-side predicate device comparison',
         'Single-click CSV audit spreadsheet export',
       ],
-      ctaText: 'Launch MedTech Resolver',
+      ctaText: 'Launch MedTech Resolver ($999/mo)',
       ctaHref: '/fda-510k',
     },
     {
       id: 'service-isoquality',
       badge: 'Aerospace & Quality QA',
       badgeColor: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+      price: '$899 / mo',
+      priceColor: 'bg-blue-500/10 text-blue-300 border-blue-500/30',
       title: 'ISO 9001 & AS9100 Quality Auditor',
       icon: CheckSquare,
       iconColor: 'text-blue-400',
@@ -136,13 +146,15 @@ export default function LandingPage() {
         'CAPA root cause & preventive action scorecards',
         'Single-click CSV quality audit export',
       ],
-      ctaText: 'Launch Quality Auditor',
+      ctaText: 'Launch Quality Auditor ($899/mo)',
       ctaHref: '/iso-quality',
     },
     {
       id: 'service-soxaudit',
       badge: 'Internal Audit & Controllers',
       badgeColor: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      price: '$750 / mo',
+      priceColor: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
       title: 'SOX 404 & SOC 1 Financial Auditor',
       icon: Briefcase,
       iconColor: 'text-emerald-400',
@@ -154,13 +166,15 @@ export default function LandingPage() {
         'ITGC change management & access reviews',
         'Single-click CSV financial audit export',
       ],
-      ctaText: 'Launch SOX Auditor',
+      ctaText: 'Launch SOX Auditor ($750/mo)',
       ctaHref: '/sox-audit',
     },
     {
       id: 'service-rdtax',
       badge: 'Corporate Finance & Tax',
       badgeColor: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+      price: '$650 / mo',
+      priceColor: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
       title: 'AI R&D Tax Credit & Audit Analyzer',
       icon: Calculator,
       iconColor: 'text-amber-400',
@@ -172,13 +186,15 @@ export default function LandingPage() {
         'Flags non-eligible operational activities',
         'Single-click CSV audit spreadsheet export',
       ],
-      ctaText: 'Launch R&D Tax Analyzer',
+      ctaText: 'Launch R&D Tax Analyzer ($650/mo)',
       ctaHref: '/rd-tax',
     },
     {
       id: 'service-dpia',
       badge: 'DPOs & Enterprise Privacy',
       badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+      price: '$550 / mo',
+      priceColor: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
       title: 'GDPR & HIPAA Data Privacy Resolver',
       icon: KeyRound,
       iconColor: 'text-indigo-400',
@@ -190,13 +206,15 @@ export default function LandingPage() {
         'Subprocessor DPA & SCC transfer validation',
         'Single-click CSV privacy audit export',
       ],
-      ctaText: 'Launch Privacy Resolver',
+      ctaText: 'Launch Privacy Resolver ($550/mo)',
       ctaHref: '/privacy-dpia',
     },
     {
       id: 'service-aml',
       badge: 'FinTech & Banking Risk',
       badgeColor: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+      price: '$799 / mo',
+      priceColor: 'bg-yellow-500/10 text-yellow-300 border-yellow-500/30',
       title: 'AML & KYC Risk Auditor',
       icon: DollarSign,
       iconColor: 'text-yellow-400',
@@ -208,13 +226,15 @@ export default function LandingPage() {
         'Structuring & velocity detection',
         'Single-click CSV AML audit export',
       ],
-      ctaText: 'Launch AML Auditor',
+      ctaText: 'Launch AML Auditor ($799/mo)',
       ctaHref: '/aml-kyc',
     },
     {
       id: 'service-ehs',
       badge: 'EHS & Industrial Safety',
       badgeColor: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+      price: '$499 / mo',
+      priceColor: 'bg-orange-500/10 text-orange-300 border-orange-500/30',
       title: 'OSHA & EHS Safety Auditor',
       icon: HardHat,
       iconColor: 'text-orange-400',
@@ -226,13 +246,15 @@ export default function LandingPage() {
         'Machine guarding & PPE noise checks',
         'Single-click CSV safety audit export',
       ],
-      ctaText: 'Launch EHS Safety Auditor',
+      ctaText: 'Launch EHS Auditor ($499/mo)',
       ctaHref: '/ehs-safety',
     },
     {
       id: 'service-trials',
       badge: 'Pharma & Clinical Operations',
       badgeColor: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+      price: '$850 / mo',
+      priceColor: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
       title: 'Clinical Trial Protocol Resolver',
       icon: Stethoscope,
       iconColor: 'text-rose-400',
@@ -244,13 +266,15 @@ export default function LandingPage() {
         'Organ function safety scorecards',
         'Single-click CSV eligibility export',
       ],
-      ctaText: 'Launch Trial Resolver',
+      ctaText: 'Launch Trial Resolver ($850/mo)',
       ctaHref: '/clinical-trials',
     },
     {
       id: 'service-esg',
       badge: 'Enterprise ESG & Climate',
       badgeColor: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
+      price: '$599 / mo',
+      priceColor: 'bg-teal-500/10 text-teal-300 border-teal-500/30',
       title: 'AI ESG & CSRD Climate Auditor',
       icon: Leaf,
       iconColor: 'text-teal-400',
@@ -262,13 +286,15 @@ export default function LandingPage() {
         'Actionable decarbonization recommendations',
         'Single-click CSV audit spreadsheet export',
       ],
-      ctaText: 'Launch ESG Climate Auditor',
+      ctaText: 'Launch Climate Auditor ($599/mo)',
       ctaHref: '/esg',
     },
     {
       id: 'service-knowledge',
       badge: 'Vector Knowledge Hub',
       badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+      price: '$299 / mo',
+      priceColor: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30',
       title: 'Enterprise Vector Knowledge Base',
       icon: Database,
       iconColor: 'text-indigo-400',
@@ -280,16 +306,18 @@ export default function LandingPage() {
         'Automatic PDF, DOCX, and TXT chunking',
         'Multi-tenant enterprise security boundaries',
       ],
-      ctaText: 'Manage Knowledge Base',
+      ctaText: 'Manage Vector Storage ($299/mo)',
       ctaHref: '/knowledge',
     },
     {
       id: 'service-skeleton',
       badge: 'Free Developer Tool',
+      badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+      price: 'Free Utility',
+      priceColor: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
       title: 'Token Skeletonizer',
       icon: Layers,
       iconColor: 'text-cyan-400',
-      badgeColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
       glowColor: 'hover:border-cyan-500/50 hover:shadow-cyan-500/10',
       tagline: 'Compress codebases and documents by 90%+ without losing structural context.',
       highlights: [
@@ -367,12 +395,10 @@ export default function LandingPage() {
       {/* HERO SECTION WITH HIGH-CONTRAST VIBRANT AI NEURAL BRAIN BACKGROUND */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
         <div className="relative text-center max-w-5xl mx-auto mb-16 p-10 md:p-16 rounded-3xl border border-cyan-500/40 overflow-hidden shadow-2xl shadow-cyan-500/20">
-          {/* Vibrant high-contrast AI Neural Brain background image */}
           <div 
             className="absolute inset-0 bg-cover bg-center opacity-85 pointer-events-none"
             style={{ backgroundImage: `url('/hero-bg.png')` }}
           />
-          {/* Subtle vignette gradient overlay for high text legibility */}
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/40 to-slate-950/90 pointer-events-none" />
 
           <div className="relative z-10">
@@ -383,17 +409,17 @@ export default function LandingPage() {
             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
               Specialized Autonomous AI.<br />
               <span className="bg-gradient-to-r from-violet-300 via-indigo-200 to-cyan-300 bg-clip-text text-transparent">
-                Independent Solutions for Every User.
+                Independent Solutions with Direct Transparent Pricing.
               </span>
             </h1>
 
             <p className="text-slate-200 mt-4 text-base max-w-2xl mx-auto leading-relaxed font-medium drop-shadow">
-              Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
+              Select your dedicated product workspace below. Each solution operates independently with explicit subscription pricing and custom compliance engines.
             </p>
           </div>
         </div>
 
-        {/* INDEPENDENT PRODUCTS GRID */}
+        {/* INDEPENDENT PRODUCTS GRID WITH DIRECT PRICING EMBEDDED */}
         <section id="services" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mainServices.map((s) => {
             const Icon = s.icon;
@@ -407,9 +433,14 @@ export default function LandingPage() {
                     <div className={`h-11 w-11 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center ${s.iconColor}`}>
                       <Icon className="h-5 w-5" />
                     </div>
-                    <span className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${s.badgeColor}`}>
-                      {s.badge}
-                    </span>
+                    <div className="flex flex-col items-end gap-1">
+                      <span className={`text-[9px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-full border ${s.badgeColor}`}>
+                        {s.badge}
+                      </span>
+                      <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full border ${s.priceColor}`}>
+                        {s.price}
+                      </span>
+                    </div>
                   </div>
 
                   <h2 className="text-lg font-bold text-white mb-2 group-hover:text-violet-400 transition-colors">
@@ -444,12 +475,12 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* COMMERCIAL PRICING SECTION - ALL 13 PAID COMMERCIAL PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Product Pricing</h2>
-          <p className="text-slate-400 mt-3 text-sm">Select the exact product tier tailored for your business needs.</p>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Product Pricing Overview</h2>
+          <p className="text-slate-400 mt-3 text-sm">Every product includes full features, grounded vector citations, and single-click CSV/Word exports.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -535,19 +566,19 @@ export default function LandingPage() {
                   className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200"
                 >
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
-                  <option value="RFP & Tender Engine Inquiry">RFP & Tender Engine Inquiry</option>
-                  <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
-                  <option value="SOC 2 & ISO 27001 Security Question">SOC 2 & ISO 27001 Security Question</option>
-                  <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
-                  <option value="ISO 9001 & AS9100 Quality Query">ISO 9001 & AS9100 Quality Query</option>
-                  <option value="SOX 404 Financial Control Query">SOX 404 Financial Control Query</option>
-                  <option value="R&D Tax Credit Query">R&D Tax Credit Query</option>
-                  <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry</option>
-                  <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
-                  <option value="GDPR & HIPAA Privacy DPIA Query">GDPR & HIPAA Privacy DPIA Query</option>
-                  <option value="AML & KYC Risk Query">AML & KYC Risk Query</option>
-                  <option value="OSHA & EHS Safety Query">OSHA & EHS Safety Query</option>
-                  <option value="Vector Knowledge Base Support">Vector Knowledge Base Support</option>
+                  <option value="RFP & Tender Engine Inquiry">RFP & Tender Engine Inquiry ($499/mo)</option>
+                  <option value="Building Consent Auditor Question">Building Consent Auditor Question ($750/mo)</option>
+                  <option value="SOC 2 & ISO 27001 Security Question">SOC 2 & ISO 27001 Security Question ($499/mo)</option>
+                  <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query ($999/mo)</option>
+                  <option value="ISO 9001 & AS9100 Quality Query">ISO 9001 & AS9100 Quality Query ($899/mo)</option>
+                  <option value="SOX 404 Financial Control Query">SOX 404 Financial Control Query ($750/mo)</option>
+                  <option value="R&D Tax Credit Query">R&D Tax Credit Query ($650/mo)</option>
+                  <option value="ESG & CSRD Climate Inquiry">ESG & CSRD Climate Inquiry ($599/mo)</option>
+                  <option value="Clinical Trial Inquiry">Clinical Trial Inquiry ($850/mo)</option>
+                  <option value="GDPR & HIPAA Privacy DPIA Query">GDPR & HIPAA Privacy DPIA Query ($550/mo)</option>
+                  <option value="AML & KYC Risk Query">AML & KYC Risk Query ($799/mo)</option>
+                  <option value="OSHA & EHS Safety Query">OSHA & EHS Safety Query ($499/mo)</option>
+                  <option value="Vector Knowledge Base Support">Vector Knowledge Base Support ($299/mo)</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>
