@@ -149,17 +149,17 @@ export default function LandingPage() {
       <div className="absolute top-[35%] right-0 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-cyan-600/10 rounded-full blur-[160px] pointer-events-none" />
 
-      {/* Top Navigation Navbar */}
+      {/* Top Navigation Navbar - LOGO WRAPPED IN LINK TO HOMEPAGE */}
       <nav className="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center z-30 relative border-b border-slate-900/80 backdrop-blur-md bg-slate-950/80 sticky top-0">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg shadow-violet-500/20">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-extrabold text-white text-xl shadow-lg shadow-violet-500/20 group-hover:scale-105 transition duration-300">
             C
           </div>
           <div>
-            <span className="font-extrabold text-white text-lg tracking-tight block">ContextSkeleton</span>
+            <span className="font-extrabold text-white text-lg tracking-tight block group-hover:text-violet-400 transition">ContextSkeleton</span>
             <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Product Suite</span>
           </div>
-        </div>
+        </Link>
 
         <div className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-400">
           <a href="#services" className="hover:text-white transition">Independent Products</a>
@@ -188,30 +188,19 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO SECTION WITH FEATURED HERO BANNER IMAGE (WITH WORKING LEARN MORE BUTTON) */}
+      {/* HERO SECTION WITH SEPARATED PRODUCTS SHOWCASE (REVERTED IMAGE) */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
             <Sparkles className="h-4 w-4" /> Dedicated Autonomous AI Products
           </div>
 
-          {/* HERO BANNER IMAGE CONTAINER WITH INTERACTIVE LEARN MORE BUTTON */}
-          <div className="relative max-w-4xl mx-auto mb-12 rounded-3xl overflow-hidden border border-cyan-500/40 shadow-2xl shadow-cyan-500/20 group">
-            <img
-              src="/hero-banner.png"
-              alt="ContextSkeleton Specialized Autonomous AI - Independent Solutions for Every User"
-              className="w-full h-auto object-cover rounded-3xl"
-            />
-
-            {/* CLICKABLE OVERLAY BUTTON ON 'LEARN MORE >' AREA THAT OPENS THE BLOG */}
-            <Link
-              href="/blog"
-              title="Click to view ContextSkeleton Product Blogs & Guides"
-              className="absolute left-[8%] top-[58%] md:top-[60%] lg:top-[62%] w-[24%] h-[18%] rounded-2xl bg-cyan-500/10 hover:bg-cyan-400/20 border border-cyan-400/40 transition duration-300 flex items-center justify-center cursor-pointer shadow-lg shadow-cyan-500/30 group-hover:scale-105"
-            >
-              <span className="sr-only">Learn More - View Product Blogs</span>
-            </Link>
-          </div>
+          <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
+            Specialized Autonomous AI.<br />
+            <span className="bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+              Independent Solutions for Every User.
+            </span>
+          </h1>
 
           <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
             Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
@@ -527,14 +516,14 @@ export default function LandingPage() {
       {/* FOOTER WITH PUBLIC LEGAL LINKS & BLOG LINK */}
       <footer className="max-w-7xl mx-auto px-6 py-12 border-t border-slate-900/80 text-slate-500 text-xs z-10 relative">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="h-7 w-7 rounded-xl bg-violet-600 flex items-center justify-center font-extrabold text-white text-xs">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="h-7 w-7 rounded-xl bg-violet-600 flex items-center justify-center font-extrabold text-white text-xs group-hover:scale-105 transition">
               C
             </div>
-            <span className="font-bold text-white text-sm">ContextSkeleton</span>
+            <span className="font-bold text-white text-sm group-hover:text-violet-400 transition">ContextSkeleton</span>
             <span className="text-slate-600">|</span>
             <span>&copy; {new Date().getFullYear()} ContextSkeleton. All rights reserved.</span>
-          </div>
+          </Link>
 
           <div className="flex flex-wrap items-center gap-6 text-slate-400 text-xs">
             <Link href="/auth" className="hover:text-white transition">Platform Login</Link>

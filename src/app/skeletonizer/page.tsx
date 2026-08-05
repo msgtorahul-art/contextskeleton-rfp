@@ -103,18 +103,18 @@ export class AnalyticsTracker {
       {isLoggedIn && <Sidebar />}
 
       <main className={`flex-1 p-8 min-h-screen ${isLoggedIn ? 'pl-80' : 'max-w-6xl mx-auto'}`}>
-        {/* Top bar for public visitors */}
+        {/* Top bar for public visitors with logo pointing to homepage */}
         {!isLoggedIn && (
           <nav className="flex justify-between items-center mb-8 border-b border-slate-900 pb-4">
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg">
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg group-hover:scale-105 transition">
                 C
               </div>
               <div>
-                <span className="font-bold text-white text-base block">ContextSkeleton</span>
+                <span className="font-bold text-white text-base block group-hover:text-violet-400 transition">ContextSkeleton</span>
                 <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider block -mt-1">Free Developer Tool</span>
               </div>
-            </div>
+            </Link>
 
             <div className="flex items-center gap-3">
               <Link href="/auth" className="text-xs text-slate-400 hover:text-white font-semibold">Sign In</Link>

@@ -33,14 +33,27 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 font-sans px-6 py-12">
+    <main className="min-h-screen bg-slate-950 text-slate-100 font-sans px-6 py-8">
       <div className="max-w-4xl mx-auto">
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to All Articles
-        </Link>
+        {/* Top Navbar with logo pointing to homepage */}
+        <nav className="flex justify-between items-center mb-8 border-b border-slate-900 pb-4">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg group-hover:scale-105 transition">
+              C
+            </div>
+            <div>
+              <span className="font-bold text-white text-base block group-hover:text-violet-400 transition">ContextSkeleton</span>
+              <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Product Suite</span>
+            </div>
+          </Link>
+
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition"
+          >
+            <ArrowLeft className="h-4 w-4" /> Back to All Articles
+          </Link>
+        </nav>
 
         <header className="mb-10 border-b border-slate-900 pb-8">
           <div className="flex items-center gap-3 mb-4">

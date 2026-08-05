@@ -46,7 +46,6 @@ export default function Sidebar() {
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
       router.push('/auth');
-      router.refresh();
     } catch (err) {
       console.error('Logout failed:', err);
     }
@@ -80,32 +79,33 @@ export default function Sidebar() {
   return (
     <aside className="w-80 h-screen fixed top-0 left-0 bg-slate-950 border-r border-slate-900 flex flex-col justify-between p-6 z-30">
       <div className="space-y-8">
-        {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-violet-500/20">
+        {/* Brand Link to Homepage */}
+        <Link href="/?preview=true" className="flex items-center gap-3 group cursor-pointer">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-violet-500/20 group-hover:scale-105 transition">
             C
           </div>
           <div>
-            <span className="font-bold text-white text-lg block tracking-tight">ContextSkeleton</span>
+            <span className="font-bold text-white text-lg block tracking-tight group-hover:text-violet-400 transition">ContextSkeleton</span>
             <span className="text-[10px] text-violet-400 font-bold uppercase tracking-wider block -mt-1">Unified AI Platform</span>
           </div>
-        </div>
+        </Link>
 
         {/* Navigation */}
-        <nav className="space-y-1">
+        <nav className="space-y-1.5">
           {navItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`w-full flex items-center gap-3.5 py-3 px-3.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold transition ${
                   isActive
-                    ? 'bg-violet-600/10 text-violet-400 border-l-2 border-violet-500 pl-3'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                    ? 'bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
                 }`}
               >
-                <item.icon className={`h-4 w-4 ${isActive ? 'text-violet-400' : 'text-slate-400'}`} />
+                <Icon className={`h-4 w-4 ${isActive ? 'text-violet-400' : 'text-slate-500'}`} />
                 {item.name}
               </Link>
             );
@@ -113,70 +113,63 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer / Account & Billing */}
-      <div className="space-y-4">
-        {/* Paywall/Credit status card */}
+      {/* User Info & Subscription */}
+      <div className="space-y-4 pt-6 border-t border-slate-900">
         {user && (
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800/80 shadow-md">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-semibold text-slate-400">Account status</span>
-              {user.subscription_status === 'active' ? (
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                  <Sparkles className="h-2.5 w-2.5" /> PRO
-                </span>
-              ) : (
-                <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                  Free Trial
-                </span>
-              )}
-            </div>
-            
-            <div className="mb-3">
-              {user.subscription_status === 'active' ? (
-                <span className="text-sm font-bold text-white block">Unlimited Platform Access</span>
-              ) : (
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold text-white">{user.credits}</span>
-                  <span className="text-xs text-slate-400 font-semibold">credits remaining</span>
-                </div>
-              )}
+          <div className="glass-panel p-4 rounded-2xl border-slate-900 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-slate-500 uppercase">Account Status</span>
+              <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
+                user.subscription_status === 'ACTIVE' 
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                  : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+              }`}>
+                {user.subscription_status === 'ACTIVE' ? 'Pro Plan' : 'Free Trial'}
+              </span>
             </div>
 
-            {user.subscription_status !== 'active' && (
-              <button
-                type="button"
-                onClick={handleUpgrade}
-                disabled={loadingBilling}
-                className="w-full flex items-center justify-center gap-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white font-semibold text-xs py-2.5 px-3 rounded-xl transition cursor-pointer"
-              >
-                {loadingBilling ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <>
-                    <CreditCard className="h-3.5 w-3.5" />
-                    Upgrade to PRO ($499/mo)
-                  </>
-                )}
-              </button>
+            <div className="text-xs font-bold text-white truncate">
+              {user.email}
+            </div>
+
+            {user.subscription_status !== 'ACTIVE' && (
+              <div className="pt-1">
+                <div className="flex justify-between text-[11px] text-slate-400 mb-1.5 font-medium">
+                  <span>Evaluation Generations</span>
+                  <span className="font-bold text-white">{user.credits} remaining</span>
+                </div>
+                <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                  <div 
+                    className="bg-gradient-to-r from-violet-600 to-indigo-600 h-full rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min(100, (user.credits / 10) * 100)}%` }}
+                  />
+                </div>
+
+                <button
+                  onClick={handleUpgrade}
+                  disabled={loadingBilling}
+                  className="w-full mt-3 inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-2 px-3 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/10 disabled:opacity-50"
+                >
+                  {loadingBilling ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <Sparkles className="h-3.5 w-3.5" /> Upgrade to Pro
+                    </>
+                  )}
+                </button>
+              </div>
             )}
           </div>
         )}
 
-        {/* Profile details */}
-        {user && (
-          <div className="flex items-center justify-between px-2 pt-2 border-t border-slate-900">
-            <div className="overflow-hidden mr-2">
-              <span className="text-xs font-bold text-white block truncate">{user.email}</span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg transition hover:bg-rose-500/5 cursor-pointer"
-              title="Log Out"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        )}
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign Out
+        </button>
       </div>
     </aside>
   );
