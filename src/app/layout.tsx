@@ -16,13 +16,14 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "ContextSkeleton | Unified Autonomous AI Compliance Platform",
-  description: "Specialized autonomous AI products for B2B RFP tenders, NZBC building consent, SOC 2 / ISO 27001 security, FDA 510(k) MedTech, R&D tax credits, ESG climate, clinical trials, and GDPR/HIPAA privacy.",
+  description: "Specialized autonomous AI products for B2B RFP tenders, NZBC building consent, SOC 2 / ISO 27001 security, FDA 510(k) MedTech, ISO 9001 quality, SOX 404 financial controls, R&D tax credits, ESG climate, clinical trials, GDPR/HIPAA privacy, AML/KYC, and OSHA workplace safety.",
   metadataBase: new URL("https://contextskeleton.com"),
   keywords: [
     "Autonomous AI Platform", "RFP Automation", "NZBC Building Consent", 
-    "SOC 2 Security Questionnaires", "FDA 510(k) MedTech", "R&D Tax Credit Analyzer", 
-    "EU CSRD Climate Auditor", "Clinical Trial Protocol", "GDPR HIPAA DPIA", 
-    "Vector RAG", "ContextSkeleton"
+    "SOC 2 Security Questionnaires", "FDA 510(k) MedTech", "ISO 9001 AS9100 Quality Auditor",
+    "SOX 404 Financial Controls", "R&D Tax Credit Analyzer", "EU CSRD Climate Auditor", 
+    "Clinical Trial Protocol", "GDPR HIPAA DPIA", "AML KYC Risk Auditor",
+    "OSHA EHS Workplace Safety", "Vector RAG", "ContextSkeleton"
   ],
   authors: [{ name: "ContextSkeleton Team", url: "https://contextskeleton.com" }],
   creator: "ContextSkeleton",
@@ -44,7 +45,7 @@ export const metadata: Metadata = {
     url: "https://contextskeleton.com",
     siteName: "ContextSkeleton",
     title: "ContextSkeleton | Unified Autonomous AI Compliance Platform",
-    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, security audits, and regulatory engineering.",
+    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, financial audits, security controls, and regulatory engineering.",
     images: [
       {
         url: "https://contextskeleton.com/og-image.png",
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ContextSkeleton | Unified Autonomous AI Platform",
-    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, and regulatory engineering.",
+    description: "Specialized autonomous AI solutions for enterprise compliance, legal disclosures, financial controls, and regulatory engineering.",
     images: ["https://contextskeleton.com/og-image.png"],
   },
   alternates: {
@@ -81,9 +82,9 @@ export default function RootLayout({
       "priceCurrency": "USD",
       "lowPrice": "0",
       "highPrice": "999",
-      "offerCount": "10"
+      "offerCount": "14"
     },
-    "description": "Unified Autonomous AI Compliance Platform providing independent solutions for B2B RFP proposals, building consents, security audits, FDA 510(k), R&D tax, ESG climate, clinical trials, and GDPR/HIPAA privacy.",
+    "description": "Unified Autonomous AI Compliance Platform providing independent solutions for B2B RFP proposals, building consents, security audits, FDA 510(k), ISO 9001 quality, SOX 404 controls, R&D tax, ESG climate, clinical trials, GDPR/HIPAA privacy, AML/KYC, and OSHA workplace safety.",
     "url": "https://contextskeleton.com"
   };
 

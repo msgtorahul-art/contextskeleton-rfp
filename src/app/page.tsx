@@ -303,6 +303,22 @@ export default function LandingPage() {
     },
   ];
 
+  const pricingProducts = [
+    { name: 'RFP Pro Engine', price: '$499', period: '/ month', tag: 'Product #1', badge: 'B2B Tender Proposals', color: 'violet', href: '/projects', features: ['Unlimited Proposal Generation', 'Microsoft Word (.docx) Export', 'Grounded Citation Engine'] },
+    { name: 'Consent Auditor Pro', price: '$750', period: '/ month', tag: 'Product #2', badge: 'Architects & Builders', color: 'emerald', href: '/consent', features: ['Unlimited NZBC Pre-Audits', 'NZBC E2, H1, B1 Checkers', 'Producer Statements (PS1/PS3)'] },
+    { name: 'Security Resolver Pro', price: '$499', period: '/ month', tag: 'Product #3', badge: 'CISOs & SaaS Vendors', color: 'rose', href: '/security-questionnaire', features: ['Unlimited SOC 2 & ISO 27001 Audits', 'CSV / Excel Spreadsheet Export', 'Control Mapping & Confidence Ratings'] },
+    { name: 'FDA 510(k) MedTech Pro', price: '$999', period: '/ month', tag: 'Product #4', badge: 'MedTech & Biotech', color: 'pink', href: '/fda-510k', features: ['Unlimited 510(k) Predicate Audits', '21 CFR Part 820 Design Controls', 'CSV Predicate Audit Spreadsheet'] },
+    { name: 'ISO Quality Pro', price: '$899', period: '/ month', tag: 'Product #5', badge: 'Aerospace & Quality QA', color: 'blue', href: '/iso-quality', features: ['Unlimited AS9100D & ISO 9001 Audits', 'AS9102 First Article Inspection Checks', 'CAPA Root Cause & CSV Export'] },
+    { name: 'SOX Controls Pro', price: '$750', period: '/ month', tag: 'Product #6', badge: 'Internal Audit & Controllers', color: 'emerald', href: '/sox-audit', features: ['Unlimited SOX 404 & SOC 1 ICFR Audits', 'Segregation of Duties (SoD) Conflict Checks', 'CSV Financial Audit Spreadsheet Export'] },
+    { name: 'R&D Tax Analyzer Pro', price: '$650', period: '/ month', tag: 'Product #7', badge: 'Corporate Finance & Tax', color: 'amber', href: '/rd-tax', features: ['Unlimited R&D Tax Credit Audits', 'NZ IRD (15% RDTI), ATO, & IRS Section 41', 'CSV Technical Defense Export'] },
+    { name: 'ESG Climate Pro', price: '$599', period: '/ month', tag: 'Product #8', badge: 'Enterprise ESG & Climate', color: 'teal', href: '/esg', features: ['Unlimited Scope 1, 2, & 3 Carbon Audits', 'EU CSRD & ISSB Framework Mapping', 'CSV Carbon Audit Spreadsheet Export'] },
+    { name: 'Clinical Trial Pro', price: '$850', period: '/ month', tag: 'Product #9', badge: 'Pharma & Clinical Ops', color: 'rose', href: '/clinical-trials', features: ['Unlimited Patient Eligibility Audits', 'FDA & EMA Biomarker Protocol Screening', 'CSV Eligibility Scorecard Export'] },
+    { name: 'Privacy DPIA Pro', price: '$550', period: '/ month', tag: 'Product #10', badge: 'DPOs & Enterprise Privacy', color: 'indigo', href: '/privacy-dpia', features: ['Unlimited GDPR & HIPAA DPIA Audits', 'Subprocessor DPA & SCC Verification', 'CSV Privacy Audit Spreadsheet Export'] },
+    { name: 'AML Risk Auditor Pro', price: '$799', period: '/ month', tag: 'Product #11', badge: 'FinTech & Banking Risk', color: 'yellow', href: '/aml-kyc', features: ['Unlimited AML & KYC Statutory Audits', 'FATF PEP & Sanctions Screening', 'CSV Risk Audit Spreadsheet Export'] },
+    { name: 'EHS Safety Pro', price: '$499', period: '/ month', tag: 'Product #12', badge: 'EHS & Industrial Safety', color: 'orange', href: '/ehs-safety', features: ['Unlimited OSHA 1910 Site Audits', 'LOTO & MSDS Hazard Verification', 'CSV Safety Audit Spreadsheet Export'] },
+    { name: 'Vector Storage Pro', price: '$299', period: '/ month', tag: 'Product #13', badge: 'Vector Knowledge Hub', color: 'indigo', href: '/knowledge', features: ['Unlimited Turso Cloud Vector Storage', 'PDF, DOCX & TXT Semantic Chunking', 'Multi-Tenant Enterprise Isolation'] },
+  ];
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 font-sans relative overflow-hidden">
       {/* Glow background effects */}
@@ -428,7 +444,7 @@ export default function LandingPage() {
         </section>
       </header>
 
-      {/* COMMERCIAL PRICING SECTION - ALL COMMERCIAL PRODUCTS DISPLAYED */}
+      {/* COMMERCIAL PRICING SECTION - ALL 13 PAID COMMERCIAL PRODUCTS DISPLAYED */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
           <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
@@ -437,104 +453,35 @@ export default function LandingPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* 1. RFP Engine Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-violet-500/40 relative overflow-hidden shadow-xl shadow-violet-500/10">
-            <div className="absolute top-0 right-0 bg-violet-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #1
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-1">B2B Tender Proposals</span>
-              <h3 className="text-xl font-bold text-white mb-2">RFP Pro Engine</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$499</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+          {pricingProducts.map((p, idx) => (
+            <div key={idx} className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-slate-800 hover:border-violet-500/40 relative overflow-hidden shadow-xl transition duration-300">
+              <div className="absolute top-0 right-0 bg-violet-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+                {p.tag}
               </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Unlimited Proposal Generation
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Word (.docx) Document Export
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Grounded Fact Citation Engine
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get RFP Pro ($499/mo)
-            </Link>
-          </div>
 
-          {/* 2. ISO 9001 & AS9100 Aerospace Quality Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-blue-500/40 relative overflow-hidden shadow-xl shadow-blue-500/10">
-            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #2
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block mb-1">Aerospace &amp; Quality QA</span>
-              <h3 className="text-xl font-bold text-white mb-2">ISO Quality Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$899</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              <div>
+                <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-1">{p.badge}</span>
+                <h3 className="text-xl font-bold text-white mb-2">{p.name}</h3>
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-3xl font-extrabold text-white">{p.price}</span>
+                  <span className="text-xs text-slate-400 font-semibold">{p.period}</span>
+                </div>
+                <ul className="space-y-2.5 mb-6">
+                  {p.features.map((feat, fIdx) => (
+                    <li key={fIdx} className="flex items-center gap-2 text-slate-200 text-xs font-medium">
+                      <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> {feat}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> Unlimited AS9100D &amp; ISO 9001 Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> AS9102 First Article Inspection Checks
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-blue-400 shrink-0" /> CAPA Root Cause &amp; CSV Audit Export
-                </li>
-              </ul>
+              <Link
+                href="/auth?mode=register"
+                className="w-full inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+              >
+                Get {p.name} ({p.price}/mo)
+              </Link>
             </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get ISO Quality Pro ($899/mo)
-            </Link>
-          </div>
-
-          {/* 3. SOX 404 & SOC 1 Financial Auditor Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-xl shadow-emerald-500/10">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #3
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">Internal Audit &amp; Controllers</span>
-              <h3 className="text-xl font-bold text-white mb-2">SOX Controls Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$750</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Unlimited SOX 404 &amp; SOC 1 ICFR Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Segregation of Duties (SoD) Conflict Checks
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> CSV Financial Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get SOX Pro ($750/mo)
-            </Link>
-          </div>
+          ))}
         </div>
       </section>
 
