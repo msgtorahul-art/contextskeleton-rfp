@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
   FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert
@@ -187,7 +188,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* HERO SECTION WITH SEPARATED PRODUCTS SHOWCASE (ABOVE THE FOLD) */}
+      {/* HERO SECTION WITH HERO PLATFORM PREVIEW IMAGE (ABOVE THE FOLD) */}
       <header className="max-w-7xl mx-auto px-6 pt-12 pb-16 z-10 relative">
         <div className="text-center max-w-4xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 bg-violet-500/10 text-violet-400 border border-violet-500/20 px-4 py-1.5 rounded-full text-xs font-semibold mb-6">
@@ -201,9 +202,19 @@ export default function LandingPage() {
             </span>
           </h1>
 
-          <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed">
+          <p className="text-slate-400 mt-4 text-base max-w-2xl mx-auto leading-relaxed mb-8">
             Select your dedicated product workspace below. Each solution operates independently with specialized compliance engines and custom data pipelines.
           </p>
+
+          {/* FEATURED PLATFORM HERO BANNER IMAGE */}
+          <div className="relative max-w-4xl mx-auto mb-16 rounded-3xl overflow-hidden border border-violet-500/30 shadow-2xl shadow-violet-500/20 group">
+            <img
+              src="/og-image.png"
+              alt="ContextSkeleton Autonomous Enterprise AI Platform Preview"
+              className="w-full h-auto object-cover rounded-3xl transform group-hover:scale-[1.01] transition duration-500"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60" />
+          </div>
         </div>
 
         {/* INDEPENDENT PRODUCTS GRID */}
@@ -493,7 +504,7 @@ export default function LandingPage() {
               <button
                 type="submit"
                 disabled={supportLoading}
-                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition shadow-lg shadow-violet-500/10 cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/10"
               >
                 {supportLoading ? (
                   <>
