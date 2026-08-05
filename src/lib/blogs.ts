@@ -261,9 +261,36 @@ export const BLOG_POSTS: BlogPost[] = [
   <li><strong>Prior Line Therapies:</strong> Audits prior treatment regimens and washout periods.</li>
   <li><strong>Organ Function Labs:</strong> Evaluates liver, kidney, and hematologic lab thresholds against Good Clinical Practice (GCP) guidelines.</li>
 </ul>
+    `,
+  },
+  {
+    slug: 'automating-data-protection-impact-assessments-dpia-gdpr-hipaa',
+    title: 'Automating Data Protection Impact Assessments (DPIA) for EU GDPR and HIPAA Compliance',
+    excerpt: 'Failing a GDPR Article 35 DPIA audit risks massive regulatory fines. Discover how DPOs automate PII/PHI subprocessor data flow audits.',
+    publishDate: 'August 5, 2026',
+    date: 'August 5, 2026',
+    readTime: '9 min read',
+    category: 'Data Privacy & DPO Compliance',
+    author: 'Data Privacy Research Lab',
+    product: 'GDPR & HIPAA Privacy Resolver',
+    targetProduct: 'GDPR & HIPAA Privacy Resolver ($550/mo)',
+    ctaHref: '/privacy-dpia',
+    ctaText: 'Launch Privacy DPIA Engine',
+    metaDescription: 'Discover how Data Protection Officers (DPOs) and privacy counsel automate Data Protection Impact Assessments (DPIA) for EU GDPR Article 35 and HIPAA § 164.308 compliance.',
+    content: `
+<h2>The Legal Requirement for DPIAs</h2>
+<p>Under Article 35 of the EU General Data Protection Regulation (GDPR), organizations carrying out high-risk processing of personal data (e.g. AI automated decision-making, large-scale biometric data, cross-border cloud processing) are legally required to conduct a formal <strong>Data Protection Impact Assessment (DPIA)</strong>.</p>
+
+<h2>Automated Privacy & Subprocessor Audit Workflow</h2>
+<p>The <strong>ContextSkeleton GDPR & HIPAA Privacy Resolver</strong> audits system architecture and vendor subprocessor Data Processing Agreements (DPAs):</p>
+<ul>
+  <li><strong>GDPR Article 35 Triggers:</strong> Flags automated profiling, large-scale special category data, and public surveillance.</li>
+  <li><strong>Cross-Border Transfer Mechanics:</strong> Validates EU Standard Contractual Clauses (SCCs) and EU-US Data Privacy Framework status.</li>
+  <li><strong>HIPAA § 164.308 Safeguards:</strong> Audits administrative, physical, and technical safeguards for Protected Health Information (PHI).</li>
+</ul>
 
 <h2>Spreadsheet & Audit Scorecard Export</h2>
-<p>Trial coordinators can export structured CSV patient eligibility spreadsheets formatted for instant review by Principal Investigators and IRB committees.</p>
+<p>DPOs can export structured CSV privacy spreadsheets ready for immediate review by executive boards and supervisory Data Protection Authorities (DPAs).</p>
     `,
   },
 ];

@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Sparkles, CheckCircle2, ShieldCheck, Zap, Download, 
-  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope
+  FileText, Database, Layers, Cpu, Check, Mail, Globe, Code, Key, ChevronRight, Lock, Loader2, Send, ShieldAlert, BookOpen, Activity, Calculator, Leaf, Stethoscope, KeyRound
 } from 'lucide-react';
 
 export default function LandingPage() {
@@ -140,6 +140,24 @@ export default function LandingPage() {
       ],
       ctaText: 'Launch R&D Tax Analyzer',
       ctaHref: '/rd-tax',
+    },
+    {
+      id: 'service-dpia',
+      badge: 'DPOs & Enterprise Privacy',
+      badgeColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+      title: 'GDPR & HIPAA Data Privacy Resolver',
+      icon: KeyRound,
+      iconColor: 'text-indigo-400',
+      glowColor: 'hover:border-indigo-500/50 hover:shadow-indigo-500/10',
+      tagline: 'Audit PII/PHI data flows and subprocessor DPAs against EU GDPR Article 35 (DPIA) and HIPAA rules.',
+      highlights: [
+        'EU GDPR Article 35 high-risk processing audit',
+        'HIPAA § 164.308 administrative safeguards',
+        'Subprocessor DPA & SCC transfer validation',
+        'Single-click CSV privacy audit export',
+      ],
+      ctaText: 'Launch Privacy Resolver',
+      ctaHref: '/privacy-dpia',
     },
     {
       id: 'service-trials',
@@ -447,10 +465,43 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 4. FDA 510(k) MedTech Pricing */}
+          {/* 4. GDPR & HIPAA Privacy DPIA Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
+            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #4 (DPIA)
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">DPOs & Enterprise Privacy</span>
+              <h3 className="text-xl font-bold text-white mb-2">Privacy DPIA Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$550</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Unlimited GDPR & HIPAA DPIA Audits
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Subprocessor DPA & SCC Verification
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> CSV Privacy Audit Spreadsheet Export
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get Privacy Pro ($550/mo)
+            </Link>
+          </div>
+
+          {/* 5. FDA 510(k) MedTech Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-pink-500/40 relative overflow-hidden shadow-xl shadow-pink-500/10">
             <div className="absolute top-0 right-0 bg-pink-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #4
+              Product #5
             </div>
 
             <div>
@@ -480,10 +531,10 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* 5. Clinical Trial Pricing */}
+          {/* 6. Clinical Trial Pricing */}
           <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
             <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #5 (Pharma)
+              Product #6 (Pharma)
             </div>
 
             <div>
@@ -510,39 +561,6 @@ export default function LandingPage() {
               className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
               Get Clinical Pro ($850/mo)
-            </Link>
-          </div>
-
-          {/* 6. R&D Tax Credit Pricing */}
-          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-amber-500/40 relative overflow-hidden shadow-xl shadow-amber-500/10">
-            <div className="absolute top-0 right-0 bg-amber-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
-              Product #6
-            </div>
-
-            <div>
-              <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-1">Corporate Finance & Tax</span>
-              <h3 className="text-xl font-bold text-white mb-2">R&amp;D Tax Audit Pro</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-3xl font-extrabold text-white">$650</span>
-                <span className="text-xs text-slate-400 font-semibold">/ month</span>
-              </div>
-              <ul className="space-y-2.5 mb-6">
-                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Unlimited IRD / ATO / IRS Audits
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> Technical Justification Narratives
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" /> CSV Audit Spreadsheet Export
-                </li>
-              </ul>
-            </div>
-            <Link
-              href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-            >
-              Get R&amp;D Tax Pro ($650/mo)
             </Link>
           </div>
         </div>
@@ -600,7 +618,7 @@ export default function LandingPage() {
                   <option value="Enterprise Sales & Support Inquiry">Enterprise Sales & Support Inquiry</option>
                   <option value="Building Consent Auditor Question">Building Consent Auditor Question</option>
                   <option value="FDA 510(k) MedTech Query">FDA 510(k) MedTech Query</option>
-                  <option value="Clinical Trial Inquiry">Clinical Trial Inquiry</option>
+                  <option value="GDPR & HIPAA Privacy DPIA Query">GDPR & HIPAA Privacy DPIA Query</option>
                   <option value="Customer Complaint / Feedback">Customer Complaint / Feedback</option>
                   <option value="Billing & Subscription Issue">Billing & Subscription Issue</option>
                 </select>
