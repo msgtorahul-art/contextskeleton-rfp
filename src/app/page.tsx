@@ -278,119 +278,144 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* COMMERCIAL PRICING SECTION */}
-      <section id="pricing" className="max-w-6xl mx-auto px-6 py-20 z-10 relative">
+      {/* COMMERCIAL PRICING SECTION - ALL 4 PRODUCTS DISPLAYED */}
+      <section id="pricing" className="max-w-7xl mx-auto px-6 py-20 z-10 relative">
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Independent Product Subscriptions</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Product Plans</h2>
-          <p className="text-slate-400 mt-3 text-sm">Select a plan tailored specifically for your organization's workflow.</p>
+          <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-2">Transparent Subscriptions</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-white">Commercial Product Pricing</h2>
+          <p className="text-slate-400 mt-3 text-sm">Select the exact product tier tailored for your business needs.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Free Evaluation */}
-          <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-slate-900">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* 1. RFP Engine Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-violet-500/40 relative overflow-hidden shadow-xl shadow-violet-500/10">
+            <div className="absolute top-0 right-0 bg-violet-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #1
+            </div>
+
             <div>
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Evaluation</span>
-              <h3 className="text-2xl font-bold text-white mb-3">Free Trial</h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-white">$0</span>
-                <span className="text-xs text-slate-500 font-semibold">forever</span>
+              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-1">B2B Tender Proposals</span>
+              <h3 className="text-xl font-bold text-white mb-2">RFP Pro Engine</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$499</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> 10 Free Platform Generations
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Unlimited Proposal Generation
                 </li>
-                <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Access All 5 Product Workspaces
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Word (.docx) Document Export
                 </li>
-                <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Vector document indexing
-                </li>
-                <li className="flex items-center gap-2 text-slate-400 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-500" /> Word & Excel exporters
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-violet-400 shrink-0" /> Grounded Fact Citation Engine
                 </li>
               </ul>
             </div>
             <Link
-              id="pricing-free"
               href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-semibold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Start Free Trial
+              Get RFP Pro ($499/mo)
             </Link>
           </div>
 
-          {/* RFP Professional Plan */}
-          <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-violet-500/40 relative overflow-hidden shadow-2xl shadow-violet-500/10">
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-              RFP Engine
+          {/* 2. Building Consent Auditor Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-xl shadow-emerald-500/10">
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #2
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest block mb-2">Growth & Proposals</span>
-              <h3 className="text-2xl font-bold text-white mb-3">RFP Pro Plan</h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-white">$499</span>
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-1">Architects & Builders</span>
+              <h3 className="text-xl font-bold text-white mb-2">Consent Auditor Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$750</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Unlimited RFP Proposal Drafts
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Unlimited NZBC Pre-Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Full Microsoft Word (.docx) Exporter
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> NZBC E2, H1, B1, G12 Checkers
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Isolated Turso Cloud Vector Storage
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-violet-400" /> Priority Gemini 2.5 API lines
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" /> Producer Statements (PS1/PS3)
                 </li>
               </ul>
             </div>
             <Link
-              id="pricing-pro"
               href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer shadow-lg shadow-violet-500/20"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get Started ($499/mo)
+              Get Consent Pro ($750/mo)
             </Link>
           </div>
 
-          {/* AI Building Consent Professional Plan */}
-          <div className="glass-panel p-8 rounded-3xl flex flex-col justify-between border-emerald-500/40 relative overflow-hidden shadow-2xl shadow-emerald-500/10">
-            <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-[9px] font-bold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-              Consent Auditor
+          {/* 3. Security Questionnaire Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-rose-500/40 relative overflow-hidden shadow-xl shadow-rose-500/10">
+            <div className="absolute top-0 right-0 bg-rose-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #3
             </div>
 
             <div>
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block mb-2">Architectural & Builders</span>
-              <h3 className="text-2xl font-bold text-white mb-3">Consent Auditor Pro</h3>
-              <div className="flex items-baseline gap-1 mb-6">
-                <span className="text-4xl font-extrabold text-white">$750</span>
+              <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block mb-1">CISOs & SaaS Vendors</span>
+              <h3 className="text-xl font-bold text-white mb-2">Security Resolver Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$499</span>
                 <span className="text-xs text-slate-400 font-semibold">/ month</span>
               </div>
-              <ul className="space-y-3 mb-8">
+              <ul className="space-y-2.5 mb-6">
                 <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Unlimited NZBC Pre-Consent Audits
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Unlimited SOC 2 & ISO 27001 Audits
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> NZBC E2, H1, B1, G12 Clause Checkers
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> CSV / Excel Spreadsheet Export
                 </li>
                 <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> Critical RFI Risk Warnings & Producer Statements
-                </li>
-                <li className="flex items-center gap-2 text-slate-300 text-xs">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-400" /> PDF Pre-Submission Audit Exporter
+                  <CheckCircle2 className="h-4 w-4 text-rose-400 shrink-0" /> Confidence Rating & Control Mapping
                 </li>
               </ul>
             </div>
             <Link
-              id="pricing-consent"
               href="/auth?mode=register"
-              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs py-3.5 px-4 rounded-xl transition cursor-pointer shadow-lg shadow-emerald-500/20"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
             >
-              Get Started ($750/mo)
+              Get Security Pro ($499/mo)
+            </Link>
+          </div>
+
+          {/* 4. Vector Knowledge Base Pricing */}
+          <div className="glass-panel p-6 rounded-3xl flex flex-col justify-between border-indigo-500/40 relative overflow-hidden shadow-xl shadow-indigo-500/10">
+            <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[8px] font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+              Product #4
+            </div>
+
+            <div>
+              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest block mb-1">Knowledge Infrastructure</span>
+              <h3 className="text-xl font-bold text-white mb-2">Vector Storage Pro</h3>
+              <div className="flex items-baseline gap-1 mb-4">
+                <span className="text-3xl font-extrabold text-white">$299</span>
+                <span className="text-xs text-slate-400 font-semibold">/ month</span>
+              </div>
+              <ul className="space-y-2.5 mb-6">
+                <li className="flex items-center gap-2 text-slate-200 text-xs font-semibold">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Isolated Turso Vector DB Storage
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> Automatic PDF/DOCX Parsing
+                </li>
+                <li className="flex items-center gap-2 text-slate-300 text-xs">
+                  <CheckCircle2 className="h-4 w-4 text-indigo-400 shrink-0" /> High-speed Semantic Search API
+                </li>
+              </ul>
+            </div>
+            <Link
+              href="/auth?mode=register"
+              className="w-full inline-flex items-center justify-center bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+            >
+              Get Vector Pro ($299/mo)
             </Link>
           </div>
         </div>
