@@ -12,7 +12,7 @@ export async function processCreLeaseEngine(params: {
     return { error: 'Commercial lease text or agreement is required' };
   }
 
-  // Precise CAM Cap Conflict Detection (only triggers if CAM / Operating Expenses are mentioned in conjunction with conflicting caps)
+  // Precise CAM Cap Conflict Detection
   const lower = leaseText.toLowerCase();
   const mentionsCam = lower.includes('cam') || lower.includes('operating expense') || lower.includes('controllable');
   const has10Cap = lower.includes('10% cap') || lower.includes('10% cumulative') || lower.includes('10% annual cap');
@@ -25,24 +25,28 @@ export async function processCreLeaseEngine(params: {
     try {
       const ai = new GoogleGenAI({ apiKey });
       const prompt = `You are a Senior Commercial Real Estate Due Diligence Abstractor.
-Property: ${propertyAddress}
-Lease: ${leaseText}
+Property Address: "${propertyAddress}"
+Lease Document Text:
+"""
+${leaseText}
+"""
 
+Abstract key commercial terms, CAM operating expense caps, escalation clauses, and subletting rules.
 Return ONLY valid JSON matching this exact structure:
 {
   "summary": "Executive CRE lease abstraction summary for ${propertyAddress}.",
   "items": [
     {
-      "clause": "Section 4.2 - CAM Operating Expenses",
-      "details": "10% annual cumulative cap on controllable operating expenses.",
-      "riskFlag": "${hasCapConflict ? 'HIGH' : 'LOW'}",
-      "recommendation": "Reconcile conflict with Section 8.1."
+      "clause": "Clause Section & Title",
+      "details": "Extracted clause detail",
+      "riskFlag": "LOW" | "MEDIUM" | "HIGH",
+      "recommendation": "Actionable recommendation"
     }
   ]
 }`;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.0-flash',
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
       });
 
