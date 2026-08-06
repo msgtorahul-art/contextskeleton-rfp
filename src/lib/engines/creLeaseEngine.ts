@@ -12,9 +12,15 @@ export async function processCreLeaseEngine(params: {
     return { error: 'Commercial lease text or agreement is required' };
   }
 
-  const hasCapConflict = leaseText.toLowerCase().includes('10%') && leaseText.toLowerCase().includes('15%');
-  const apiKey = process.env.GEMINI_API_KEY;
+  // Precise CAM Cap Conflict Detection (only triggers if CAM / Operating Expenses are mentioned in conjunction with conflicting caps)
+  const lower = leaseText.toLowerCase();
+  const mentionsCam = lower.includes('cam') || lower.includes('operating expense') || lower.includes('controllable');
+  const has10Cap = lower.includes('10% cap') || lower.includes('10% cumulative') || lower.includes('10% annual cap');
+  const has15Cap = lower.includes('15% cap') || lower.includes('15% non-cumulative') || lower.includes('15% annual cap');
+  
+  const hasCapConflict = mentionsCam && has10Cap && has15Cap;
 
+  const apiKey = process.env.GEMINI_API_KEY;
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
@@ -60,15 +66,11 @@ Return ONLY valid JSON matching this exact structure:
       },
       {
         clause: 'Section 4.2 vs 8.1 - CAM Operating Expenses',
-        details: hasCapConflict ? 'CRITICAL CONFLICT: Section 4.2 states 10% cumulative CAM cap; Section 8.1 states 15% non-cumulative cap.' : '10% annual cumulative cap on controllable operating expenses.',
+        details: hasCapConflict 
+          ? 'CRITICAL CONFLICT DETECTED: Section 4.2 specifies 10% cumulative CAM cap while Section 8.1 specifies 15% non-cumulative CAM cap.' 
+          : 'CAM operating expense provisions verified without conflicting cap terms.',
         riskFlag: hasCapConflict ? 'HIGH' : 'LOW',
-        recommendation: hasCapConflict ? 'Execute lease amendment letter clarifying Section 4.2 takes precedence.' : 'Audit annual CAM reconciliation statements.'
-      },
-      {
-        clause: 'Section 12.1 - Assignment & Subletting',
-        details: 'Tenant requires Landlord prior written consent; Landlord must respond within 30 days.',
-        riskFlag: 'LOW',
-        recommendation: 'Cap Landlord administrative review fee at $1,500.'
+        recommendation: hasCapConflict ? 'Execute lease amendment letter clarifying governing CAM cap clause.' : 'Audit annual CAM reconciliation statements.'
       }
     ]
   };

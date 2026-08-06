@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { checkComplianceClause } from '../evaluator';
 
 export async function processAiActEngine(params: {
   modelName?: string;
@@ -27,7 +28,8 @@ ${systemSpec}
 
 Instructions:
 Evaluate the AI system strictly against Annex IV Technical Documentation, Article 9 Risk Management, Article 10 Data Governance, and Article 14 Human Oversight.
-Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") objectively based on identified compliance gaps.
+Check for explicit negations (e.g., "no human oversight", "lacks review controls"). If human oversight or data governance is missing or negated, assign REJECTED or NEEDS_REVISION.
+Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") objectively.
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -60,34 +62,40 @@ Return ONLY valid JSON matching this exact structure:
     }
   }
 
-  // Objective Local Rule Evaluator
-  const lowerText = systemSpec.toLowerCase();
-  const hasHumanOversight = lowerText.includes('human') || lowerText.includes('oversight') || lowerText.includes('review') || lowerText.includes('control');
-  const hasDataGov = lowerText.includes('data') || lowerText.includes('dataset') || lowerText.includes('provenance') || lowerText.includes('bias');
+  // Negation-Aware Local Rule Evaluator
+  const humanCheck = checkComplianceClause(systemSpec, ['human', 'oversight', 'review', 'control']);
+  const dataCheck = checkComplianceClause(systemSpec, ['data', 'dataset', 'provenance', 'bias']);
 
-  const score = (hasHumanOversight ? 45 : 20) + (hasDataGov ? 45 : 20);
+  const passesHuman = humanCheck.present && !humanCheck.negated;
+  const passesData = dataCheck.present && !dataCheck.negated;
+
+  const score = (passesHuman ? 45 : 15) + (passesData ? 45 : 15);
   const status = score >= 80 ? 'APPROVED' : score >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
 
   return {
-    summary: `EU AI Act Regulation (EU) 2024/1689 Annex IV Audit complete for "${modelName}". Compliance status calculated objectively.`,
+    summary: `EU AI Act Regulation (EU) 2024/1689 Annex IV Audit complete for "${modelName}".`,
     overallScore: score,
     status,
     items: [
       {
-        article: 'Annex IV Section 1(c) & Article 10',
-        topic: 'Data Governance & Training Data Provenance',
-        status: hasDataGov ? 'PASS' : 'FAIL',
-        riskRating: hasDataGov ? 'LOW' : 'HIGH',
-        findings: hasDataGov ? 'Training dataset provenance and vector retrieval pipeline documented.' : 'Specification lacks documentation regarding training data provenance and bias mitigation datasets.',
-        recommendation: 'Document data collection protocols per Article 10(2) requirements.'
-      },
-      {
         article: 'Article 14 - Human Oversight Protocols',
         topic: 'Human-in-the-loop Safeguards',
-        status: hasHumanOversight ? 'PASS' : 'FAIL',
-        riskRating: hasHumanOversight ? 'LOW' : 'HIGH',
-        findings: hasHumanOversight ? 'Human oversight mechanisms defined prior to high-stakes output dispatch.' : 'System architecture lacks human-in-the-loop override controls required for High-Risk AI classification.',
-        recommendation: 'Implement explicit human sign-off dashboard prior to model dispatch.'
+        status: passesHuman ? 'PASS' : 'FAIL',
+        riskRating: passesHuman ? 'LOW' : 'HIGH',
+        findings: passesHuman 
+          ? 'Human oversight mechanisms defined prior to high-stakes output dispatch.' 
+          : 'CRITICAL AUDIT FAILURE: System specification explicitly lacks or negates mandatory Article 14 human oversight controls.',
+        recommendation: passesHuman ? 'Maintain versioned audit logs.' : 'Implement mandatory human-in-the-loop override dashboard.'
+      },
+      {
+        article: 'Article 10 - Data Governance & Bias Mitigation',
+        topic: 'Training Dataset Provenance',
+        status: passesData ? 'PASS' : 'FAIL',
+        riskRating: passesData ? 'LOW' : 'HIGH',
+        findings: passesData 
+          ? 'Training dataset provenance and vector retrieval pipeline documented.' 
+          : 'Specification lacks documented training data provenance or bias mitigation datasets.',
+        recommendation: 'Document data collection protocols per Article 10(2).'
       }
     ]
   };

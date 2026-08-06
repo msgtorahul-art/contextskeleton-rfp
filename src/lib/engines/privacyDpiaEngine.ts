@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { checkComplianceClause } from '../evaluator';
 
 export async function processPrivacyDpiaEngine(params: {
   systemName?: string;
@@ -29,8 +30,7 @@ ${dataFlowNotes}
 
 Instructions:
 Evaluate the system strictly against GDPR Article 35 Data Protection Impact Assessment requirements and HIPAA §164.312 Technical Safeguards.
-Check data minimization, encryption at rest/in transit, access controls, and retention schedules.
-Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") objectively based on identified compliance gaps.
+Check for explicit negations or unencrypted storage (e.g. "unencrypted", "plaintext", "lacks encryption"). Mark security as FAIL if unencrypted.
 
 Return ONLY valid JSON matching this exact structure:
 {
@@ -63,12 +63,13 @@ Return ONLY valid JSON matching this exact structure:
     }
   }
 
-  // Objective Local Rule Evaluator
-  const lowerText = dataFlowNotes.toLowerCase();
-  const hasEncryption = lowerText.includes('encrypt') || lowerText.includes('aes') || lowerText.includes('tls') || lowerText.includes('ssl');
-  const hasMinimization = lowerText.includes('minimization') || lowerText.includes('retention') || lowerText.includes('deletion') || lowerText.includes('pii');
+  // Negation & Substring Aware Local Rule Evaluator
+  const encryptionCheck = checkComplianceClause(dataFlowNotes, ['encrypt', 'encrypted', 'aes-256', 'tls 1.3']);
+  const isUnencrypted = dataFlowNotes.toLowerCase().includes('unencrypted') || dataFlowNotes.toLowerCase().includes('plaintext') || encryptionCheck.negated;
 
-  const score = (hasEncryption ? 45 : 20) + (hasMinimization ? 45 : 20);
+  const passesEncryption = encryptionCheck.present && !isUnencrypted;
+
+  const score = passesEncryption ? 85 : 30;
   const status = score >= 80 ? 'APPROVED' : score >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
 
   return {
@@ -77,20 +78,16 @@ Return ONLY valid JSON matching this exact structure:
     status,
     items: [
       {
-        requirement: 'GDPR Article 35 - High-Risk Data Processing',
-        topic: 'Data Minimization & Automated Deletion',
-        status: hasMinimization ? 'PASS' : 'FAIL',
-        riskRating: hasMinimization ? 'LOW' : 'HIGH',
-        findings: hasMinimization ? 'System architecture implements data minimization and record retention policies.' : 'Data flow notes lack explicit PII data retention and automated record deletion timelines.',
-        recommendation: 'Configure automated deletion routines for inactive user PII after 36 months.'
-      },
-      {
         requirement: 'HIPAA §164.312 & GDPR Article 32 - Security of Processing',
         topic: 'Encryption at Rest & In-Transit',
-        status: hasEncryption ? 'PASS' : 'FAIL',
-        riskRating: hasEncryption ? 'LOW' : 'HIGH',
-        findings: hasEncryption ? 'Storage database encryption (AES-256) and TLS 1.3 in-transit safeguards applied.' : 'Data flow notes do not specify TLS 1.3 in-transit encryption or database KMS key management.',
-        recommendation: 'Enforce mandatory TLS 1.3 for all external API endpoints and KMS AES-256 for database storage.'
+        status: passesEncryption ? 'PASS' : 'FAIL',
+        riskRating: passesEncryption ? 'LOW' : 'HIGH',
+        findings: passesEncryption 
+          ? 'Storage database encryption (AES-256) and TLS 1.3 in-transit safeguards applied.' 
+          : 'CRITICAL DPIA FAILURE: System stores PII/PHI in unencrypted or plaintext format.',
+        recommendation: passesEncryption 
+          ? 'Enforce key rotation schedule.' 
+          : 'Immediately implement KMS AES-256 at-rest encryption and TLS 1.3 in-transit.'
       }
     ]
   };
