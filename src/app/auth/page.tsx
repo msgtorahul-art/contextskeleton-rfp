@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { KeyRound, Mail, Lock, Loader2, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { KeyRound, Mail, Lock, Loader2, ArrowRight, ShieldCheck } from 'lucide-react';
 
 function AuthContent() {
   const router = useRouter();
@@ -30,35 +30,6 @@ function AuthContent() {
     }
   }, [queryCode, queryEmail, queryToken]);
 
-  const handleQABypassLogin = async () => {
-    setLoading(true);
-    setError('');
-    setMessage('Logging in as VIP QA Tester...');
-    setEmail('ai-qa-tester@contextskeleton.com');
-    setPassword('MasterVIPPassword2026!');
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: 'ai-qa-tester@contextskeleton.com',
-          password: 'MasterVIPPassword2026!'
-        }),
-      });
-
-      setMessage('VIP QA Login successful! Redirecting to dashboard...');
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 300);
-    } catch (err: any) {
-      console.error('QA login error:', err);
-      window.location.href = '/dashboard';
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -70,13 +41,20 @@ function AuthContent() {
         const res = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email || 'ai-qa-tester@contextskeleton.com', password: password || 'MasterVIPPassword2026!' }),
+          body: JSON.stringify({ email, password }),
         });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Invalid email or password.');
+          return;
+        }
 
         setMessage('Login successful! Redirecting to workspace...');
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 300);
+
       } else if (mode === 'register') {
         const res = await fetch('/api/auth/register', {
           method: 'POST',
@@ -84,24 +62,74 @@ function AuthContent() {
           body: JSON.stringify({ email, password }),
         });
 
-        setMessage('Account created! Entering workspace...');
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 300);
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Registration failed.');
+          return;
+        }
+
+        if (data.verificationRequired) {
+          setMode('verify');
+          setMessage('Account created! Please check your email for the 6-digit verification code and enter it below.');
+        } else {
+          setMessage('Account created successfully! Redirecting to workspace...');
+          setTimeout(() => {
+            window.location.href = '/dashboard';
+          }, 300);
+        }
+
       } else if (mode === 'verify') {
-        setMessage('Verified! Entering workspace...');
+        const res = await fetch('/api/auth/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code: verificationCode }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Invalid or expired verification code.');
+          return;
+        }
+
+        setMessage('Email verified successfully! Entering workspace...');
         setTimeout(() => {
           window.location.href = '/dashboard';
         }, 300);
+
       } else if (mode === 'forgot') {
-        setMessage('Password reset link sent to email.');
+        const res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Failed to send password reset request.');
+          return;
+        }
+
+        setMessage('Password reset instructions sent to your email address.');
+
       } else if (mode === 'reset') {
-        setMessage('Password reset successful!');
+        const res = await fetch('/api/auth/reset-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: resetToken, newPassword: password }),
+        });
+
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'Failed to reset password.');
+          return;
+        }
+
+        setMessage('Password reset successful! Please sign in with your new password.');
         setMode('login');
       }
     } catch (err: any) {
       console.error('Form submit error:', err);
-      window.location.href = '/dashboard';
+      setError('A temporary network error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -249,7 +277,7 @@ function AuthContent() {
             )}
           </button>
 
-          {mode === 'forgot' && (
+          {(mode === 'forgot' || mode === 'verify') && (
             <div className="text-center pt-2">
               <button
                 type="button"
@@ -261,23 +289,6 @@ function AuthContent() {
             </div>
           )}
         </form>
-
-        {/* 1-CLICK QA TEST ACCOUNT BUTTON FOR AI TESTING AGENTS */}
-        <div className="pt-4 border-t border-slate-800 text-center space-y-2">
-          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
-            AI Automated Testing Access
-          </span>
-          <button
-            id="qa-vip-bypass-login"
-            type="button"
-            onClick={handleQABypassLogin}
-            disabled={loading}
-            className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-violet-300 font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
-          >
-            <Sparkles className="h-4 w-4 text-violet-400" />
-            1-Click VIP QA Test Login (Unlimited Credits)
-          </button>
-        </div>
       </div>
     </div>
   );
