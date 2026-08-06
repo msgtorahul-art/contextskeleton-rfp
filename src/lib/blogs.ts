@@ -523,4 +523,139 @@ export const BLOG_POSTS: BlogPost[] = [
 </ol>
     `,
   },
+  {
+    slug: 'how-to-automate-eu-ai-act-annex-iv-technical-documentation',
+    title: 'EU AI Act Annex IV Technical Documentation: How to Avoid 7% Turnover Fines in 2026',
+    excerpt: 'Regulation (EU) 2024/1689 requires mandatory Annex IV technical documentation and Article 14 human oversight. Learn how to pre-audit your AI models in minutes.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '8 min read',
+    category: 'EU AI Act & Regulatory AI',
+    author: 'AI Governance Taskforce',
+    product: 'EU AI Act Compliance Engine',
+    targetProduct: 'EU AI Act Engine ($1,499/mo)',
+    ctaHref: '/ai-act',
+    ctaText: 'Pre-Audit Model for EU AI Act',
+    metaDescription: 'Complete guide to EU AI Act Regulation (EU) 2024/1689 Annex IV technical documentation and Article 9 risk management audit requirements.',
+    content: `
+<h2>EU AI Act Enforcement (August 2026)</h2>
+<p>As of August 2026, the <strong>EU Artificial Intelligence Act (Regulation EU 2024/1689)</strong> is fully enforced across all 27 EU member states and applies globally to any company deploying AI models to EU citizens.</p>
+
+<h2>The Risk of Non-Compliance</h2>
+<p>Deploying High-Risk AI systems without mandatory Annex IV Technical Documentation risks administrative fines up to <strong>€35 Million or 7% of global annual turnover</strong>.</p>
+
+<h2>Automating Annex IV Audits with ContextSkeleton</h2>
+<p>Our specialized <strong>EU AI Act Compliance Engine</strong> scans model training provenance, backbone architecture, and RAG retrieval thresholds to output customs-grade Annex IV technical packs.</p>
+    `,
+  },
+  {
+    slug: 'how-physicians-rebut-ai-insurance-claim-denials-with-clinical-appeal-letters',
+    title: 'Overcoming AI Health Insurance Claim Denials: Clinical Appeal Letters for Physicians',
+    excerpt: 'Health insurers are using AI bots to deny prior authorization claims at record rates. Learn how medical practices use automated CPT/ICD-10 clinical appeal letters to reverse denials.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '7 min read',
+    category: 'Healthcare Revenue Cycle & Appeals',
+    author: 'Clinical Practice Operations',
+    product: 'Medical Claim Appeal Architect',
+    targetProduct: 'Medical Claim Appeals ($999/mo)',
+    ctaHref: '/claim-appeal',
+    ctaText: 'Generate Clinical Appeal Letter',
+    metaDescription: 'Discover how medical clinics automate CPT and ICD-10 medical necessity appeal letters to reverse insurance prior authorization claim denials.',
+    content: `
+<h2>The 307% Spike in AI Insurer Denials</h2>
+<p>Private health insurance payers (UnitedHealth, Aetna, Cigna) have deployed automated algorithms that instantly reject physician prior authorization (PA) requests under vague "lack of medical necessity" claims.</p>
+
+<h2>Automating Clinical Rebuttals</h2>
+<p>ContextSkeleton's <strong>Medical Claim Appeal Architect</strong> ingests patient chart notes and diagnostic imaging findings, cross-referencing them against AMA CPT coding and CMS Local Coverage Determinations (LCD) to generate 100% compliant appeal letters.</p>
+    `,
+  },
+  {
+    slug: 'eu-dora-article-9-28-ict-supply-chain-audit-guide-for-saas',
+    title: 'EU DORA & NIS2 Compliance Guide for SaaS Vendors Selling to European Banks',
+    excerpt: 'European banks cannot legally purchase SaaS software without DORA Article 9 & 28 technical evidence. Learn how to generate ICT resilience packs.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '6 min read',
+    category: 'FinTech Security & DORA',
+    author: 'Enterprise Risk Practice',
+    product: 'EU DORA & NIS2 ICT Auditor',
+    targetProduct: 'EU DORA Auditor ($1,200/mo)',
+    ctaHref: '/dora-audit',
+    ctaText: 'Run DORA ICT Audit',
+    metaDescription: 'Complete guide for SaaS vendors to achieve EU DORA Article 9 & 28 technical compliance and sell software to European financial institutions.',
+    content: `
+<h2>EU DORA ICT Supply Chain Mandates</h2>
+<p>Under the EU Digital Operational Resilience Act (DORA), financial institutions must verify the digital operational resilience of all third-party software vendors.</p>
+
+<h2>DORA Article 9 & 28 Evidence Packs</h2>
+<p>ContextSkeleton generates automated vendor dependency registers, failover test cards, and ICT incident handling playbooks required by DORA regulators.</p>
+    `,
+  },
+  {
+    slug: 'how-eu-importers-calculate-cbam-embedded-carbon-certificates',
+    title: 'EU CBAM Carbon Border Customs Compliance: How Importers Avoid Shipment Blocks',
+    excerpt: 'The EU Carbon Border Adjustment Mechanism (CBAM) requires customs-grade carbon certificates for steel, aluminum, and electronics imports under Regulation (EU) 2023/956.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '7 min read',
+    category: 'Supply Chain & Carbon Trade',
+    author: 'Global Logistics Desk',
+    product: 'EU CBAM Customs Auditor',
+    targetProduct: 'EU CBAM Auditor ($2,000/mo)',
+    ctaHref: '/cbam-audit',
+    ctaText: 'Calculate CBAM Carbon Certificates',
+    metaDescription: 'Learn how importers of steel and electronics calculate embedded carbon intensity and format EU CBAM declaration certificates under Regulation (EU) 2023/956.',
+    content: `
+<h2>EU CBAM Regulation (EU) 2023/956</h2>
+<p>Importers of industrial goods into the European Union must provide verified embedded carbon calculations for every bill of lading shipment.</p>
+
+<h2>Customs Declaration Skeletons</h2>
+<p>ContextSkeleton's <strong>CBAM Customs Auditor</strong> ingests supplier invoices and applies EU carbon factor formulas to produce customs-ready CBAM declaration certificates.</p>
+    `,
+  },
+  {
+    slug: 'sec-4-day-cybersecurity-incident-materiality-form-8k-playbook',
+    title: 'SEC 4-Day Cybersecurity Incident Materiality Playbook: Drafting Form 8-K Item 1.05',
+    excerpt: 'Public companies and defense suppliers must determine materiality and file Form 8-K Item 1.05 within 4 business days of a breach. Here is the emergency response playbook.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '9 min read',
+    category: 'SEC Compliance & Crisis Response',
+    author: 'Securities Law & CISO Practice',
+    product: 'SEC 4-Day Incident War Room',
+    targetProduct: 'SEC War Room ($5,000 Retainer)',
+    ctaHref: '/sec-incident',
+    ctaText: 'Assess SEC Incident Materiality',
+    metaDescription: 'Step-by-step playbook for public company CISOs and legal counsel to assess materiality and draft SEC Form 8-K Item 1.05 disclosures within 4 business days.',
+    content: `
+<h2>The SEC 4-Day Disclosure Clock</h2>
+<p>Under SEC rules, public companies must evaluate the financial and operational materiality of a cybersecurity breach and file Form 8-K Item 1.05 within 4 business days.</p>
+
+<h2>Emergency Triage & Form 8-K Drafting</h2>
+<p>ContextSkeleton's <strong>SEC 4-Day Incident War Room</strong> ingests incident responder notes and calculates materiality thresholds to output SEC-compliant disclosure text.</p>
+    `,
+  },
+  {
+    slug: 'cre-lease-abstraction-how-to-automate-rent-rolls-and-cam-caps',
+    title: 'CRE Lease Abstraction: How Property Firms Automate Rent Rolls & CAM Expense Caps',
+    excerpt: 'Commercial real estate attorneys and asset managers waste hundreds of hours reading 100+ page PDF leases. Learn how AI automates CRE due diligence.',
+    publishDate: 'August 6, 2026',
+    date: 'August 6, 2026',
+    readTime: '6 min read',
+    category: 'Real Estate M&A & Legal',
+    author: 'Commercial Real Estate Desk',
+    product: 'CRE Lease Abstractor',
+    targetProduct: 'CRE Lease Abstractor ($1,500/mo)',
+    ctaHref: '/cre-lease',
+    ctaText: 'Abstract Commercial Lease',
+    metaDescription: 'Discover how commercial real estate firms and M&A attorneys automate 100+ page PDF lease abstractions to extract rent rolls, CAM caps, and co-tenancy risks.',
+    content: `
+<h2>The Pain of Manual Lease Due Diligence</h2>
+<p>Reviewing multi-tenant commercial leases for M&A due diligence or property management takes hours per contract, with high risk of missing rent escalation traps.</p>
+
+<h2>Automating Lease Matrices</h2>
+<p>ContextSkeleton's <strong>CRE Lease Abstractor</strong> shreds commercial contracts and outputs structured rent roll matrices, CAM operating expense caps, and legal risk flags.</p>
+    `,
+  },
 ];
