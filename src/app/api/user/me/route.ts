@@ -8,18 +8,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // VIP QA Tester Account Fallback Exception
-  if (session.email?.toLowerCase() === 'ai-qa-tester@contextskeleton.com' || session.userId === 'qa-vip-master-account-id') {
-    return NextResponse.json({
-      user: {
-        id: 'qa-vip-master-account-id',
-        email: 'ai-qa-tester@contextskeleton.com',
-        subscription_status: 'ACTIVE',
-        credits: 99999
-      }
-    });
-  }
-
   try {
     const user = db.prepare('SELECT email, subscription_status, credits FROM users WHERE id = ?').get(session.userId) as {
       email: string;
@@ -28,13 +16,13 @@ export async function GET(req: NextRequest) {
     } | undefined;
 
     if (!user) {
-      // Fallback for active session
+      // Fallback for new dynamic session (free trial status, 10 credits)
       return NextResponse.json({
         user: {
           id: session.userId,
           email: session.email,
-          subscription_status: 'ACTIVE',
-          credits: 99999
+          subscription_status: 'inactive',
+          credits: 10
         }
       });
     }
@@ -46,8 +34,8 @@ export async function GET(req: NextRequest) {
       user: {
         id: session.userId,
         email: session.email,
-        subscription_status: 'ACTIVE',
-        credits: 99999
+        subscription_status: 'inactive',
+        credits: 10
       }
     });
   }

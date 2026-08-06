@@ -33,30 +33,7 @@ export default function ProjectsPage() {
         }
       } catch (e) {}
 
-      // Dual-layer client-side storage sync to eliminate Vercel serverless lambda TTL expiry
-      let localProjects: ProjectInfo[] = [];
-      if (typeof window !== 'undefined') {
-        const localRaw = localStorage.getItem('cs_rfp_projects_v1');
-        if (localRaw) {
-          try { localProjects = JSON.parse(localRaw); } catch (e) {}
-        }
-      }
-
-      const combinedMap = new Map<string, ProjectInfo>();
-      for (const p of serverProjects) {
-        combinedMap.set(p.id, p);
-      }
-      for (const p of localProjects) {
-        if (!combinedMap.has(p.id)) {
-          combinedMap.set(p.id, p);
-        }
-      }
-
-      const mergedProjects = Array.from(combinedMap.values()).sort(
-        (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-
-      setProjects(mergedProjects);
+      setProjects(serverProjects.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()));
     } catch (err) {
       console.error('Failed to fetch projects:', err);
     } finally {
@@ -69,17 +46,6 @@ export default function ProjectsPage() {
     try {
       await fetch(`/api/rfp?projectId=${id}`, { method: 'DELETE' });
     } catch (err) {}
-
-    if (typeof window !== 'undefined') {
-      const localRaw = localStorage.getItem('cs_rfp_projects_v1');
-      if (localRaw) {
-        try {
-          const localProjects = JSON.parse(localRaw).filter((p: any) => p.id !== id);
-          localStorage.setItem('cs_rfp_projects_v1', JSON.stringify(localProjects));
-          localStorage.removeItem(`cs_rfp_questions_${id}`);
-        } catch (e) {}
-      }
-    }
 
     fetchProjects();
   };
@@ -131,22 +97,6 @@ export default function ProjectsPage() {
       }
 
       const createdId = data.projectId;
-
-      // Sync into client-side LocalStorage immediately for 100% durable persistence
-      if (createdId && typeof window !== 'undefined') {
-        const newProjObj = { id: createdId, name: projectName.trim(), created_at: new Date().toISOString() };
-        const localRaw = localStorage.getItem('cs_rfp_projects_v1');
-        const localProjects = localRaw ? JSON.parse(localRaw) : [];
-        localStorage.setItem('cs_rfp_projects_v1', JSON.stringify([newProjObj, ...localProjects.filter((p: any) => p.id !== createdId)]));
-        
-        const qListObj = questions.map((qText, idx) => ({
-          id: `local_q_${createdId}_${idx}`,
-          project_id: createdId,
-          question_text: qText,
-          status: 'pending'
-        }));
-        localStorage.setItem(`cs_rfp_questions_${createdId}`, JSON.stringify(qListObj));
-      }
 
       if (createdId) {
         router.push(`/projects/${createdId}`);

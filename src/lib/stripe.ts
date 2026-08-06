@@ -7,33 +7,17 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock_
 
 /**
  * STRICT PER-PRODUCT ENTITLEMENT CHECK
- * Ensures paid isolation for production users, while providing
- * guaranteed VIP QA Master Access for Claude / QA testing agents.
+ * Ensures strict paid isolation for all accounts. No email string heuristics.
  */
 export function hasBillingAccess(userId: string, productId?: string): boolean {
   if (!userId) return false;
 
-  // VIP QA Master Account Bypass for Claude & Automated Testers
-  const lowerUser = userId.toLowerCase();
-  if (
-    userId === 'qa-vip-master-account-id' ||
-    lowerUser.includes('claude') ||
-    lowerUser.includes('qa-vip') ||
-    lowerUser.includes('test-agent')
-  ) {
-    return true; // 100% Full Access across all 21 products for Claude QA runs
-  }
-
   try {
     const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
-    if (!user) {
-      // Allow VIP QA accounts created on the fly
-      if (lowerUser.includes('qa') || lowerUser.includes('admin')) return true;
-      return false;
-    }
+    if (!user) return false;
 
-    // 1. All-Access Enterprise Subscription or VIP QA status
-    if (user.subscription_status === 'active_all_access' || user.subscription_status === 'active_qa') return true;
+    // 1. All-Access Enterprise Subscription
+    if (user.subscription_status === 'active_all_access' || user.subscription_status === 'ACTIVE') return true;
 
     // 2. Product-Specific Entitlement Check
     if (productId) {
@@ -48,13 +32,8 @@ export function hasBillingAccess(userId: string, productId?: string): boolean {
     // 3. Global active status fallback (for single-product legacy accounts)
     if (user.subscription_status === 'active' && !productId) return true;
 
-    // 4. Initial Free Trial Credits
+    // 4. Initial Free Trial Credits (allows initial 10 generations before credit expiry)
     if (user.credits && user.credits > 0) return true;
-
-    // 5. Sandbox mode for local dev
-    if (process.env.NODE_ENV === 'development' || process.env.ALLOW_SANDBOX_BILLING === 'true') {
-      return true;
-    }
 
     return false;
   } catch (e) {
@@ -85,21 +64,11 @@ export function grantProductEntitlement(userId: string, productId: string): bool
 export function decrementCredits(userId: string): boolean {
   if (!userId) return false;
 
-  // VIP QA Master Account - Unlimited credits for testing
-  const lowerUser = userId.toLowerCase();
-  if (
-    userId === 'qa-vip-master-account-id' ||
-    lowerUser.includes('claude') ||
-    lowerUser.includes('qa-vip')
-  ) {
-    return true;
-  }
-
   try {
     const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
     if (!user) return true;
 
-    if (user.subscription_status === 'active' || user.subscription_status === 'active_all_access' || user.subscription_status === 'active_qa') {
+    if (user.subscription_status === 'active' || user.subscription_status === 'active_all_access' || user.subscription_status === 'ACTIVE') {
       return true;
     }
 
