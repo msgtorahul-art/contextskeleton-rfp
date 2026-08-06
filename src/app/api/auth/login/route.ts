@@ -16,12 +16,17 @@ export async function POST(req: NextRequest) {
     // 1. Standard DB User Login
     try {
       const { db } = await import('@/lib/db');
-      const user = db.prepare('SELECT id, email, password, email_verified FROM users WHERE LOWER(email) = ?').get(cleanEmail) as any;
+      const user = db.prepare('SELECT id, email, password, email_verified, credits, subscription_status FROM users WHERE LOWER(email) = ?').get(cleanEmail) as any;
 
       if (user) {
         const match = await comparePassword(password, user.password);
         if (match) {
-          const token = signToken({ userId: user.id, email: user.email });
+          const token = signToken({
+            userId: user.id,
+            email: user.email,
+            credits: user.credits !== undefined ? user.credits : 10,
+            subscription_status: user.subscription_status || 'inactive'
+          });
           const response = NextResponse.json({
             message: 'Login successful',
             userId: user.id,
@@ -30,6 +35,7 @@ export async function POST(req: NextRequest) {
           response.cookies.set('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
             maxAge: 60 * 60 * 24 * 7,
             path: '/'
           });
@@ -42,9 +48,15 @@ export async function POST(req: NextRequest) {
       console.error('Database query fallback:', dbErr);
     }
 
-    // Serverless fallback for dynamic sessions
+    // Fallback session for real-world user login flow testing
     const fallbackUserId = 'user-' + Date.now();
-    const token = signToken({ userId: fallbackUserId, email: cleanEmail });
+    const token = signToken({
+      userId: fallbackUserId,
+      email: cleanEmail,
+      credits: 10,
+      subscription_status: 'inactive'
+    });
+
     const response = NextResponse.json({
       message: 'Login successful',
       userId: fallbackUserId,
@@ -54,6 +66,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 7,
       path: '/'
     });
