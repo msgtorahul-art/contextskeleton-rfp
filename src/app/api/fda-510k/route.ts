@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { findSimilarChunks } from '@/lib/vector';
 import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
-import { generateContentWithRetry } from '@/lib/geminiHelper';
+import { processFda510kEngine } from '@/lib/engines/fda510kEngine';
 
 export async function POST(req: NextRequest) {
   const user = getSession(req);
@@ -19,75 +18,28 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { deviceName, predicateDevice, technicalSpec } = body;
+    const technicalSpec = body.technicalSpec || body.specText || body.text || body.description || '';
+    const deviceName = body.deviceName || body.title || 'Medical Device';
+    const predicateDevice = body.predicateDevice || 'Cleared Predicate K-Number';
 
-    if (!technicalSpec) {
+    if (!technicalSpec.trim()) {
       return NextResponse.json({ error: 'Device technical specification is required.' }, { status: 400 });
     }
 
-    const similarChunks = await findSimilarChunks(user.userId, technicalSpec, 5);
-    const vectorContext = similarChunks.map(c => `[Source File: ${c.filename}]\n${c.content}`).join('\n\n');
+    const result = await processFda510kEngine({
+      deviceName,
+      predicateDevice,
+      technicalSpec,
+    });
 
-    const prompt = `You are a Senior Regulatory Affairs Specialist specializing in FDA 510(k) Medical Device Submissions.
-
-Device Name: ${deviceName || 'Medical Device'}
-Predicate Device: ${predicateDevice || 'Cleared Predicate K-Number'}
-Technical Spec: ${technicalSpec}
-
-Retrieved Grounding Context:
-${vectorContext || 'No uploaded files found. Grounding analysis strictly in FDA 21 CFR Part 807 Subpart E.'}
-
-Return ONLY valid JSON matching this exact structure:
-{
-  "summary": "Executive FDA 510(k) Substantial Equivalence pre-audit summary for ${deviceName || 'Medical Devices'}.",
-  "overallScore": 90,
-  "status": "APPROVED",
-  "items": [
-    {
-      "requirement": "21 CFR 807.87(f) - Substantial Equivalence",
-      "topic": "Intended Use & Technological Characteristics",
-      "status": "PASS",
-      "riskRating": "LOW",
-      "findings": "Intended use is identical to cleared predicate device.",
-      "recommendation": "Attach biocompatibility testing report."
-    }
-  ]
-}`;
-
-    const rawText = await generateContentWithRetry(
-      {
-        model: 'gemini-2.5-flash',
-        contents: [{ role: 'user', parts: [{ text: prompt }] }]
-      },
-      'fda-510k'
-    );
-
-    let resultJson: any;
-    try {
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      resultJson = JSON.parse(jsonMatch ? jsonMatch[0] : rawText);
-    } catch (e) {
-      resultJson = {
-        summary: `FDA 510(k) Substantial Equivalence Pre-Audit complete for "${deviceName || 'Medical Device'}".`,
-        overallScore: 91,
-        status: "APPROVED",
-        items: [
-          {
-            requirement: "21 CFR Part 807 Subpart E Substantial Equivalence",
-            topic: "Predicate Comparison & Safety",
-            status: "PASS",
-            riskRating: "LOW",
-            findings: "Device technological characteristics align with cleared predicate device.",
-            recommendation: "Submit FDA Form 3514 and eSTAR submission package."
-          }
-        ]
-      };
+    if ((result as any).error) {
+      return NextResponse.json({ error: (result as any).error }, { status: 400 });
     }
 
     decrementCredits(user.userId);
-    return NextResponse.json(resultJson);
+    return NextResponse.json(result);
   } catch (err: any) {
-    console.error('FDA 510k API Error:', err);
-    return NextResponse.json({ error: 'Failed to process FDA 510(k) analysis. Please try again.' }, { status: 500 });
+    console.error('FDA 510k Engine Error:', err);
+    return NextResponse.json({ error: 'Failed to process FDA 510(k) analysis.' }, { status: 500 });
   }
 }

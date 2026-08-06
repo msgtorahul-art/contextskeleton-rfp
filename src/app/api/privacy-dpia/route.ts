@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { findSimilarChunks } from '@/lib/vector';
 import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
-import { generateContentWithRetry } from '@/lib/geminiHelper';
+import { processPrivacyDpiaEngine } from '@/lib/engines/privacyDpiaEngine';
 
 export async function POST(req: NextRequest) {
   const user = getSession(req);
@@ -19,75 +18,28 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { systemName, framework, dataFlowNotes } = body;
+    const dataFlowNotes = body.dataFlowNotes || body.text || body.specText || body.description || '';
+    const systemName = body.systemName || body.title || 'Enterprise System';
+    const framework = body.framework || 'EU GDPR Article 35 & HIPAA Security Rule';
 
-    if (!dataFlowNotes) {
+    if (!dataFlowNotes.trim()) {
       return NextResponse.json({ error: 'Data flow and processing notes are required.' }, { status: 400 });
     }
 
-    const similarChunks = await findSimilarChunks(user.userId, dataFlowNotes, 5);
-    const vectorContext = similarChunks.map(c => `[Source File: ${c.filename}]\n${c.content}`).join('\n\n');
+    const result = await processPrivacyDpiaEngine({
+      systemName,
+      framework,
+      dataFlowNotes,
+    });
 
-    const prompt = `You are a Senior Data Privacy Officer & GDPR/HIPAA DPIA Specialist.
-
-System Name: ${systemName || 'Enterprise System'}
-Framework: ${framework || 'EU GDPR Article 35 & HIPAA Security Rule'}
-Data Flow Notes: ${dataFlowNotes}
-
-Retrieved Grounding Context:
-${vectorContext || 'No uploaded files found. Grounding analysis strictly in GDPR Article 35 and HIPAA Security Rule safeguards.'}
-
-Return ONLY valid JSON matching this exact structure:
-{
-  "summary": "Executive Data Protection Impact Assessment (DPIA) summary for ${systemName || 'Enterprise Systems'}.",
-  "overallScore": 88,
-  "status": "APPROVED",
-  "items": [
-    {
-      "requirement": "GDPR Article 35 - High-Risk Processing",
-      "topic": "Encryption at Rest & In-Transit",
-      "status": "PASS",
-      "riskRating": "LOW",
-      "findings": "AES-256 encryption applied to database storage and TLS 1.3 in-transit.",
-      "recommendation": "Maintain annual DPIA review logs."
-    }
-  ]
-}`;
-
-    const rawText = await generateContentWithRetry(
-      {
-        model: 'gemini-2.5-flash',
-        contents: [{ role: 'user', parts: [{ text: prompt }] }]
-      },
-      'privacy-dpia'
-    );
-
-    let resultJson: any;
-    try {
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      resultJson = JSON.parse(jsonMatch ? jsonMatch[0] : rawText);
-    } catch (e) {
-      resultJson = {
-        summary: `Automated GDPR & HIPAA DPIA Audit complete for "${systemName || 'Enterprise Systems'}".`,
-        overallScore: 89,
-        status: "APPROVED",
-        items: [
-          {
-            requirement: "GDPR Article 35 Data Protection Impact Assessment",
-            topic: "Data Minimization & Access Control",
-            status: "PASS",
-            riskRating: "LOW",
-            findings: "System architecture complies with Article 35 data minimization guidelines.",
-            recommendation: "Ensure automated deletion policies for inactive PII records after 36 months."
-          }
-        ]
-      };
+    if ((result as any).error) {
+      return NextResponse.json({ error: (result as any).error }, { status: 400 });
     }
 
     decrementCredits(user.userId);
-    return NextResponse.json(resultJson);
+    return NextResponse.json(result);
   } catch (err: any) {
-    console.error('Privacy DPIA Error:', err);
-    return NextResponse.json({ error: 'Failed to process Privacy DPIA audit. Please try again.' }, { status: 500 });
+    console.error('Privacy DPIA Engine Error:', err);
+    return NextResponse.json({ error: 'Failed to process Privacy DPIA audit.' }, { status: 500 });
   }
 }
