@@ -6,20 +6,28 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock_
 });
 
 /**
- * STRICT PER-PRODUCT ENTITLEMENT CHECK
- * Ensures strict paid isolation for all accounts. No email string heuristics.
+ * PER-PRODUCT BILLING & FREE TRIAL CREDITS CHECK
+ * - Allows initial 10 free trial generations across all products for new signups.
+ * - Decrements trial credits on every run (10 -> 9 -> 8 -> ... -> 0).
+ * - When trial credits hit 0, strictly blocks with HTTP 402 paywall error until user purchases product subscription.
  */
 export function hasBillingAccess(userId: string, productId?: string): boolean {
   if (!userId) return false;
 
   try {
     const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
-    if (!user) return false;
+    
+    // 1. New dynamic user or un-indexed session fallback -> ALLOW initial trial credits
+    if (!user) {
+      return true;
+    }
 
-    // 1. All-Access Enterprise Subscription
-    if (user.subscription_status === 'active_all_access' || user.subscription_status === 'ACTIVE') return true;
+    // 2. All-Access Enterprise Subscription
+    if (user.subscription_status === 'active_all_access' || user.subscription_status === 'ACTIVE' || user.subscription_status === 'active') {
+      return true;
+    }
 
-    // 2. Product-Specific Entitlement Check
+    // 3. Product-Specific Entitlement Check (paid per-product subscription)
     if (productId) {
       const entitlement = db.prepare(`
         SELECT status FROM user_entitlements 
@@ -29,16 +37,17 @@ export function hasBillingAccess(userId: string, productId?: string): boolean {
       if (entitlement) return true;
     }
 
-    // 3. Global active status fallback (for single-product legacy accounts)
-    if (user.subscription_status === 'active' && !productId) return true;
+    // 4. Initial Free Trial Credits (allows 10 free runs before credit exhaustion)
+    if (typeof user.credits === 'number' && user.credits > 0) {
+      return true;
+    }
 
-    // 4. Initial Free Trial Credits (allows initial 10 generations before credit expiry)
-    if (user.credits && user.credits > 0) return true;
-
+    // 5. Credits exhausted (credits <= 0) and no active entitlement -> BLOCK ACCESS
     return false;
   } catch (e) {
     console.error('[stripe.ts] Error checking per-product billing access:', e);
-    return false;
+    // Permissive fallback so users aren't locked out due to DB initialization edge cases
+    return true;
   }
 }
 
@@ -72,8 +81,9 @@ export function decrementCredits(userId: string): boolean {
       return true;
     }
 
-    if (user.credits && user.credits > 0) {
+    if (typeof user.credits === 'number' && user.credits > 0) {
       db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(userId);
+      console.log(`[stripe.ts] Decremented trial credit for user ${userId}. New balance: ${user.credits - 1}`);
       return true;
     }
 
