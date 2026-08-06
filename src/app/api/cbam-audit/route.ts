@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { getSession } from '@/lib/auth';
 import { findSimilarChunks } from '@/lib/vector';
 import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+import { generateContentWithRetry } from '@/lib/geminiHelper';
 
 export async function POST(req: NextRequest) {
   const session = getSession(req);
@@ -66,12 +64,10 @@ ${contextText}
 Shipment Invoices & Bill of Lading Data:
 "${shipmentData}"`;
 
-    const response = await ai.models.generateContent({
+    const responseText = await generateContentWithRetry({
       model: 'gemini-2.5-flash',
       contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
     });
-
-    const responseText = response.text || '';
     
     let parsedResult;
     try {
@@ -103,6 +99,6 @@ Shipment Invoices & Bill of Lading Data:
     return NextResponse.json(parsedResult);
   } catch (error: any) {
     console.error('CBAM Audit API Error:', error);
-    return NextResponse.json({ error: 'Failed to calculate CBAM carbon certificate values.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to calculate CBAM carbon certificate values. Please try again.' }, { status: 500 });
   }
 }
