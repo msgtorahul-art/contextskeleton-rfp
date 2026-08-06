@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase, Award } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase, Award, Cpu, HeartPulse, Server, AlertTriangle, Building2 } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -72,6 +72,12 @@ export default function Sidebar() {
     { name: 'Building Consent Auditor', href: '/consent', icon: ShieldCheck },
     { name: 'Security Questionnaire', href: '/security-questionnaire', icon: Lock },
     { name: 'GovWin & SBIR Grant Architect', href: '/gov-grant', icon: Award },
+    { name: 'EU AI Act Annex IV Engine', href: '/ai-act', icon: Cpu },
+    { name: 'Medical Claim Appeal Architect', href: '/claim-appeal', icon: HeartPulse },
+    { name: 'EU DORA & NIS2 ICT Auditor', href: '/dora-audit', icon: Server },
+    { name: 'EU CBAM Customs Auditor', href: '/cbam-audit', icon: Leaf },
+    { name: 'SEC 4-Day Incident War Room', href: '/sec-incident', icon: AlertTriangle },
+    { name: 'CRE Lease Abstractor', href: '/cre-lease', icon: Building2 },
     { name: 'FDA 510(k) MedTech Resolver', href: '/fda-510k', icon: Activity },
     { name: 'R&D Tax Audit Analyzer', href: '/rd-tax', icon: Calculator },
     { name: 'ESG & CSRD Climate Auditor', href: '/esg', icon: Leaf },
