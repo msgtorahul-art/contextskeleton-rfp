@@ -43,12 +43,20 @@ export function runLocalComplianceAI(productType: string, inputData: {
 }): LocalAuditResult {
   const text = (inputData.text || '').trim();
   const lowerText = text.toLowerCase();
-  const title = inputData.title || inputData.vendorName || inputData.companyName || 'Enterprise System';
+  
+  // Extract user-entered entity/company/project name dynamically
+  let extractedTitle = inputData.title || inputData.companyName || inputData.vendorName || inputData.buildingType || '';
+  if (!extractedTitle) {
+    const match = text.match(/(?:company|entity|project|tenant|vendor|grant|firm)[:\s]+([A-Za-z0-9\s,\.\(\)]+)/i);
+    if (match && match[1]) {
+      extractedTitle = match[1].split('\n')[0].trim();
+    }
+  }
+  const title = extractedTitle || 'Submitted Entity & Project';
 
   // 1. NZ BUILDING CONSENT AUDITOR (/consent)
   if (productType === 'consent' || lowerText.includes('nzbc') || lowerText.includes('cavity') || lowerText.includes('weatherboard')) {
     const hasCavity = lowerText.includes('cavity') || lowerText.includes('20mm');
-    const hasH1Insulation = lowerText.includes('h1') || lowerText.includes('r-value') || lowerText.includes('insulation');
 
     return {
       summary: `NZBC Building Consent Pre-Audit complete for "${title}". Verified against Acceptable Solutions E2/AS1, H1/AS1, and B1/VM1.`,
@@ -125,10 +133,10 @@ export function runLocalComplianceAI(productType: string, inputData: {
   if (productType === 'claim-appeal' || lowerText.includes('denial') || lowerText.includes('cpt') || lowerText.includes('patient')) {
     return {
       summary: `Clinical Prior Authorization (PA) Denial Rebuttal prepared for "${title}". Grounded in AMA CPT coding and CMS LCD guidelines.`,
-      appealLetter: `RE: Urgent Clinical Appeal for Claim Reversal & Prior Authorization Override\nPatient ID: [Patient Identifier Placeholder]\nInsurer Denial Reason: ${inputData.category || 'Lack of Medical Necessity'}\n\nDear Medical Director,\n\nWe are writing to formally appeal the denial of prior authorization for ${inputData.title || 'CPT 27447'}. The clinical documentation establishes that the patient has met all criteria for medical necessity under established American Medical Association (AMA) guidelines and CMS Local Coverage Determinations (LCD).\n\nClinical Justification:\n- The patient has documented 6+ months of progressive functional impairment impacting daily weight-bearing activities.\n- Conservative non-operative therapies (physical therapy, NSAID pharmacotherapy, and intra-articular injections) have been attempted and failed to provide sustained relief.\n- Diagnostic imaging confirms advanced structural joint disease.\n\nWe request an immediate override of this denial. If this denial is upheld, we request an expedited peer-to-peer discussion with a board-certified physician specialist.\n\nSincerely,\nAttending Physician, MD`,
+      appealLetter: `RE: Urgent Clinical Appeal for Claim Reversal & Prior Authorization Override\nPatient ID: [Patient Identifier Placeholder]\nInsurer Denial Reason: ${inputData.category || 'Lack of Medical Necessity'}\n\nDear Medical Director,\n\nWe are writing to formally appeal the denial of prior authorization for ${title}. The clinical documentation establishes that the patient has met all criteria for medical necessity under established American Medical Association (AMA) guidelines and CMS Local Coverage Determinations (LCD).\n\nClinical Justification:\n- The patient has documented 6+ months of progressive functional impairment impacting daily weight-bearing activities.\n- Conservative non-operative therapies (physical therapy, NSAID pharmacotherapy, and intra-articular injections) have been attempted and failed to provide sustained relief.\n- Diagnostic imaging confirms advanced structural joint disease.\n\nWe request an immediate override of this denial. If this denial is upheld, we request an expedited peer-to-peer discussion with a board-certified physician specialist.\n\nSincerely,\nAttending Physician, MD`,
       cptAnalysis: [
         {
-          code: inputData.title || "CPT 27447 / ICD-10 M17.11",
+          code: title || "CPT 27447 / ICD-10 M17.11",
           status: "REBUTTED_APPROVED",
           medicalNecessityRationale: "Patient completed 12+ weeks of conservative physical therapy and failed intra-articular steroid injections."
         }
@@ -154,11 +162,11 @@ export function runLocalComplianceAI(productType: string, inputData: {
     return {
       summary: `SEC Form 8-K Item 1.05 Materiality Evaluation complete for "${title}". 4-Day Disclosure Clock Active.`,
       materialityAssessment: isMaterial 
-        ? `MATERIAL INCIDENT DETERMINATION: The exfiltration of sensitive customer data and operational database downtime exceeds established quantitative (financial loss > 1% annual revenue) and qualitative materiality thresholds under SEC Item 1.05 guidance.`
-        : `NON-MATERIAL DETERMINATION AT PRESENT: Current triage notes indicate localized system impact with zero confirmed customer PII exfiltration. Continue daily forensic monitoring.`,
+        ? `MATERIAL INCIDENT DETERMINATION for ${title}: The exfiltration of sensitive customer data and operational database downtime exceeds established quantitative (financial loss > 1% annual revenue) and qualitative materiality thresholds under SEC Item 1.05 guidance.`
+        : `NON-MATERIAL DETERMINATION AT PRESENT for ${title}: Current triage notes indicate localized system impact with zero confirmed customer PII exfiltration. Continue daily forensic monitoring.`,
       item105Draft: `Item 1.05 Cybersecurity Incidents.\n\nOn August 4, 2026, ${title} determined that a cybersecurity incident occurred affecting certain internal IT database systems. The Company immediately activated its cybersecurity incident response plan, contained the affected systems, and engaged leading third-party cybersecurity forensics firms. The Company has notified law enforcement and continues to assess operational impact.`,
       recommendedActions: [
-        "File SEC Form 8-K Item 1.05 prior to 5:30 PM EST on Day 4 of materiality determination.",
+        `File SEC Form 8-K Item 1.05 for ${title} prior to 5:30 PM EST on Day 4 of materiality determination.`,
         "Notify cyber insurance carrier and primary law enforcement liaison.",
         "Convene Board of Directors Audit & Risk Committee for legal briefing."
       ],

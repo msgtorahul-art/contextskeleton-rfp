@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenAI } from '@google/genai';
 import { getSession } from '@/lib/auth';
 import { findSimilarChunks } from '@/lib/vector';
 import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+import { generateContentWithRetry } from '@/lib/geminiHelper';
 
 export async function POST(req: NextRequest) {
   const session = getSession(req);
@@ -69,12 +67,13 @@ ${contextText}
 Submitted Grant Proposal Narrative:
 "${proposalNarrative}"`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
-    });
-
-    const responseText = response.text || '';
+    const responseText = await generateContentWithRetry(
+      {
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
+      },
+      'gov-grant'
+    );
     
     let parsedResult;
     try {
@@ -83,7 +82,7 @@ Submitted Grant Proposal Narrative:
     } catch (parseError) {
       console.error('Failed to parse Gemini JSON output:', parseError);
       parsedResult = {
-        summary: "Automated pre-screening audit complete for Federal SBIR/GovWin Grant submission.",
+        summary: `Automated pre-screening audit complete for "${grantTitle || 'Federal Grant Submission'}".`,
         items: [
           {
             requirement: "FAR 52.219-6 Small Business Set-Aside",
@@ -110,6 +109,6 @@ Submitted Grant Proposal Narrative:
     return NextResponse.json(parsedResult);
   } catch (error: any) {
     console.error('Gov Grant API Error:', error);
-    return NextResponse.json({ error: 'Failed to process Federal Grant audit. Please check your inputs.' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to process Federal Grant audit. Please try again.' }, { status: 500 });
   }
 }
