@@ -27,16 +27,19 @@ export function middleware(req: NextRequest) {
 
   const isPreview = req.nextUrl.searchParams.get('preview') === 'true';
 
-  // Redirect authenticated users trying to access login/register/landing page to /dashboard (unless previewing)
-  if (token && (isAuthPage || (isRootPage && !isPreview))) {
-    const dashboardUrl = new URL('/dashboard', req.url);
-    return NextResponse.redirect(dashboardUrl);
-  }
-
-  // Redirect unauthenticated users trying to access protected workspace routes (/projects, /consent, /security-questionnaire, /fda-510k, /rd-tax, /esg, /clinical-trials, /privacy-dpia, /aml-kyc, /ehs-safety, /iso-quality, /sox-audit, /knowledge, /dashboard) to /auth
-  if (!token && !isAuthPage && !isRootPage && !isPublicPage) {
-    const loginUrl = new URL('/auth', req.url);
-    return NextResponse.redirect(loginUrl);
+  // Basic check for presence of token cookie
+  if (token) {
+    // If user is on /auth or root landing page while token is present, redirect to /dashboard (unless previewing)
+    if (isAuthPage || (isRootPage && !isPreview)) {
+      const dashboardUrl = new URL('/dashboard', req.url);
+      return NextResponse.redirect(dashboardUrl);
+    }
+  } else {
+    // If user has NO token cookie and tries to access protected routes, redirect cleanly to /auth
+    if (!isAuthPage && !isRootPage && !isPublicPage) {
+      const loginUrl = new URL('/auth', req.url);
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   return NextResponse.next();

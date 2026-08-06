@@ -32,13 +32,13 @@ export async function POST(req: NextRequest) {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(userId, email, hashedPassword, 'inactive', 10, 0, verificationCode);
       
-    // Trigger verification email
+    // Trigger verification email securely
     await sendVerificationEmail(email, verificationCode);
 
+    // SECURE RESPONSE: Never leak verification code in HTTP JSON body
     return NextResponse.json({ 
       message: 'Registration successful! Please check your email to verify your account.', 
       userId,
-      verificationCode, // Included for seamless testing in sandbox
     }, { status: 201 });
   } catch (error) {
     console.error('Registration API error:', error);

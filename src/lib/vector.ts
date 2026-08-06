@@ -31,13 +31,13 @@ export async function getEmbedding(text: string): Promise<number[]> {
     if (!values) {
       throw new Error('Embedding values are undefined');
     }
-    return values;
+    return values; // 768 dimensions
   } catch (error) {
-    console.error('Error generating embedding (falling back to simple bag-of-words vector):', error);
-    // Simple 64-dim pseudo-embedding fallback so vector search never breaks if Gemini embedding API rate limits
-    const fallbackVector = new Array(64).fill(0);
+    console.error('Error generating embedding (falling back to 768-dim pseudo-embedding vector):', error);
+    // Harmonized 768-dim pseudo-embedding fallback so vector search dimensions match text-embedding-004 exactly!
+    const fallbackVector = new Array(768).fill(0);
     for (let i = 0; i < text.length; i++) {
-      fallbackVector[i % 64] += text.charCodeAt(i) / 255;
+      fallbackVector[i % 768] += text.charCodeAt(i) / 255;
     }
     return fallbackVector;
   }
