@@ -9,9 +9,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!hasBillingAccess(session.userId)) {
+  // Strict Product-Level Access Check
+  if (!hasBillingAccess(session.userId, 'sec-incident')) {
     return NextResponse.json(
-      { error: 'Subscription required. Please upgrade to run SEC 4-Day Breach Materiality evaluations.', code: 'PAYMENT_REQUIRED' },
+      { error: 'Product entitlement required. Please subscribe to SEC 4-Day Incident War Room to access this product.', code: 'PAYMENT_REQUIRED' },
       { status: 402 }
     );
   }

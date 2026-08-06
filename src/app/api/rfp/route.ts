@@ -9,9 +9,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!hasBillingAccess(user.userId)) {
+  // Strict Product-Level Access Check
+  if (!hasBillingAccess(user.userId, 'rfp')) {
     return NextResponse.json(
-      { error: 'Subscription required. Please upgrade to process RFPs.' },
+      { error: 'Product entitlement required. Please subscribe to the RFP & Tender Engine to access this product.' },
       { status: 402 }
     );
   }

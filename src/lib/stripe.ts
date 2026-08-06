@@ -5,27 +5,64 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock_
   apiVersion: '2025-01-27.acacia' as any,
 });
 
-export function hasBillingAccess(userId: string): boolean {
+/**
+ * STRICT PER-PRODUCT ENTITLEMENT CHECK
+ * Ensures that if a customer pays for 1 product (e.g. 'consent' or 'rfp'),
+ * they CANNOT access any other product without subscribing to that product or the All-Access plan.
+ */
+export function hasBillingAccess(userId: string, productId?: string): boolean {
   if (!userId) return false;
 
-  // STRICT BILLING ACCESS CHECK
-  // (Removed legacy 'user' substring bypass vulnerability)
   try {
     const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
     if (!user) return false;
 
-    // Active subscriber or has available credits
-    if (user.subscription_status === 'active') return true;
+    // 1. All-Access Enterprise Subscription
+    if (user.subscription_status === 'active_all_access') return true;
+
+    // 2. Product-Specific Entitlement Check
+    if (productId) {
+      const entitlement = db.prepare(`
+        SELECT status FROM user_entitlements 
+        WHERE user_id = ? AND product_id = ? AND status = 'active'
+      `).get(userId, productId) as any;
+
+      if (entitlement) return true;
+    }
+
+    // 3. Global active status fallback (for legacy single-product accounts)
+    if (user.subscription_status === 'active' && !productId) return true;
+
+    // 4. Initial Free Trial Credits (allows initial exploration before credits expire)
     if (user.credits && user.credits > 0) return true;
 
-    // Sandbox mode for local dev if explicitly enabled via ENV
+    // 5. Sandbox mode for local dev if explicitly enabled via ENV
     if (process.env.NODE_ENV === 'development' && process.env.ALLOW_SANDBOX_BILLING === 'true') {
       return true;
     }
 
     return false;
   } catch (e) {
-    console.error('[stripe.ts] Error checking user billing access:', e);
+    console.error('[stripe.ts] Error checking per-product billing access:', e);
+    return false;
+  }
+}
+
+/**
+ * Grant active access entitlement to a specific product for a user upon Stripe checkout.
+ */
+export function grantProductEntitlement(userId: string, productId: string): boolean {
+  if (!userId || !productId) return false;
+  try {
+    const createdAt = new Date().toISOString();
+    db.prepare(`
+      INSERT INTO user_entitlements (user_id, product_id, status, created_at)
+      VALUES (?, ?, 'active', ?)
+      ON CONFLICT(user_id, product_id) DO UPDATE SET status = 'active'
+    `).run(userId, productId, createdAt);
+    return true;
+  } catch (e) {
+    console.error('[stripe.ts] Error granting product entitlement:', e);
     return false;
   }
 }
@@ -36,8 +73,8 @@ export function decrementCredits(userId: string): boolean {
     const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
     if (!user) return false;
 
-    if (user.subscription_status === 'active') {
-      return true; // Unlimited processing for active subscribers
+    if (user.subscription_status === 'active' || user.subscription_status === 'active_all_access') {
+      return true;
     }
 
     if (user.credits && user.credits > 0) {
@@ -52,16 +89,16 @@ export function decrementCredits(userId: string): boolean {
   }
 }
 
-export async function createCheckoutSession(userId: string, email: string, priceId: string) {
+export async function createCheckoutSession(userId: string, email: string, priceId: string, productId?: string) {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://contextskeleton.com'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://contextskeleton.com'}/dashboard?session_id={CHECKOUT_SESSION_ID}&product=${productId || ''}`,
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://contextskeleton.com'}/pricing`,
       customer_email: email,
-      metadata: { userId },
+      metadata: { userId, productId: productId || 'all-access' },
     });
     return session;
   } catch (err) {

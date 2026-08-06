@@ -25,6 +25,15 @@ function getDbInstance(): Database.Database {
         reset_token_expiry TEXT
       );
 
+      CREATE TABLE IF NOT EXISTS user_entitlements (
+        user_id TEXT NOT NULL,
+        product_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (user_id, product_id),
+        FOREIGN KEY(user_id) REFERENCES users(id)
+      );
+
       CREATE TABLE IF NOT EXISTS documents (
         id TEXT PRIMARY KEY,
         user_id TEXT NOT NULL,

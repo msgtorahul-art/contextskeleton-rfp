@@ -10,8 +10,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (!hasBillingAccess(session.userId)) {
-      return NextResponse.json({ error: 'No remaining credits or active subscription' }, { status: 402 });
+    // Strict Product-Level Access Check
+    if (!hasBillingAccess(session.userId, 'consent')) {
+      return NextResponse.json({ error: 'Product entitlement required. Please subscribe to NZ Building Consent Auditor to access this product.' }, { status: 402 });
     }
 
     const body = await req.json();
