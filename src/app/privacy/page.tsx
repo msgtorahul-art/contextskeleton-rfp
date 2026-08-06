@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, ArrowLeft, Lock, Database, Mail, Key } from 'lucide-react';
+import { ShieldCheck, ArrowLeft, Lock, Database, Mail, Key, ShieldAlert } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy | ContextSkeleton Enterprise AI',
-  description: 'Privacy Policy and data security practices for ContextSkeleton Enterprise AI Platform.',
+  title: 'Privacy Policy & Data Security | ContextSkeleton Enterprise AI',
+  description: 'Privacy Policy, Zero-Training Guarantees, and Data Isolation practices for ContextSkeleton.',
   alternates: {
     canonical: 'https://contextskeleton.com/privacy',
   },
@@ -23,13 +23,26 @@ export default function PrivacyPolicyPage() {
 
         <header className="mb-12 border-b border-slate-900 pb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs font-semibold mb-4">
-            <ShieldCheck className="h-3.5 w-3.5" /> Enterprise Privacy &amp; Data Protection
+            <ShieldCheck className="h-3.5 w-3.5" /> Enterprise Privacy &amp; Zero-Training Guarantee
           </div>
-          <h1 className="text-4xl font-extrabold text-white tracking-tight mb-3">Privacy Policy</h1>
-          <p className="text-slate-400 text-xs">Last Updated: August 5, 2026</p>
+          <h1 className="text-4xl font-extrabold text-white tracking-tight mb-3">Privacy Policy &amp; Data Security</h1>
+          <p className="text-slate-400 text-xs">Last Updated: August 6, 2026</p>
         </header>
 
         <div className="space-y-8 text-xs text-slate-300 leading-relaxed font-sans">
+          {/* ZERO TRAINING GUARANTEE */}
+          <section className="p-6 rounded-3xl bg-violet-500/10 border border-violet-500/30 text-violet-200 space-y-3">
+            <h2 className="text-sm font-bold text-violet-300 flex items-center gap-2 uppercase tracking-wider">
+              <ShieldAlert className="h-4 w-4" /> ZERO-TRAINING &amp; STRICT CONFIDENTIALITY GUARANTEE
+            </h2>
+            <p>
+              <strong>We NEVER use your uploaded documents, security policy files, tender proposals, or AI queries to train public AI models.</strong>
+            </p>
+            <p>
+              All customer data remains 100% confidential and is processed strictly within isolated multi-tenant database clusters.
+            </p>
+          </section>
+
           <section className="glass-panel p-8 rounded-3xl border-slate-800 space-y-4">
             <h2 className="text-lg font-bold text-white flex items-center gap-2">
               <Lock className="h-5 w-5 text-violet-400" /> 1. Data Collection &amp; Processing Boundaries
@@ -49,10 +62,7 @@ export default function PrivacyPolicyPage() {
               <Database className="h-5 w-5 text-indigo-400" /> 2. AI Model Training &amp; Data Isolation
             </h2>
             <p>
-              <strong>We do NOT sell, license, or use customer data to train public artificial intelligence models.</strong>
-            </p>
-            <p>
-              All uploaded documents, PDF vector embeddings, and generated responses are stored in isolated, multi-tenant database clusters (Turso Cloud / SQLite). Customer data remains strictly segregated within your organization&apos;s account boundary.
+              All uploaded documents, PDF vector embeddings, and generated responses are stored in isolated database clusters. Customer data remains strictly segregated within your organization&apos;s account boundary.
             </p>
           </section>
 
@@ -63,10 +73,6 @@ export default function PrivacyPolicyPage() {
             <p>
               ContextSkeleton utilizes essential HTTP-only cookies and browser session storage strictly necessary for authentication security and billing status verification. We do NOT use third-party advertising cookies or cross-site tracking pixels.
             </p>
-            <ul className="list-disc pl-5 space-y-2 text-slate-400">
-              <li><strong>Authentication Tokens:</strong> Secure HTTP-only cookies storing encrypted session tokens.</li>
-              <li><strong>User Preference Cache:</strong> Local storage used to persist workspace UI layout states.</li>
-            </ul>
           </section>
 
           <section className="glass-panel p-8 rounded-3xl border-slate-800 space-y-4">
