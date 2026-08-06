@@ -26,21 +26,28 @@ const MODEL_CASCADE = [
   'gemini-1.5-flash',
 ];
 
-export async function generateContentWithRetry(params: {
-  model?: string;
-  contents: any;
-}, maxRetries = 2): Promise<string> {
+export async function generateContentWithRetry(
+  params: {
+    model?: string;
+    contents: any;
+  },
+  explicitProductType?: string
+): Promise<string> {
   const promptText = JSON.stringify(params.contents || '');
 
-  // Determine Product Type for Primary Local AI Execution
-  let productType = 'general';
-  if (promptText.includes('CBAM') || promptText.includes('Carbon')) productType = 'cbam-audit';
-  else if (promptText.includes('8-K') || promptText.includes('SEC') || promptText.includes('Materiality')) productType = 'sec-incident';
-  else if (promptText.includes('Lease') || promptText.includes('CRE')) productType = 'cre-lease';
-  else if (promptText.includes('DORA') || promptText.includes('ICT')) productType = 'dora-audit';
-  else if (promptText.includes('AI Act') || promptText.includes('Annex IV')) productType = 'ai-act';
-  else if (promptText.includes('Claim') || promptText.includes('Appeal') || promptText.includes('CPT')) productType = 'claim-appeal';
-  else if (promptText.includes('SBIR') || promptText.includes('FAR')) productType = 'gov-grant';
+  // Explicit Product Type routing (prevents substring collision bugs like SPECIFICATION -> SEC)
+  let productType = explicitProductType || 'general';
+  
+  if (!explicitProductType) {
+    if (promptText.includes('CBAM') || promptText.includes('Carbon Border')) productType = 'cbam-audit';
+    else if (promptText.includes('Form 8-K') || promptText.includes('SEC Item 1.05')) productType = 'sec-incident';
+    else if (promptText.includes('Lease Agreement') || promptText.includes('CRE Lease')) productType = 'cre-lease';
+    else if (promptText.includes('DORA') || promptText.includes('Regulation EU 2022/2554')) productType = 'dora-audit';
+    else if (promptText.includes('EU AI Act') || promptText.includes('Annex IV')) productType = 'ai-act';
+    else if (promptText.includes('Prior Authorization') || promptText.includes('CPT Coding')) productType = 'claim-appeal';
+    else if (promptText.includes('SBIR Phase I') || promptText.includes('GovWin')) productType = 'gov-grant';
+    else if (promptText.includes('NZBC') || promptText.includes('Building Code')) productType = 'consent';
+  }
 
   // 1. Try Google Gemini API for dynamic generation
   const pool = getApiKeyPool();

@@ -64,10 +64,13 @@ ${contextText}
 Shipment Invoices & Bill of Lading Data:
 "${shipmentData}"`;
 
-    const responseText = await generateContentWithRetry({
-      model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
-    });
+    const responseText = await generateContentWithRetry(
+      {
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
+      },
+      'cbam-audit'
+    );
     
     let parsedResult;
     try {

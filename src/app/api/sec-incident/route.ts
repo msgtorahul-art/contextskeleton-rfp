@@ -61,10 +61,13 @@ ${contextText}
 Breach Incident Triage & Forensic Notes:
 "${incidentNotes}"`;
 
-    const responseText = await generateContentWithRetry({
-      model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
-    });
+    const responseText = await generateContentWithRetry(
+      {
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }]
+      },
+      'sec-incident'
+    );
 
     let parsedResult;
     try {

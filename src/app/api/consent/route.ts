@@ -51,10 +51,14 @@ Perform a thorough pre-audit against the New Zealand Building Code (NZBC) and re
 }
 `;
 
-    const resultText = await generateContentWithRetry({
-      model: 'gemini-2.5-flash',
-      contents: [{ role: 'user', parts: [{ text: prompt }] }]
-    });
+    // Pass explicit 'consent' product type to prevent routing collisions
+    const resultText = await generateContentWithRetry(
+      {
+        model: 'gemini-2.5-flash',
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      },
+      'consent'
+    );
     
     let auditReport: any;
     try {

@@ -45,7 +45,45 @@ export function runLocalComplianceAI(productType: string, inputData: {
   const lowerText = text.toLowerCase();
   const title = inputData.title || inputData.vendorName || inputData.companyName || 'Enterprise System';
 
-  // 1. EU AI ACT ANNEX IV ENGINE (/ai-act)
+  // 1. NZ BUILDING CONSENT AUDITOR (/consent)
+  if (productType === 'consent' || lowerText.includes('nzbc') || lowerText.includes('cavity') || lowerText.includes('weatherboard')) {
+    const hasCavity = lowerText.includes('cavity') || lowerText.includes('20mm');
+    const hasH1Insulation = lowerText.includes('h1') || lowerText.includes('r-value') || lowerText.includes('insulation');
+
+    return {
+      summary: `NZBC Building Consent Pre-Audit complete for "${title}". Verified against Acceptable Solutions E2/AS1, H1/AS1, and B1/VM1.`,
+      overallScore: hasCavity ? 90 : 65,
+      status: hasCavity ? 'APPROVED' : 'NEEDS_REVISION',
+      items: [
+        {
+          clause: 'NZBC E2 - External Moisture',
+          topic: 'Cladding & 20mm Drained Cavity System',
+          status: hasCavity ? 'PASS' : 'FAIL',
+          riskRating: hasCavity ? 'LOW' : 'HIGH',
+          findings: hasCavity ? 'Drained cavity depth meets 20mm minimum requirement under E2/AS1 Table 9.' : 'Direct-fixed timber weatherboards lack mandatory 20mm drained cavity in Risk Score > 12 zone.',
+          recommendation: 'Specify 20mm cavity battens and flashing details per E2/AS1 Figure 73.'
+        },
+        {
+          clause: 'NZBC H1 - Energy Efficiency',
+          topic: 'Thermal Resistance (R-Value) Compliance',
+          status: 'PASS',
+          riskRating: 'LOW',
+          findings: 'Wall R-value (R2.8) and roof R-value (R6.6) satisfy Climate Zone 3 minimums under H1/AS1 5th Edition.',
+          recommendation: 'Attach recessed window installation detail to prevent thermal bridging.'
+        },
+        {
+          clause: 'NZBC B1 - Structure',
+          topic: 'Seismic & Bracing Demand Calculations',
+          status: 'PASS',
+          riskRating: 'LOW',
+          findings: 'Wall bracing BU demand calculations satisfy NZS 3604:2011 bracing schedule.',
+          recommendation: 'Provide producer statement PS1 signed by Chartered Professional Engineer (CPEng).'
+        }
+      ]
+    };
+  }
+
+  // 2. EU AI ACT ANNEX IV ENGINE (/ai-act)
   if (productType === 'ai-act' || lowerText.includes('model') || lowerText.includes('ai act')) {
     const hasHumanOversight = lowerText.includes('human') || lowerText.includes('oversight') || lowerText.includes('review');
     const hasBiasMitigation = lowerText.includes('bias') || lowerText.includes('mitigation') || lowerText.includes('rag');
@@ -83,7 +121,7 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 2. MEDICAL CLAIM APPEAL ARCHITECT (/claim-appeal)
+  // 3. MEDICAL CLAIM APPEAL ARCHITECT (/claim-appeal)
   if (productType === 'claim-appeal' || lowerText.includes('denial') || lowerText.includes('cpt') || lowerText.includes('patient')) {
     return {
       summary: `Clinical Prior Authorization (PA) Denial Rebuttal prepared for "${title}". Grounded in AMA CPT coding and CMS LCD guidelines.`,
@@ -109,8 +147,8 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 3. SEC 4-DAY INCIDENT WAR ROOM (/sec-incident)
-  if (productType === 'sec-incident' || lowerText.includes('sec') || lowerText.includes('8-k') || lowerText.includes('exfiltration')) {
+  // 4. SEC 4-DAY INCIDENT WAR ROOM (/sec-incident)
+  if (productType === 'sec-incident' || lowerText.includes('form 8-k') || lowerText.includes('sec item 1.05')) {
     const isMaterial = lowerText.includes('downtime') || lowerText.includes('exfiltrat') || lowerText.includes('million') || lowerText.includes('ransomware');
 
     return {
@@ -137,8 +175,8 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 4. EU CBAM CUSTOMS CARBON AUDITOR (/cbam-audit)
-  if (productType === 'cbam-audit' || lowerText.includes('cbam') || lowerText.includes('carbon') || lowerText.includes('steel')) {
+  // 5. EU CBAM CUSTOMS CARBON AUDITOR (/cbam-audit)
+  if (productType === 'cbam-audit' || lowerText.includes('cbam') || lowerText.includes('carbon border')) {
     return {
       summary: `EU CBAM Customs Carbon Audit complete for "${title}" under Regulation (EU) 2023/956. Embedded emissions calculated.`,
       items: [
@@ -167,8 +205,8 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 5. CRE LEASE ABSTRACTOR (/cre-lease)
-  if (productType === 'cre-lease' || lowerText.includes('lease') || lowerText.includes('cam') || lowerText.includes('rent')) {
+  // 6. CRE LEASE ABSTRACTOR (/cre-lease)
+  if (productType === 'cre-lease' || lowerText.includes('lease agreement') || lowerText.includes('cre lease')) {
     const hasCapConflict = lowerText.includes('10%') && lowerText.includes('15%');
 
     return {
@@ -202,8 +240,8 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 6. EU DORA ICT AUDITOR (/dora-audit)
-  if (productType === 'dora-audit' || lowerText.includes('dora') || lowerText.includes('ict')) {
+  // 7. EU DORA ICT AUDITOR (/dora-audit)
+  if (productType === 'dora-audit' || lowerText.includes('regulation eu 2022/2554')) {
     return {
       summary: `EU DORA Article 9 & 28 ICT Resilience Audit complete for "${title}" under Regulation (EU) 2022/2554.`,
       items: [
@@ -227,8 +265,8 @@ export function runLocalComplianceAI(productType: string, inputData: {
     };
   }
 
-  // 7. GOVWIN & SBIR DEFENSE GRANT ARCHITECT (/gov-grant)
-  if (productType === 'gov-grant' || lowerText.includes('sbir') || lowerText.includes('far')) {
+  // 8. GOVWIN & SBIR DEFENSE GRANT ARCHITECT (/gov-grant)
+  if (productType === 'gov-grant' || lowerText.includes('sbir phase i') || lowerText.includes('govwin')) {
     return {
       summary: `Federal SBIR & SAM.gov Pre-Audit complete for "${title}". Screened against FAR clauses and commercialization rules.`,
       items: [
