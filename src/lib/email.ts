@@ -105,8 +105,8 @@ async function deliverEmail(to: string, subject: string, html: string): Promise<
   const fromEmail = process.env.SMTP_USER || 'support@contextskeleton.com';
 
   if (!transporter) {
-    console.log(`[Email Service - Sandbox] Email to ${to} subject "${subject}". Set SMTP_USER & SMTP_PASS in Vercel for live Hostinger email dispatch.`);
-    return true;
+    console.warn(`[Email Service Warning] SMTP credentials (SMTP_USER/SMTP_PASS) not configured. Email to ${to} subject "${subject}" was not sent.`);
+    return false; // Honest status: Returns false when SMTP transport is unconfigured
   }
 
   try {
