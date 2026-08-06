@@ -96,9 +96,9 @@ export default function KnowledgePage() {
 
     setTimeout(() => {
       setSyncingConnector(null);
-      setSuccess(`Automated sync completed for ${connectorName}! Grounding index updated.`);
+      setSuccess(`OAuth redirect initialized for ${connectorName}. Configure client credentials to complete integration.`);
       fetchDocuments();
-    }, 2500);
+    }, 1500);
   };
 
   return (
@@ -135,10 +135,10 @@ export default function KnowledgePage() {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <FolderSync className="h-5 w-5 text-violet-400" />
-                Live Cloud Knowledge Connectors
+                Cloud Knowledge Connectors (OAuth Ready)
               </h2>
-              <span className="text-[10px] font-bold text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20">
-                Auto-Sync Active
+              <span className="text-[10px] font-bold text-slate-400 bg-slate-900 px-2.5 py-1 rounded-full border border-slate-800">
+                Enterprise Add-On
               </span>
             </div>
 
@@ -146,7 +146,7 @@ export default function KnowledgePage() {
               <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white block">Google Drive</span>
-                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                  <span className="text-[9px] font-extrabold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">OAuth Available</span>
                 </div>
                 <p className="text-[11px] text-slate-400">Syncs RFP proposals &amp; Security folders automatically.</p>
                 <button
@@ -154,15 +154,15 @@ export default function KnowledgePage() {
                   disabled={syncingConnector === 'Google Drive'}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
                 >
-                  {syncingConnector === 'Google Drive' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
-                  Sync Drive
+                  {syncingConnector === 'Google Drive' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Link2 className="h-3 w-3 text-violet-400" />}
+                  Connect Drive
                 </button>
               </div>
 
               <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white block">Microsoft SharePoint</span>
-                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                  <span className="text-[9px] font-extrabold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">OAuth Available</span>
                 </div>
                 <p className="text-[11px] text-slate-400">Indexes corporate SharePoint policy libraries.</p>
                 <button
@@ -170,15 +170,15 @@ export default function KnowledgePage() {
                   disabled={syncingConnector === 'Microsoft SharePoint'}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
                 >
-                  {syncingConnector === 'Microsoft SharePoint' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
-                  Sync SharePoint
+                  {syncingConnector === 'Microsoft SharePoint' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Link2 className="h-3 w-3 text-violet-400" />}
+                  Connect SharePoint
                 </button>
               </div>
 
               <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white block">Notion Workspace</span>
-                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                  <span className="text-[9px] font-extrabold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">OAuth Available</span>
                 </div>
                 <p className="text-[11px] text-slate-400">Imports Notion engineering docs &amp; SOC2 wikis.</p>
                 <button
@@ -186,15 +186,15 @@ export default function KnowledgePage() {
                   disabled={syncingConnector === 'Notion Workspace'}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
                 >
-                  {syncingConnector === 'Notion Workspace' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
-                  Sync Notion
+                  {syncingConnector === 'Notion Workspace' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Link2 className="h-3 w-3 text-violet-400" />}
+                  Connect Notion
                 </button>
               </div>
 
               <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
                 <div className="flex justify-between items-start">
                   <span className="text-xs font-bold text-white block">OneDrive Business</span>
-                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                  <span className="text-[9px] font-extrabold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full border border-slate-800">OAuth Available</span>
                 </div>
                 <p className="text-[11px] text-slate-400">Syncs OneDrive compliance folder attachments.</p>
                 <button
@@ -202,8 +202,8 @@ export default function KnowledgePage() {
                   disabled={syncingConnector === 'OneDrive Business'}
                   className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
                 >
-                  {syncingConnector === 'OneDrive Business' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
-                  Sync OneDrive
+                  {syncingConnector === 'OneDrive Business' ? <Loader2 className="h-3 w-3 animate-spin" /> : <Link2 className="h-3 w-3 text-violet-400" />}
+                  Connect OneDrive
                 </button>
               </div>
             </div>

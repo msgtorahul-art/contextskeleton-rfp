@@ -19,10 +19,22 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const systemSpec = body.technicalSpec || body.systemSpec || body.text || body.specText || body.description || '';
-    const modelName = body.systemName || body.modelName || body.title || 'Enterprise AI Solution';
+    const systemSpec = (
+      body.modelArchitectureText || 
+      body.technicalSpec || 
+      body.systemSpec || 
+      body.text || 
+      body.specText || 
+      body.description || ''
+    ).trim();
 
-    if (!systemSpec.trim()) {
+    const modelName = (
+      body.modelName || 
+      body.systemName || 
+      body.title || 'Enterprise AI Solution'
+    ).trim();
+
+    if (!systemSpec) {
       return NextResponse.json({ error: 'Technical specification text is required' }, { status: 400 });
     }
 

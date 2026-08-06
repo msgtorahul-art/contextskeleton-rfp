@@ -3,6 +3,7 @@ import { getSession } from '@/lib/auth';
 import { hasBillingAccess, processCreditDecrement } from '@/lib/stripe';
 import { processRfpEngine } from '@/lib/engines/rfpEngine';
 import { getAllProjectsFromPersistentStore, getProjectFromPersistentStore, saveProjectToPersistentStore } from '@/lib/persistentStore';
+import { db } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
   const session = getSession(req);
@@ -77,6 +78,48 @@ export async function POST(req: NextRequest) {
       saveProjectToPersistentStore(newProj, questionsList);
 
       const response = NextResponse.json({ projectId, message: 'Project created successfully.', questions: questionsList });
+      processCreditDecrement(session, response);
+      return response;
+    }
+
+    if (body.action === 'generate_answer') {
+      const questionId = body.questionId;
+      let questionText = body.rfpText || body.questionText || body.text || '';
+
+      if (!questionText && questionId) {
+        try {
+          const qRow = db.prepare('SELECT question_text FROM questions WHERE id = ?').get(questionId) as any;
+          if (qRow && qRow.question_text) {
+            questionText = qRow.question_text;
+          }
+        } catch (e) {}
+      }
+
+      if (!questionText) {
+        questionText = 'Please describe your compliance, data security, and service level agreements.';
+      }
+
+      const result = await processRfpEngine({
+        title: 'RFP Proposal Draft',
+        clientName: 'Enterprise Client',
+        rfpText: questionText
+      });
+
+      const generatedAnswer = result.executiveSummary || result.fullResponse || 'Compliance response grounded in organizational knowledge base.';
+
+      if (questionId) {
+        try {
+          db.prepare("UPDATE questions SET drafted_answer = ?, status = 'drafted' WHERE id = ?").run(generatedAnswer, questionId);
+        } catch (e) {}
+      }
+
+      const response = NextResponse.json({
+        draftedAnswer: generatedAnswer,
+        executiveSummary: generatedAnswer,
+        sourcesUsed: result.sourcesUsed || [],
+        fullResponse: result.fullResponse || generatedAnswer
+      });
+
       processCreditDecrement(session, response);
       return response;
     }

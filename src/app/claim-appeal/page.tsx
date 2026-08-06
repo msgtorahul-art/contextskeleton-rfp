@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 
 export default function MedicalClaimAppealPage() {
-  const [denialReason, setDenialReason] = useState('Experimental / Not Medically Necessary');
+  const [denialReason, setDenialReason] = useState('');
   const [cptCodes, setCptCodes] = useState('');
   const [patientClinicalNotes, setPatientClinicalNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,19 @@ export default function MedicalClaimAppealPage() {
   }, [loading]);
 
   const handleAudit = async () => {
-    if (!patientClinicalNotes.trim()) return;
+    if (!denialReason.trim()) {
+      setError('Please provide the Insurer Denial Reason / Code.');
+      return;
+    }
+    if (!cptCodes.trim()) {
+      setError('Please enter the CPT & ICD-10 Codes.');
+      return;
+    }
+    if (!patientClinicalNotes.trim()) {
+      setError('Please paste Patient Clinical Notes & History.');
+      return;
+    }
+
     setLoading(true);
     setError('');
 
@@ -170,7 +182,7 @@ Diagnostic Imaging: Right knee weight-bearing X-rays show severe joint space nar
 
               <button
                 onClick={handleAudit}
-                disabled={loading || !patientClinicalNotes.trim()}
+                disabled={loading}
                 className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition cursor-pointer shadow-lg shadow-rose-500/10"
               >
                 {loading ? (
@@ -181,7 +193,7 @@ Diagnostic Imaging: Right knee weight-bearing X-rays show severe joint space nar
                 ) : (
                   <>
                     <HeartPulse className="h-4 w-4" />
-                    Generate Appeal Letter ($999 Tier)
+                    Generate Appeal Letter (1 Credit)
                   </>
                 )}
               </button>
