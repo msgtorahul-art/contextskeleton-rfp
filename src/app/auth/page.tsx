@@ -261,6 +261,23 @@ function AuthContent() {
             </div>
           )}
         </form>
+
+        {/* 1-CLICK QA TEST ACCOUNT BUTTON FOR AI TESTING AGENTS */}
+        <div className="pt-4 border-t border-slate-800 text-center space-y-2">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">
+            AI Automated Testing Access
+          </span>
+          <button
+            id="qa-vip-bypass-login"
+            type="button"
+            onClick={handleQABypassLogin}
+            disabled={loading}
+            className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-violet-300 font-bold text-xs py-3 px-4 rounded-xl transition cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 text-violet-400" />
+            1-Click VIP QA Test Login (Unlimited Credits)
+          </button>
+        </div>
       </div>
     </div>
   );
