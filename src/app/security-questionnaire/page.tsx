@@ -3,79 +3,41 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import { 
-  ShieldCheck, Lock, FileSpreadsheet, Loader2, Download, CheckCircle2, 
-  AlertTriangle, RefreshCw, Sparkles, HelpCircle, ArrowRight, ShieldAlert, FileText
+  ShieldCheck, Lock, FileText, CheckCircle2, AlertCircle, 
+  Download, Loader2, RefreshCw, FileSpreadsheet, Sparkles, Building2, ShieldAlert, FileOutput
 } from 'lucide-react';
 
-interface QuestionResult {
+interface ResultItem {
   id: string;
   question: string;
   answer: string;
-  confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  confidence: string;
   control: string;
-  status: 'COMPLIANT' | 'PARTIALLY_COMPLIANT' | 'NEEDS_REVIEW';
+  status: 'Pass' | 'Flagged' | 'Needs Context';
   sources: string[];
 }
 
-const TEMPLATE_PRESETS = [
-  {
-    name: 'SOC 2 Type II Vendor Risk',
-    framework: 'SOC 2 Type II',
-    questions: [
-      'Is customer data encrypted both in transit (TLS 1.3) and at rest (AES-256)?',
-      'Describe your identity and access management (IAM) and MFA enforcement policy.',
-      'How frequently are penetration tests and vulnerability scans conducted by third parties?',
-      'Describe your disaster recovery (DR) and business continuity plan RTO/RPO targets.',
-    ],
-  },
-  {
-    name: 'ISO 27001 Compliance Audit',
-    framework: 'ISO 27001:2022',
-    questions: [
-      'Do you maintain an Information Security Management System (ISMS) certified by an accredited body?',
-      'How are employee background checks and security awareness trainings enforced?',
-      'Describe your incident response workflow and customer notification SLAs in event of data breach.',
-      'How is physical and environmental security managed at data center facilities?',
-    ],
-  },
-  {
-    name: 'GDPR & Privacy Impact',
-    framework: 'GDPR / CCPA',
-    questions: [
-      'Do you support customer Data Subject Access Requests (DSAR) and Right-to-be-Forgotten deletion?',
-      'Where is customer personal data hosted geographically, and what cross-border transfer mechanisms are used?',
-      'Are sub-processors audited and bound by Data Processing Agreements (DPA)?',
-    ],
-  },
-];
-
 export default function SecurityQuestionnairePage() {
-  const [questionsInput, setQuestionsInput] = useState('');
-  const [selectedFramework, setSelectedFramework] = useState('SOC 2 Type II & ISO 27001');
+  const [selectedFramework, setSelectedFramework] = useState('SOC 2 Type II');
+  const [rawQuestions, setRawQuestions] = useState('');
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<QuestionResult[]>([]);
+  const [exportingExcel, setExportingExcel] = useState(false);
   const [error, setError] = useState('');
+  const [results, setResults] = useState<ResultItem[]>([]);
 
-  const handlePresetSelect = (preset: typeof TEMPLATE_PRESETS[0]) => {
-    setQuestionsInput(preset.questions.join('\n'));
-    setSelectedFramework(preset.framework);
-    setError('');
-  };
-
-  const handleResolve = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const questionsArray = questionsInput
-      .split('\n')
-      .map((q) => q.trim())
-      .filter((q) => q.length > 0);
-
-    if (questionsArray.length === 0) {
-      setError('Please enter at least one security question or load a preset template.');
+  const handleRunAudit = async () => {
+    if (!rawQuestions.trim()) {
+      setError('Please paste at least one security question.');
       return;
     }
 
     setLoading(true);
     setError('');
+
+    const questionsArray = rawQuestions
+      .split(/\r?\n/)
+      .map((q) => q.trim())
+      .filter((q) => q.length > 0);
 
     try {
       const res = await fetch('/api/security-questionnaire', {
@@ -113,196 +75,236 @@ export default function SecurityQuestionnairePage() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `Security_Questionnaire_${Date.now()}.csv`);
+    link.setAttribute('download', `Security_Audit_Matrix_${selectedFramework.replace(/\s+/g, '_')}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+  const exportToExcel = async () => {
+    if (results.length === 0) return;
+    setExportingExcel(true);
+    try {
+      const res = await fetch('/api/security-questionnaire/export-excel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: results,
+          framework: selectedFramework,
+          overallScore: Math.round((results.filter(r => r.status === 'Pass').length / results.length) * 100)
+        }),
+      });
+
+      if (!res.ok) throw new Error('Failed to generate Excel download');
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Security_Audit_Matrix_${selectedFramework.replace(/\s+/g, '_')}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err: any) {
+      setError('Failed to export native Excel spreadsheet.');
+    } finally {
+      setExportingExcel(false);
+    }
+  };
+
+  const loadPreset = () => {
+    setRawQuestions(
+      `1. Does your organization enforce Multi-Factor Authentication (MFA) for all production access?\n` +
+      `2. How frequently are vulnerability penetration tests conducted by independent 3rd parties?\n` +
+      `3. Describe your customer data encryption standards at rest and in transit.\n` +
+      `4. What is your formal incident response notification SLA following a confirmed data breach?`
+    );
+  };
+
   return (
-    <div className="flex min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 flex font-sans">
       <Sidebar />
 
-      <main className="pl-80 flex-1 p-10 min-h-screen">
-        <header className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900 pb-6">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 text-violet-400 border border-violet-500/20 text-xs font-semibold mb-2">
-              <ShieldCheck className="h-3.5 w-3.5" /> Product #5: SOC2 & ISO 27001 Security Resolver
+      <main className="flex-1 pl-80 min-h-screen relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-rose-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto px-8 py-12 z-10 relative">
+          {/* SAFEGUARD BANNER */}
+          <div className="mb-6 p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs flex items-start gap-3">
+            <ShieldAlert className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold uppercase tracking-wider block mb-0.5 text-amber-300">
+                ⚠️ AUTOMATED AUDIT DISCLAIMER
+              </span>
+              <span>
+                ContextSkeleton is an automated software tool. Results are intended to streamline vendor security responses and do not replace legal counsel, formal CPA audits, or official SOC 2 Type II auditor attestations.
+              </span>
             </div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">Security Questionnaire Engine</h1>
-            <p className="text-slate-400 text-xs mt-1">
-              Automate enterprise vendor risk assessments (SOC 2, ISO 27001, GDPR) grounded in your policy documents.
-            </p>
           </div>
 
-          {results.length > 0 && (
-            <button
-              onClick={exportToCSV}
-              className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-lg shadow-emerald-600/20 cursor-pointer"
-            >
-              <FileSpreadsheet className="h-4 w-4" />
-              Export to CSV / Excel
-            </button>
-          )}
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Questionnaire Input & Presets */}
-          <div className="space-y-6">
-            {/* Presets Card */}
-            <div className="glass-panel p-6 rounded-3xl border-slate-800">
-              <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-violet-400" /> Quick Load Preset Templates
-              </h2>
-              <div className="space-y-2">
-                {TEMPLATE_PRESETS.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handlePresetSelect(preset)}
-                    className="w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-violet-600/15 border border-slate-800 hover:border-violet-500/40 transition group cursor-pointer"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-bold text-white group-hover:text-violet-300 transition">
-                        {preset.name}
-                      </span>
-                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20">
-                        {preset.questions.length} Questions
-                      </span>
-                    </div>
-                  </button>
-                ))}
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8 border-b border-slate-900 pb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-rose-500/10 text-rose-400 border border-rose-500/20 px-3 py-1 rounded-full text-xs font-semibold mb-2">
+                <ShieldCheck className="h-3.5 w-3.5" /> Vendor Risk &amp; Security Questionnaire Resolver
               </div>
+              <h1 className="text-3xl font-extrabold text-white">Security Questionnaire Automation</h1>
+              <p className="text-slate-400 text-xs mt-1">
+                Auto-fill incoming vendor questionnaires against your grounded SOC 2, ISO 27001, and NIST policy documents.
+              </p>
             </div>
 
-            {/* Input Form */}
-            <div className="glass-panel p-6 rounded-3xl border-slate-800">
-              <form onSubmit={handleResolve} className="space-y-4">
+            <button
+              onClick={loadPreset}
+              className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2.5 px-4 rounded-xl transition cursor-pointer"
+            >
+              <FileText className="h-4 w-4 text-rose-400" />
+              Load Sample Security Questions
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {/* Input Form Column */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="glass-panel p-6 rounded-3xl space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-                    Compliance Framework Target
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Target Framework Baseline
                   </label>
                   <select
                     value={selectedFramework}
                     onChange={(e) => setSelectedFramework(e.target.value)}
-                    className="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white"
+                    className="w-full bg-slate-950 border border-slate-900 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-rose-500"
                   >
-                    <option value="SOC 2 Type II & ISO 27001">SOC 2 Type II & ISO 27001:2022</option>
-                    <option value="GDPR & Data Privacy">GDPR & EU Privacy Impact</option>
-                    <option value="NIST SP 800-53 / Cybersecurity">NIST SP 800-53 Cybersecurity</option>
-                    <option value="HIPAA Security & Privacy">HIPAA Compliance (Healthcare)</option>
+                    <option value="SOC 2 Type II">SOC 2 Type II (Trust Services Criteria)</option>
+                    <option value="ISO 27001:2022">ISO/IEC 27001:2022 Annex A Controls</option>
+                    <option value="NIST Cybersecurity Framework">NIST CSF 2.0 (Identify, Protect, Detect)</option>
+                    <option value="HIPAA Security Rule">HIPAA Security &amp; Administrative Safeguards</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                     Paste Security Questions (One per line)
                   </label>
                   <textarea
-                    rows={8}
-                    required
-                    value={questionsInput}
-                    onChange={(e) => setQuestionsInput(e.target.value)}
-                    placeholder="e.g. Is customer data encrypted at rest using AES-256?&#10;How are SOC 2 audit logs stored and retained?"
-                    className="w-full glass-input rounded-xl p-3.5 text-xs text-white placeholder-slate-500 resize-none font-mono"
+                    rows={10}
+                    value={rawQuestions}
+                    onChange={(e) => setRawQuestions(e.target.value)}
+                    placeholder="e.g. Does your company enforce MFA for all production environments?&#10;What is your backup retention policy?"
+                    className="w-full bg-slate-950 border border-slate-900 rounded-2xl p-4 text-xs text-slate-200 focus:outline-none focus:border-rose-500 resize-none leading-relaxed font-mono"
                   />
                 </div>
 
                 {error && (
-                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium">
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-semibold">
                     {error}
                   </div>
                 )}
 
                 <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-4 rounded-xl transition shadow-lg shadow-violet-500/10 cursor-pointer"
+                  onClick={handleRunAudit}
+                  disabled={loading || !rawQuestions.trim()}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 disabled:opacity-50 text-white font-bold text-xs py-3.5 px-6 rounded-xl transition cursor-pointer shadow-lg shadow-rose-500/10"
                 >
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      Resolving Security Policy...
+                      Resolving Questions against Policy Store...
                     </>
                   ) : (
                     <>
-                      <ShieldCheck className="h-4 w-4" />
-                      Resolve Security Questionnaire
+                      <Sparkles className="h-4 w-4" />
+                      Resolve Questionnaire (1 Credit)
                     </>
                   )}
                 </button>
-              </form>
-            </div>
-          </div>
-
-          {/* Right Column: Interactive Results Workspace */}
-          <div className="lg:col-span-2 space-y-4">
-            {results.length === 0 ? (
-              <div className="glass-panel p-12 rounded-3xl border-slate-800 text-center flex flex-col items-center justify-center min-h-[400px]">
-                <div className="h-14 w-14 rounded-2xl bg-violet-600/10 flex items-center justify-center mb-4 text-violet-400">
-                  <ShieldCheck className="h-7 w-7" />
-                </div>
-                <h3 className="text-lg font-bold text-white mb-2">No Questionnaire Resolved Yet</h3>
-                <p className="text-slate-400 text-xs max-w-sm leading-relaxed mb-6">
-                  Select a preset template on the left or paste vendor security questions to generate grounded compliance answers.
-                </p>
-                <button
-                  onClick={() => handlePresetSelect(TEMPLATE_PRESETS[0])}
-                  className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-white font-semibold text-xs py-2.5 px-4 rounded-xl transition cursor-pointer"
-                >
-                  Load Sample SOC 2 Template &rarr;
-                </button>
               </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center px-2">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    Resolved Questions ({results.length})
-                  </span>
-                  <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> 100% Policy Grounded
-                  </span>
-                </div>
+            </div>
 
-                {results.map((r, idx) => (
-                  <div key={r.id} className="glass-panel p-6 rounded-3xl border-slate-800 hover:border-slate-700 transition">
-                    <div className="flex justify-between items-start mb-3 gap-4">
+            {/* Results Column */}
+            <div className="lg:col-span-7">
+              <div className="glass-panel p-6 rounded-3xl min-h-[500px] flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center border-b border-slate-900 pb-4 mb-6">
+                    <h2 className="text-sm font-bold text-white flex items-center gap-2">
+                      <ShieldCheck className="h-4 w-4 text-rose-400" />
+                      Auto-Filled Questionnaire Evidence Matrix
+                    </h2>
+
+                    {results.length > 0 && (
                       <div className="flex items-center gap-2">
-                        <span className="h-6 w-6 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-xs font-bold text-violet-400">
-                          {idx + 1}
-                        </span>
-                        <h4 className="text-sm font-bold text-white">{r.question}</h4>
-                      </div>
+                        <button
+                          onClick={exportToCSV}
+                          className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                        >
+                          <FileSpreadsheet className="h-3.5 w-3.5 text-rose-400" />
+                          Export CSV
+                        </button>
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className={`text-[9px] font-extrabold uppercase px-2.5 py-1 rounded-full border ${
-                          r.confidence === 'HIGH' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
-                          r.confidence === 'MEDIUM' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                          'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                        }`}>
-                          {r.confidence} Confidence
-                        </span>
-
-                        <span className="text-[9px] font-mono text-slate-400 bg-slate-900 border border-slate-800 px-2 py-1 rounded-md">
-                          {r.control}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-900 text-xs text-slate-200 leading-relaxed font-sans mb-3">
-                      {r.answer}
-                    </div>
-
-                    {r.sources.length > 0 && (
-                      <div className="flex items-center gap-2 text-[10px] text-slate-500 pt-2 border-t border-slate-900/60">
-                        <FileText className="h-3 w-3 text-violet-400" />
-                        <span>Source Documents: {r.sources.join(', ')}</span>
+                        <button
+                          onClick={exportToExcel}
+                          disabled={exportingExcel}
+                          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs py-2 px-3.5 rounded-xl transition cursor-pointer shadow-lg shadow-emerald-500/10"
+                        >
+                          {exportingExcel ? (
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          ) : (
+                            <FileOutput className="h-3.5 w-3.5 text-white" />
+                          )}
+                          Export Excel (.xlsx)
+                        </button>
                       </div>
                     )}
                   </div>
-                ))}
+
+                  {loading ? (
+                    <div className="h-[400px] flex flex-col items-center justify-center text-center p-6 space-y-4">
+                      <div className="h-14 w-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center">
+                        <Loader2 className="h-7 w-7 text-rose-400 animate-spin" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-white font-bold text-sm">Consulting Knowledge Base Policies</h3>
+                        <p className="text-slate-400 text-xs max-w-xs mx-auto">
+                          Performing vector similarity search to ground answers in verified company security evidence...
+                        </p>
+                      </div>
+                    </div>
+                  ) : results.length > 0 ? (
+                    <div className="space-y-4">
+                      {results.map((item, idx) => (
+                        <div key={idx} className="p-5 rounded-2xl bg-slate-950 border border-slate-900 space-y-3">
+                          <div className="flex justify-between items-start">
+                            <span className="text-xs font-bold text-white max-w-md">Q{idx + 1}: {item.question}</span>
+                            <span className={`text-[9px] font-extrabold uppercase px-2.5 py-0.5 rounded-full ${
+                              item.status === 'Pass' 
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
+                                : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            }`}>
+                              {item.status}
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-slate-300 leading-relaxed font-medium">
+                            {item.answer}
+                          </p>
+
+                          <div className="flex justify-between items-center pt-2 border-t border-slate-900/60 text-[10px] text-slate-500">
+                            <span>Mapped Control: <strong className="text-rose-400">{item.control}</strong></span>
+                            <span>Confidence: <strong className="text-slate-300">{item.confidence}</strong></span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-[450px] flex flex-col items-center justify-center text-center text-slate-500 border border-dashed border-slate-900 rounded-2xl p-6">
+                      <Lock className="h-10 w-10 text-slate-700 mb-3" />
+                      <p className="text-xs">Paste incoming buyer security questions on the left to auto-populate evidence-backed responses.</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </main>

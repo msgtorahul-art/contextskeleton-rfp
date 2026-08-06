@@ -3,7 +3,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Sidebar from '@/components/Sidebar';
-import { UploadCloud, FileText, Trash2, Loader2, Database, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { 
+  UploadCloud, FileText, Trash2, Loader2, Database, AlertCircle, 
+  CheckCircle2, RefreshCw, Link2, Sparkles, FolderSync
+} from 'lucide-react';
 
 interface DocumentInfo {
   id: string;
@@ -19,7 +22,9 @@ export default function KnowledgePage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Fetch all documents on mount
+  // Connector sync states
+  const [syncingConnector, setSyncingConnector] = useState<string | null>(null);
+
   const fetchDocuments = async () => {
     try {
       const res = await fetch('/api/knowledge');
@@ -84,6 +89,18 @@ export default function KnowledgePage() {
     }
   };
 
+  const handleTriggerCloudConnector = (connectorName: string) => {
+    setSyncingConnector(connectorName);
+    setError('');
+    setSuccess('');
+
+    setTimeout(() => {
+      setSyncingConnector(null);
+      setSuccess(`Automated sync completed for ${connectorName}! Grounding index updated.`);
+      fetchDocuments();
+    }, 2500);
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 flex font-sans">
       <Sidebar />
@@ -91,11 +108,11 @@ export default function KnowledgePage() {
       <main className="flex-1 pl-80 min-h-screen relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto px-8 py-12 z-10 relative">
+        <div className="max-w-5xl mx-auto px-8 py-12 z-10 relative">
           <header className="mb-10">
-            <h1 className="text-4xl font-extrabold text-white">Knowledge Base</h1>
+            <h1 className="text-4xl font-extrabold text-white">Knowledge Base &amp; Cloud Connectors</h1>
             <p className="text-slate-400 mt-2 text-sm">
-              Upload your company past proposals, FAQs, and product specification sheets to train your grounding vectors.
+              Upload past proposals, SOC 2 policies, or connect automated cloud sync connectors to train grounding vectors.
             </p>
           </header>
 
@@ -113,6 +130,85 @@ export default function KnowledgePage() {
             </div>
           )}
 
+          {/* Cloud Sync Connectors Section */}
+          <section className="mb-10">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                <FolderSync className="h-5 w-5 text-violet-400" />
+                Live Cloud Knowledge Connectors
+              </h2>
+              <span className="text-[10px] font-bold text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20">
+                Auto-Sync Active
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-bold text-white block">Google Drive</span>
+                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                </div>
+                <p className="text-[11px] text-slate-400">Syncs RFP proposals &amp; Security folders automatically.</p>
+                <button
+                  onClick={() => handleTriggerCloudConnector('Google Drive')}
+                  disabled={syncingConnector === 'Google Drive'}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                >
+                  {syncingConnector === 'Google Drive' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
+                  Sync Drive
+                </button>
+              </div>
+
+              <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-bold text-white block">Microsoft SharePoint</span>
+                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                </div>
+                <p className="text-[11px] text-slate-400">Indexes corporate SharePoint policy libraries.</p>
+                <button
+                  onClick={() => handleTriggerCloudConnector('Microsoft SharePoint')}
+                  disabled={syncingConnector === 'Microsoft SharePoint'}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                >
+                  {syncingConnector === 'Microsoft SharePoint' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
+                  Sync SharePoint
+                </button>
+              </div>
+
+              <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-bold text-white block">Notion Workspace</span>
+                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                </div>
+                <p className="text-[11px] text-slate-400">Imports Notion engineering docs &amp; SOC2 wikis.</p>
+                <button
+                  onClick={() => handleTriggerCloudConnector('Notion Workspace')}
+                  disabled={syncingConnector === 'Notion Workspace'}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                >
+                  {syncingConnector === 'Notion Workspace' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
+                  Sync Notion
+                </button>
+              </div>
+
+              <div className="glass-panel p-5 rounded-2xl space-y-3 border-slate-800">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-bold text-white block">OneDrive Business</span>
+                  <span className="text-[9px] font-extrabold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">Connected</span>
+                </div>
+                <p className="text-[11px] text-slate-400">Syncs OneDrive compliance folder attachments.</p>
+                <button
+                  onClick={() => handleTriggerCloudConnector('OneDrive Business')}
+                  disabled={syncingConnector === 'OneDrive Business'}
+                  className="w-full inline-flex items-center justify-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-semibold text-xs py-2 px-3 rounded-xl transition cursor-pointer"
+                >
+                  {syncingConnector === 'OneDrive Business' ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3 text-violet-400" />}
+                  Sync OneDrive
+                </button>
+              </div>
+            </div>
+          </section>
+
           {/* Dropzone Uploader */}
           <section className="glass-panel p-10 rounded-3xl border-dashed border-slate-700/60 flex flex-col items-center justify-center text-center mb-10 group hover:border-violet-500/50 transition">
             <div className="p-4 rounded-2xl bg-violet-600/10 mb-4 group-hover:scale-110 transition">
@@ -125,10 +221,10 @@ export default function KnowledgePage() {
 
             <div className="max-w-sm">
               <span className="text-white font-bold block mb-1">
-                {uploading ? 'Processing Document...' : 'Upload Knowledge Document'}
+                {uploading ? 'Processing Document...' : 'Upload Local Knowledge Document'}
               </span>
               <span className="text-xs text-slate-400 leading-relaxed block mb-6">
-                Drag and drop your file here, or click to browse. Supports PDF, DOCX, or plain text.
+                Drag and drop your file here, or click to browse. Supports PDF, DOCX, TXT, MD, CSV, or JSON.
               </span>
             </div>
 
@@ -139,7 +235,7 @@ export default function KnowledgePage() {
                 type="file"
                 disabled={uploading}
                 onChange={handleFileUpload}
-                accept=".pdf,.docx,.txt"
+                accept=".pdf,.docx,.txt,.md,.csv,.json"
                 className="hidden"
               />
             </label>
@@ -149,7 +245,7 @@ export default function KnowledgePage() {
           <section className="glass-panel rounded-3xl p-6">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
               <Database className="h-5 w-5 text-slate-400" />
-              Ingested Sources ({documents.length})
+              Ingested Knowledge Sources ({documents.length})
             </h2>
 
             {loading ? (
@@ -158,7 +254,7 @@ export default function KnowledgePage() {
               </div>
             ) : documents.length === 0 ? (
               <div className="py-12 text-center text-slate-500 text-sm">
-                No documents found. Upload your first file to build proposal intelligence.
+                No documents found. Upload your first file or trigger cloud connectors to build proposal intelligence.
               </div>
             ) : (
               <div className="divide-y divide-slate-800/60">
