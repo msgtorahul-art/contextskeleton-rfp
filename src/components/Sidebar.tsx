@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, CreditCard, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase, Award, Cpu, HeartPulse, Server, AlertTriangle, Building2 } from 'lucide-react';
+import { LayoutDashboard, Database, FileText, ShieldCheck, Layers, LogOut, Loader2, Sparkles, Globe, Lock, Activity, Calculator, Leaf, Stethoscope, KeyRound, DollarSign, HardHat, CheckSquare, Briefcase, Award, Cpu, HeartPulse, Server, AlertTriangle, Building2 } from 'lucide-react';
 
 interface UserInfo {
   email: string;
@@ -37,8 +37,11 @@ export default function Sidebar() {
   useEffect(() => {
     fetchUserInfo();
     window.addEventListener('billing-update', fetchUserInfo);
+    // Poll every 3 seconds to keep credit counter in 100% real-time sync with API responses
+    const interval = setInterval(fetchUserInfo, 3000);
     return () => {
       window.removeEventListener('billing-update', fetchUserInfo);
+      clearInterval(interval);
     };
   }, [fetchUserInfo]);
 
@@ -89,14 +92,14 @@ export default function Sidebar() {
     { name: 'SOX 404 & SOC 1 Financial Auditor', href: '/sox-audit', icon: Briefcase },
     { name: 'Vector Knowledge Base', href: '/knowledge', icon: Database },
     { name: 'Token Skeletonizer', href: '/skeletonizer', icon: Layers },
-    { name: 'Public Site & Pricing', href: '/?preview=true', icon: Globe },
+    { name: 'Public Site & Pricing', href: '/pricing', icon: Globe },
   ];
 
   return (
     <aside className="w-80 h-screen fixed top-0 left-0 bg-slate-950 border-r border-slate-900 flex flex-col justify-between p-6 z-30 overflow-y-auto">
       <div className="space-y-6">
         {/* Brand Link to Homepage */}
-        <Link href="/?preview=true" className="flex items-center gap-3 group cursor-pointer">
+        <Link href="/" className="flex items-center gap-3 group cursor-pointer">
           <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-violet-500/20 group-hover:scale-105 transition">
             C
           </div>
@@ -136,11 +139,11 @@ export default function Sidebar() {
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-bold text-slate-500 uppercase">Account Status</span>
               <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
-                user.subscription_status === 'ACTIVE' 
+                user.subscription_status === 'ACTIVE' || user.subscription_status === 'active_all_access'
                   ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' 
                   : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
               }`}>
-                {user.subscription_status === 'ACTIVE' ? 'Pro VIP Plan' : 'Free Trial'}
+                {user.subscription_status === 'ACTIVE' || user.subscription_status === 'active_all_access' ? 'Pro VIP Plan' : 'Free Trial'}
               </span>
             </div>
 
@@ -148,11 +151,11 @@ export default function Sidebar() {
               {user.email}
             </div>
 
-            {user.subscription_status !== 'ACTIVE' && (
+            {user.subscription_status !== 'ACTIVE' && user.subscription_status !== 'active_all_access' && (
               <div className="pt-1">
                 <div className="flex justify-between text-[11px] text-slate-400 mb-1.5 font-medium">
-                  <span>Evaluation Generations</span>
-                  <span className="font-bold text-white">{user.credits} remaining</span>
+                  <span>Trial Evaluation Runs</span>
+                  <span className="font-bold text-violet-400">{user.credits} remaining</span>
                 </div>
                 <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
                   <div 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
+import { hasBillingAccess, processCreditDecrement } from '@/lib/stripe';
 import { processSecIncidentEngine } from '@/lib/engines/secIncidentEngine';
 
 export async function POST(req: NextRequest) {
@@ -10,15 +10,15 @@ export async function POST(req: NextRequest) {
   }
 
   // Strict Product-Level Access Check
-  if (!hasBillingAccess(session.userId, 'sec-incident')) {
+  if (!hasBillingAccess(session, 'sec-incident')) {
     return NextResponse.json(
-      { error: 'Product entitlement required. Please subscribe to SEC 4-Day Incident War Room to access this product.', code: 'PAYMENT_REQUIRED' },
+      { error: 'Product entitlement required. Your trial credits have expired. Please subscribe to SEC 4-Day Incident War Room to access this product.', code: 'PAYMENT_REQUIRED' },
       { status: 402 }
     );
   }
 
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const incidentNotes = body.incidentNotes || body.text || body.specText || body.description || '';
     const companyName = body.companyName || body.title || 'Public Enterprise Entity';
 
@@ -35,8 +35,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: (result as any).error }, { status: 400 });
     }
 
-    decrementCredits(session.userId);
-    return NextResponse.json(result);
+    const response = NextResponse.json(result);
+    processCreditDecrement(session, response);
+    return response;
   } catch (error: any) {
     console.error('SEC Incident Engine Error:', error);
     return NextResponse.json({ error: 'Failed to evaluate breach materiality.' }, { status: 500 });

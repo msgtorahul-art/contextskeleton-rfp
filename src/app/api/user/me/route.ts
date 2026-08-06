@@ -8,35 +8,25 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
+  let dbUser: any = null;
   try {
-    const user = db.prepare('SELECT email, subscription_status, credits FROM users WHERE id = ?').get(session.userId) as {
-      email: string;
-      subscription_status: string;
-      credits: number;
-    } | undefined;
+    dbUser = db.prepare('SELECT email, subscription_status, credits FROM users WHERE id = ?').get(session.userId);
+  } catch (e) {}
 
-    if (!user) {
-      // Fallback for new dynamic session (free trial status, 10 credits)
-      return NextResponse.json({
-        user: {
-          id: session.userId,
-          email: session.email,
-          subscription_status: 'inactive',
-          credits: 10
-        }
-      });
+  const credits = dbUser && typeof dbUser.credits === 'number' 
+    ? dbUser.credits 
+    : (session.credits !== undefined ? session.credits : 10);
+
+  const subscriptionStatus = dbUser && dbUser.subscription_status 
+    ? dbUser.subscription_status 
+    : (session.subscription_status || 'inactive');
+
+  return NextResponse.json({
+    user: {
+      id: session.userId,
+      email: session.email,
+      subscription_status: subscriptionStatus,
+      credits
     }
-
-    return NextResponse.json({ user });
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    return NextResponse.json({
-      user: {
-        id: session.userId,
-        email: session.email,
-        subscription_status: 'inactive',
-        credits: 10
-      }
-    });
-  }
+  });
 }

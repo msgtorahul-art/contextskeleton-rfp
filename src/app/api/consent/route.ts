@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { decrementCredits, hasBillingAccess } from '@/lib/stripe';
+import { processCreditDecrement, hasBillingAccess } from '@/lib/stripe';
 import { processConsentEngine } from '@/lib/engines/consentEngine';
 
 export async function POST(req: NextRequest) {
@@ -10,12 +10,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Strict Product-Level Access Check
-    if (!hasBillingAccess(session.userId, 'consent')) {
-      return NextResponse.json({ error: 'Product entitlement required. Please subscribe to NZ Building Consent Auditor to access this product.' }, { status: 402 });
+    // Strict Per-Product Billing Access & Trial Credit Check
+    if (!hasBillingAccess(session, 'consent')) {
+      return NextResponse.json(
+        { error: 'Product entitlement required. Your trial credits have expired. Please subscribe to NZ Building Consent Auditor to access this product.', code: 'PAYMENT_REQUIRED' },
+        { status: 402 }
+      );
     }
 
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const specText = (body.specText || body.specificationText || body.text || '').trim();
     const buildingType = body.buildingType || body.title || 'Residential / Commercial';
     const selectedClauses = body.selectedClauses;
@@ -34,8 +37,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: (result as any).error }, { status: 400 });
     }
 
-    decrementCredits(session.userId);
-    return NextResponse.json(result);
+    const response = NextResponse.json(result);
+    processCreditDecrement(session, response);
+    return response;
   } catch (error) {
     console.error('Consent Audit Engine Error:', error);
     return NextResponse.json({ error: 'An unexpected error occurred during consent audit.' }, { status: 500 });

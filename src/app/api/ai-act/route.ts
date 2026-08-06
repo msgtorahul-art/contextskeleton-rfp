@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
-import { hasBillingAccess, decrementCredits } from '@/lib/stripe';
+import { hasBillingAccess, processCreditDecrement } from '@/lib/stripe';
 import { processAiActEngine } from '@/lib/engines/aiActEngine';
 
 export async function POST(req: NextRequest) {
@@ -9,20 +9,21 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  if (!hasBillingAccess(session.userId)) {
+  // Strict Product-Level Access Check
+  if (!hasBillingAccess(session, 'ai-act')) {
     return NextResponse.json(
-      { error: 'Subscription required. Please upgrade to generate EU AI Act Annex IV technical documentation.', code: 'PAYMENT_REQUIRED' },
+      { error: 'Product entitlement required. Your trial credits have expired. Please subscribe to EU AI Act Annex IV Engine to access this product.', code: 'PAYMENT_REQUIRED' },
       { status: 402 }
     );
   }
 
   try {
-    const body = await req.json();
-    const systemSpec = body.systemSpec || body.specText || body.text || body.description || '';
-    const modelName = body.modelName || body.title || 'Enterprise AI Model';
+    const body = await req.json().catch(() => ({}));
+    const systemSpec = body.technicalSpec || body.systemSpec || body.text || body.specText || body.description || '';
+    const modelName = body.systemName || body.modelName || body.title || 'Enterprise AI Solution';
 
     if (!systemSpec.trim()) {
-      return NextResponse.json({ error: 'AI model technical specification is required' }, { status: 400 });
+      return NextResponse.json({ error: 'Technical specification text is required' }, { status: 400 });
     }
 
     const result = await processAiActEngine({
@@ -34,10 +35,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: (result as any).error }, { status: 400 });
     }
 
-    decrementCredits(session.userId);
-    return NextResponse.json(result);
+    const response = NextResponse.json(result);
+    processCreditDecrement(session, response);
+    return response;
   } catch (error: any) {
-    console.error('AI Act Engine Error:', error);
-    return NextResponse.json({ error: 'Failed to process EU AI Act technical documentation audit.' }, { status: 500 });
+    console.error('EU AI Act Engine Error:', error);
+    return NextResponse.json({ error: 'Failed to process AI Act Annex IV audit.' }, { status: 500 });
   }
 }

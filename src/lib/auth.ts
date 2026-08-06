@@ -15,6 +15,13 @@ function getJwtSecret(): string {
 
 const JWT_SECRET = getJwtSecret();
 
+export interface UserSessionPayload {
+  userId: string;
+  email: string;
+  credits?: number;
+  subscription_status?: string;
+}
+
 // Hash a password securely
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -27,21 +34,21 @@ export async function comparePassword(password: string, hashed: string): Promise
 }
 
 // Sign JWT token
-export function signToken(payload: { userId: string; email: string }): string {
+export function signToken(payload: UserSessionPayload): string {
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
 }
 
 // Verify JWT token and extract payload
-export function verifyToken(token: string): { userId: string; email: string } | null {
+export function verifyToken(token: string): UserSessionPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+    return jwt.verify(token, JWT_SECRET) as UserSessionPayload;
   } catch (error) {
     return null;
   }
 }
 
 // Extract authenticated user session from HTTP requests
-export function getSession(req: NextRequest): { userId: string; email: string } | null {
+export function getSession(req: NextRequest): UserSessionPayload | null {
   const authHeader = req.headers.get('Authorization');
   let token: string | null = null;
   
