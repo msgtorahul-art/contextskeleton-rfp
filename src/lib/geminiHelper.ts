@@ -20,10 +20,11 @@ function getNextApiKey(): string {
   return key;
 }
 
+// VALID PRODUCTION GEMINI MODELS
 const MODEL_CASCADE = [
-  'gemini-2.5-flash',
-  'gemini-1.5-pro',
+  'gemini-2.0-flash',
   'gemini-1.5-flash',
+  'gemini-1.5-pro',
 ];
 
 export async function generateContentWithRetry(
@@ -35,21 +36,33 @@ export async function generateContentWithRetry(
 ): Promise<string> {
   const promptText = JSON.stringify(params.contents || '');
 
-  // Explicit Product Type routing (prevents substring collision bugs like SPECIFICATION -> SEC)
+  // Expanded Product Type routing across all 21 domains
   let productType = explicitProductType || 'general';
   
   if (!explicitProductType) {
-    if (promptText.includes('CBAM') || promptText.includes('Carbon Border')) productType = 'cbam-audit';
-    else if (promptText.includes('Form 8-K') || promptText.includes('SEC Item 1.05')) productType = 'sec-incident';
-    else if (promptText.includes('Lease Agreement') || promptText.includes('CRE Lease')) productType = 'cre-lease';
-    else if (promptText.includes('DORA') || promptText.includes('Regulation EU 2022/2554')) productType = 'dora-audit';
-    else if (promptText.includes('EU AI Act') || promptText.includes('Annex IV')) productType = 'ai-act';
-    else if (promptText.includes('Prior Authorization') || promptText.includes('CPT Coding')) productType = 'claim-appeal';
-    else if (promptText.includes('SBIR Phase I') || promptText.includes('GovWin')) productType = 'gov-grant';
-    else if (promptText.includes('NZBC') || promptText.includes('Building Code')) productType = 'consent';
+    const lower = promptText.toLowerCase();
+    if (lower.includes('cbam') || lower.includes('carbon border')) productType = 'cbam-audit';
+    else if (lower.includes('form 8-k') || lower.includes('sec item 1.05') || lower.includes('materiality')) productType = 'sec-incident';
+    else if (lower.includes('lease agreement') || lower.includes('cre lease') || lower.includes('cam cap')) productType = 'cre-lease';
+    else if (lower.includes('dora') || lower.includes('regulation eu 2022/2554')) productType = 'dora-audit';
+    else if (lower.includes('eu ai act') || lower.includes('annex iv')) productType = 'ai-act';
+    else if (lower.includes('prior authorization') || lower.includes('cpt coding') || lower.includes('appeal')) productType = 'claim-appeal';
+    else if (lower.includes('sbir phase i') || lower.includes('govwin') || lower.includes('far 52.')) productType = 'gov-grant';
+    else if (lower.includes('nzbc') || lower.includes('building code') || lower.includes('e2/as1')) productType = 'consent';
+    else if (lower.includes('510(k)') || lower.includes('fda') || lower.includes('predicate')) productType = 'fda-510k';
+    else if (lower.includes('rdti') || lower.includes('r&d tax') || lower.includes('uncertainty')) productType = 'rd-tax';
+    else if (lower.includes('csrd') || lower.includes('esg') || lower.includes('esrs')) productType = 'esg';
+    else if (lower.includes('clinical trial') || lower.includes('gcp') || lower.includes('dsmb')) productType = 'clinical-trials';
+    else if (lower.includes('dpia') || lower.includes('gdpr') || lower.includes('hipaa')) productType = 'privacy-dpia';
+    else if (lower.includes('aml') || lower.includes('kyc') || lower.includes('ubo') || lower.includes('fatf')) productType = 'aml-kyc';
+    else if (lower.includes('osha') || lower.includes('ehs') || lower.includes('loto') || lower.includes('sds')) productType = 'ehs-safety';
+    else if (lower.includes('iso 9001') || lower.includes('as9100') || lower.includes('qms')) productType = 'iso-quality';
+    else if (lower.includes('sox') || lower.includes('soc 1') || lower.includes('itgc')) productType = 'sox-audit';
+    else if (lower.includes('questionnaire') || lower.includes('soc 2')) productType = 'security-questionnaire';
+    else if (lower.includes('rfp') || lower.includes('tender')) productType = 'rfp';
   }
 
-  // 1. Try Google Gemini API for dynamic generation
+  // 1. Try Google Gemini API with valid models
   const pool = getApiKeyPool();
   if (pool.length > 0) {
     for (const modelName of MODEL_CASCADE) {

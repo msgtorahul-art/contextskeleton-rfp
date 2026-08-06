@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 const STORE_PATH = path.join('/tmp', 'contextskeleton_rfp_data.json');
+const MAX_MEMORY_PROJECTS = 200; // LRU Memory Safety Cap to prevent OOM process crashes
 
 export interface ProjectRecord {
   id: string;
@@ -38,17 +39,33 @@ function getStore(): StoreSchema {
         }
       }
     } catch (e) {
-      console.error('Persistent store load warning:', e);
+      console.warn('Persistent store load warning:', e);
     }
   }
   return globalStore.__cs_rfp_store!;
 }
 
-function saveStore(store: StoreSchema) {
+// Non-blocking async file writer with memory eviction check
+async function saveStoreAsync(store: StoreSchema) {
   try {
-    fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    // Memory Cache Eviction Policy: Enforce maximum limit to prevent Node.js OOM
+    const projectKeys = Object.keys(store.projects);
+    if (projectKeys.length > MAX_MEMORY_PROJECTS) {
+      const keysToRemove = projectKeys.slice(0, projectKeys.length - MAX_MEMORY_PROJECTS);
+      for (const key of keysToRemove) {
+        delete store.projects[key];
+        delete store.questions[key];
+      }
+    }
+
+    const tempPath = `${STORE_PATH}.tmp.${Date.now()}`;
+    const payload = JSON.stringify(store, null, 2);
+    
+    // Async non-blocking write to avoid blocking Node.js event loop
+    await fs.promises.writeFile(tempPath, payload, 'utf-8');
+    await fs.promises.rename(tempPath, STORE_PATH);
   } catch (e) {
-    console.error('Persistent store save warning:', e);
+    console.error('Persistent store async save warning:', e);
   }
 }
 
@@ -56,7 +73,7 @@ export function saveProjectToPersistentStore(project: ProjectRecord, questions: 
   const store = getStore();
   store.projects[project.id] = project;
   store.questions[project.id] = questions;
-  saveStore(store);
+  saveStoreAsync(store);
 }
 
 export function getProjectFromPersistentStore(projectId: string): { project?: ProjectRecord; questions?: QuestionRecord[] } {
@@ -80,7 +97,7 @@ export function updateQuestionInPersistentStore(questionId: string, draftedAnswe
     if (found) {
       found.drafted_answer = draftedAnswer;
       found.status = status;
-      saveStore(store);
+      saveStoreAsync(store);
       break;
     }
   }
@@ -90,5 +107,5 @@ export function deleteProjectFromPersistentStore(projectId: string) {
   const store = getStore();
   delete store.projects[projectId];
   delete store.questions[projectId];
-  saveStore(store);
+  saveStoreAsync(store);
 }
