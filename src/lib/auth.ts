@@ -2,7 +2,18 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { NextRequest } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-local-secret-key-12345';
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL SECURITY ERROR: JWT_SECRET environment variable is missing in production environment.');
+    }
+    return 'dev-only-local-secret-key-do-not-use-in-prod-998877';
+  }
+  return secret;
+}
+
+const JWT_SECRET = getJwtSecret();
 
 // Hash a password securely
 export async function hashPassword(password: string): Promise<string> {
@@ -31,14 +42,12 @@ export function verifyToken(token: string): { userId: string; email: string } | 
 
 // Extract authenticated user session from HTTP requests
 export function getSession(req: NextRequest): { userId: string; email: string } | null {
-  // Check Authorization header or cookies
   const authHeader = req.headers.get('Authorization');
   let token: string | null = null;
   
   if (authHeader && authHeader.startsWith('Bearer ')) {
     token = authHeader.substring(7);
   } else {
-    // Try to get token from cookies
     const cookieToken = req.cookies.get('token');
     if (cookieToken) {
       token = cookieToken.value;

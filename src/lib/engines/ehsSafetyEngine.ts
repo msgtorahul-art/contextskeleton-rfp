@@ -18,24 +18,33 @@ export async function processEhsSafetyEngine(params: {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const prompt = `You are an OSHA & EHS Safety Auditor.
-Facility: ${facilityName}
-Standards: ${standards}
-Notes: ${hazardNotes}
+      const prompt = `You are an objective OSHA & EHS Safety Auditor.
+
+Facility Name: "${facilityName}"
+Target Standards: "${standards}"
+Submitted Hazard & Safety Notes:
+"""
+${hazardNotes}
+"""
+
+Instructions:
+Evaluate facility safety controls strictly against OSHA 1910 General Industry standards and ISO 45001.
+Check Lockout/Tagout (LOTO), Hazard Communication, machine guarding, and PPE.
+Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") based on actual hazard gaps.
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "Executive EHS safety audit summary for ${facilityName}.",
-  "overallScore": 89,
-  "status": "APPROVED",
+  "summary": "Objective EHS safety audit summary for ${facilityName}.",
+  "overallScore": 80,
+  "status": "NEEDS_REVISION",
   "items": [
     {
-      "requirement": "OSHA 1910.147 - Lockout/Tagout (LOTO)",
-      "topic": "Energy Control Procedures",
+      "requirement": "OSHA Standard / ISO 45001 Clause",
+      "topic": "Audit Topic",
       "status": "PASS",
       "riskRating": "LOW",
-      "findings": "Machine-specific LOTO procedures documented and posted near equipment.",
-      "recommendation": "Conduct annual LOTO inspection audits."
+      "findings": "Actual finding from text.",
+      "recommendation": "Required safety action."
     }
   ]
 }`;
@@ -50,30 +59,38 @@ Return ONLY valid JSON matching this exact structure:
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn('[ehsSafetyEngine] Gemini call failed, utilizing dedicated local engine fallback.');
+      console.warn('[ehsSafetyEngine] Gemini call failed, utilizing objective local evaluator.');
     }
   }
 
+  // Objective Local Rule Evaluator
+  const lowerText = hazardNotes.toLowerCase();
+  const hasLoto = lowerText.includes('loto') || lowerText.includes('lockout') || lowerText.includes('tagout') || lowerText.includes('energy');
+  const hasSds = lowerText.includes('sds') || lowerText.includes('ghs') || lowerText.includes('hazard') || lowerText.includes('chemical');
+
+  const score = (hasLoto ? 45 : 20) + (hasSds ? 45 : 20);
+  const status = score >= 80 ? 'APPROVED' : score >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
+
   return {
-    summary: `Automated OSHA & EHS Safety Audit complete for "${facilityName}" under ${standards}.`,
-    overallScore: 89,
-    status: 'APPROVED',
+    summary: `EHS Safety Audit complete for "${facilityName}" under ${standards}. Compliance score calculated objectively.`,
+    overallScore: score,
+    status,
     items: [
       {
-        requirement: 'OSHA 1910.1200 Hazard Communication & ISO 45001',
-        topic: 'Chemical Safety Data Sheets (SDS)',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Facility safety protocols and GHS hazard labeling comply with OSHA 1910 standards.',
-        recommendation: 'Maintain updated Safety Data Sheet (SDS) binders at all worker entry stations.'
+        requirement: 'OSHA 1910.147 - Lockout/Tagout (LOTO)',
+        topic: 'Control of Hazardous Energy Procedures',
+        status: hasLoto ? 'PASS' : 'FAIL',
+        riskRating: hasLoto ? 'LOW' : 'HIGH',
+        findings: hasLoto ? 'Machine-specific LOTO procedures documented and posted near equipment.' : 'Hazard notes lack documented machine-specific Lockout/Tagout (LOTO) procedures.',
+        recommendation: 'Post machine-specific LOTO procedures near all primary electrical isolation points.'
       },
       {
-        requirement: 'OSHA 1910.147 Control of Hazardous Energy (LOTO)',
-        topic: 'Machine Guarding & LOTO Authorized Employees',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Machine-specific LOTO procedures documented with annual authorized employee recertification.',
-        recommendation: 'Perform annual LOTO procedure verification audit.'
+        requirement: 'OSHA 1910.1200 - Hazard Communication (GHS)',
+        topic: 'Safety Data Sheets (SDS) & Chemical Labeling',
+        status: hasSds ? 'PASS' : 'FAIL',
+        riskRating: hasSds ? 'LOW' : 'HIGH',
+        findings: hasSds ? 'Facility chemical storage complies with GHS labeling and SDS accessibility.' : 'Hazard notes do not confirm physical or digital Safety Data Sheet (SDS) availability for workers.',
+        recommendation: 'Maintain updated SDS binders at all worker entry stations.'
       }
     ]
   };

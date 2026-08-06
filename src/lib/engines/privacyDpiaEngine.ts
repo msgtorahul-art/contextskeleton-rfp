@@ -18,24 +18,33 @@ export async function processPrivacyDpiaEngine(params: {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const prompt = `You are a Senior Data Privacy Officer & DPIA Specialist.
-System: ${systemName}
-Framework: ${framework}
-Data Flow: ${dataFlowNotes}
+      const prompt = `You are an objective Data Privacy Officer & DPIA Specialist.
+
+System Name: "${systemName}"
+Framework: "${framework}"
+Data Flow & Processing Notes:
+"""
+${dataFlowNotes}
+"""
+
+Instructions:
+Evaluate the system strictly against GDPR Article 35 Data Protection Impact Assessment requirements and HIPAA §164.312 Technical Safeguards.
+Check data minimization, encryption at rest/in transit, access controls, and retention schedules.
+Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") objectively based on identified compliance gaps.
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "Executive Data Protection Impact Assessment (DPIA) summary for ${systemName}.",
-  "overallScore": 89,
-  "status": "APPROVED",
+  "summary": "Objective Data Protection Impact Assessment (DPIA) summary for ${systemName}.",
+  "overallScore": 80,
+  "status": "NEEDS_REVISION",
   "items": [
     {
-      "requirement": "GDPR Article 35 - High-Risk Processing",
-      "topic": "Encryption at Rest & In-Transit",
+      "requirement": "GDPR / HIPAA Standard",
+      "topic": "Audit Topic",
       "status": "PASS",
       "riskRating": "LOW",
-      "findings": "AES-256 encryption applied to database storage and TLS 1.3 in-transit.",
-      "recommendation": "Maintain annual DPIA review logs."
+      "findings": "Actual finding from text.",
+      "recommendation": "Required compliance action."
     }
   ]
 }`;
@@ -50,30 +59,38 @@ Return ONLY valid JSON matching this exact structure:
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn('[privacyDpiaEngine] Gemini call failed, utilizing dedicated local engine fallback.');
+      console.warn('[privacyDpiaEngine] Gemini call failed, utilizing objective local evaluator.');
     }
   }
 
+  // Objective Local Rule Evaluator
+  const lowerText = dataFlowNotes.toLowerCase();
+  const hasEncryption = lowerText.includes('encrypt') || lowerText.includes('aes') || lowerText.includes('tls') || lowerText.includes('ssl');
+  const hasMinimization = lowerText.includes('minimization') || lowerText.includes('retention') || lowerText.includes('deletion') || lowerText.includes('pii');
+
+  const score = (hasEncryption ? 45 : 20) + (hasMinimization ? 45 : 20);
+  const status = score >= 80 ? 'APPROVED' : score >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
+
   return {
-    summary: `Automated GDPR & HIPAA DPIA Audit complete for "${systemName}" under ${framework}.`,
-    overallScore: 89,
-    status: 'APPROVED',
+    summary: `Data Protection Impact Assessment (DPIA) complete for "${systemName}" under ${framework}.`,
+    overallScore: score,
+    status,
     items: [
       {
-        requirement: 'GDPR Article 35 - Data Protection Impact Assessment',
-        topic: 'Data Minimization & Storage Limitation',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'System architecture complies with Article 35 data minimization guidelines.',
-        recommendation: 'Ensure automated deletion policies for inactive PII records after 36 months.'
+        requirement: 'GDPR Article 35 - High-Risk Data Processing',
+        topic: 'Data Minimization & Automated Deletion',
+        status: hasMinimization ? 'PASS' : 'FAIL',
+        riskRating: hasMinimization ? 'LOW' : 'HIGH',
+        findings: hasMinimization ? 'System architecture implements data minimization and record retention policies.' : 'Data flow notes lack explicit PII data retention and automated record deletion timelines.',
+        recommendation: 'Configure automated deletion routines for inactive user PII after 36 months.'
       },
       {
-        requirement: 'HIPAA Security Rule §164.312 Technical Safeguards',
-        topic: 'Audit Controls & Access Authentication',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Role-based access control (RBAC) and immutable access logging enabled for PHI endpoints.',
-        recommendation: 'Conduct bi-annual penetration testing on patient portal API routes.'
+        requirement: 'HIPAA §164.312 & GDPR Article 32 - Security of Processing',
+        topic: 'Encryption at Rest & In-Transit',
+        status: hasEncryption ? 'PASS' : 'FAIL',
+        riskRating: hasEncryption ? 'LOW' : 'HIGH',
+        findings: hasEncryption ? 'Storage database encryption (AES-256) and TLS 1.3 in-transit safeguards applied.' : 'Data flow notes do not specify TLS 1.3 in-transit encryption or database KMS key management.',
+        recommendation: 'Enforce mandatory TLS 1.3 for all external API endpoints and KMS AES-256 for database storage.'
       }
     ]
   };

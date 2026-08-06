@@ -1,82 +1,71 @@
-import Stripe from 'stripe';
 import { db } from './db';
+import Stripe from 'stripe';
 
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
-export const stripe = STRIPE_SECRET_KEY ? new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2025-01-27.acacia' as any }) : null;
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_mock_key_for_sandbox_mode', {
+  apiVersion: '2025-01-27.acacia' as any,
+});
 
-if (!stripe) {
-  console.warn('⚠️ Stripe API key is missing. System running in Sandbox Billing Mode.');
-}
-
-// Check if user has active subscription or positive credit balance
 export function hasBillingAccess(userId: string): boolean {
-  // VIP QA Master Account & Active Sessions ALWAYS have billing access
-  if (!userId || userId === 'qa-vip-master-account-id' || userId.includes('qa') || userId.includes('user')) {
-    return true;
-  }
+  if (!userId) return false;
 
+  // STRICT BILLING ACCESS CHECK
+  // (Removed legacy 'user' substring bypass vulnerability)
   try {
-    const user = db.prepare('SELECT subscription_status, credits FROM users WHERE id = ?').get(userId) as {
-      subscription_status: string;
-      credits: number;
-    } | undefined;
-    
-    if (!user) return true;
-    
-    const status = (user.subscription_status || '').toUpperCase();
-    return status === 'ACTIVE' || status === 'PRO' || (user.credits ?? 0) > 0;
-  } catch (error) {
-    console.error('Error checking billing access:', error);
-    return true;
-  }
-}
+    const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
+    if (!user) return false;
 
-// Decrement user credits upon successful question generation
-export function decrementCredits(userId: string): void {
-  try {
-    const user = db.prepare('SELECT subscription_status, credits FROM users WHERE id = ?').get(userId) as {
-      subscription_status: string;
-      credits: number;
-    } | undefined;
-    
-    if (!user) return;
-    
-    const status = (user.subscription_status || '').toUpperCase();
-    if (status !== 'ACTIVE' && status !== 'PRO' && user.credits > 0) {
-      db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(userId);
+    // Active subscriber or has available credits
+    if (user.subscription_status === 'active') return true;
+    if (user.credits && user.credits > 0) return true;
+
+    // Sandbox mode for local dev if explicitly enabled via ENV
+    if (process.env.NODE_ENV === 'development' && process.env.ALLOW_SANDBOX_BILLING === 'true') {
+      return true;
     }
-  } catch (error) {
-    console.error('Error decrementing credits:', error);
+
+    return false;
+  } catch (e) {
+    console.error('[stripe.ts] Error checking user billing access:', e);
+    return false;
   }
 }
 
-// Generate checkout URL
-export async function createCheckoutSession(userId: string, email: string, baseUrl: string): Promise<string> {
-  if (stripe) {
+export function decrementCredits(userId: string): boolean {
+  if (!userId) return false;
+  try {
+    const user = db.prepare('SELECT credits, subscription_status FROM users WHERE id = ?').get(userId) as any;
+    if (!user) return false;
+
+    if (user.subscription_status === 'active') {
+      return true; // Unlimited processing for active subscribers
+    }
+
+    if (user.credits && user.credits > 0) {
+      db.prepare('UPDATE users SET credits = credits - 1 WHERE id = ?').run(userId);
+      return true;
+    }
+
+    return false;
+  } catch (e) {
+    console.error('[stripe.ts] Error decrementing credits:', e);
+    return false;
+  }
+}
+
+export async function createCheckoutSession(userId: string, email: string, priceId: string) {
+  try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: 'ContextSkeleton Pro Plan',
-              description: 'Unlimited compliance auditing, vector grounding, and report exports.',
-            },
-            unit_amount: 49900,
-            recurring: { interval: 'month' },
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${baseUrl}/dashboard?session_id={CHECKOUT_SESSION_ID}&payment=success`,
-      cancel_url: `${baseUrl}/dashboard?payment=cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://contextskeleton.com'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'https://contextskeleton.com'}/pricing`,
       customer_email: email,
       metadata: { userId },
     });
-    return session.url || `${baseUrl}/dashboard`;
-  } else {
-    return `${baseUrl}/api/billing/sandbox-callback?userId=${encodeURIComponent(userId)}`;
+    return session;
+  } catch (err) {
+    console.error('[stripe.ts] Error creating Stripe checkout session:', err);
+    throw err;
   }
 }

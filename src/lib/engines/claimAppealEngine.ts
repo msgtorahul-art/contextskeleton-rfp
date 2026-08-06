@@ -7,7 +7,7 @@ export async function processClaimAppealEngine(params: {
   text?: string;
 }) {
   const patientNotes = (params.patientNotes || params.text || '').trim();
-  const cptCode = params.cptCode || 'CPT 27447';
+  const cptCode = params.cptCode || 'CPT Procedure';
   const denialReason = params.denialReason || 'Lack of Medical Necessity';
 
   if (!patientNotes) {
@@ -18,20 +18,29 @@ export async function processClaimAppealEngine(params: {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const prompt = `You are a Chief Medical Officer and Healthcare Claims Rebuttal Specialist.
-CPT Code: ${cptCode}
-Denial Reason: ${denialReason}
-Chart Notes: ${patientNotes}
+      const prompt = `You are an objective Chief Medical Officer & Healthcare Claims Rebuttal Specialist.
+
+CPT Code: "${cptCode}"
+Insurer Denial Reason: "${denialReason}"
+Clinical Patient Chart Notes:
+"""
+${patientNotes}
+"""
+
+Instructions:
+Evaluate whether the chart notes actually contain clinical evidence (conservative therapy, physical exams, diagnostic imaging, failed medications) to overturn the insurer's denial under AMA CPT guidelines and CMS Local Coverage Determinations (LCD).
+Do NOT automatically approve if conservative therapy evidence is absent.
+Assign cptAnalysis status as "REBUTTED_APPROVED" | "NEEDS_CLINICAL_EVIDENCE" | "DENIAL_UPHELD".
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "Clinical medical necessity appeal summary for ${cptCode}.",
-  "appealLetter": "Formal clinical appeal letter text ready for physician signature.",
+  "summary": "Objective clinical medical necessity appeal summary for ${cptCode}.",
+  "appealLetter": "Formal clinical appeal letter text tailored to the provided chart notes.",
   "cptAnalysis": [
     {
       "code": "${cptCode}",
       "status": "REBUTTED_APPROVED",
-      "medicalNecessityRationale": "Patient completed conservative therapy."
+      "medicalNecessityRationale": "Objective clinical justification."
     }
   ],
   "peerToPeerScript": "Physician peer-to-peer talking points."
@@ -47,20 +56,35 @@ Return ONLY valid JSON matching this exact structure:
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn('[claimAppealEngine] Gemini call failed, utilizing dedicated local engine fallback.');
+      console.warn('[claimAppealEngine] Gemini call failed, utilizing objective local evaluator.');
     }
   }
 
+  // Objective Local Rule Evaluator
+  const lowerText = patientNotes.toLowerCase();
+  const hasConservativeTherapy = lowerText.includes('therapy') || lowerText.includes('physical') || lowerText.includes('nsaid') || lowerText.includes('conservative') || lowerText.includes('months');
+  const hasDiagnosticImaging = lowerText.includes('x-ray') || lowerText.includes('mri') || lowerText.includes('ct') || lowerText.includes('narrowing') || lowerText.includes('scan');
+
+  const status = (hasConservativeTherapy && hasDiagnosticImaging)
+    ? 'REBUTTED_APPROVED'
+    : hasConservativeTherapy
+    ? 'NEEDS_CLINICAL_EVIDENCE'
+    : 'DENIAL_UPHELD';
+
   return {
-    summary: `Clinical Prior Authorization Denial Rebuttal complete for "${cptCode}".`,
-    appealLetter: `RE: Urgent Clinical Appeal for Claim Reversal & Prior Authorization Override\nCPT Code: ${cptCode}\nInsurer Denial Reason: ${denialReason}\n\nDear Medical Director,\n\nWe are writing to formally appeal the denial of prior authorization for ${cptCode}. The clinical documentation establishes that the patient has met all criteria for medical necessity under established AMA CPT guidelines and CMS Local Coverage Determinations (LCD).\n\nClinical Justification:\n- Documented 6+ months of progressive functional impairment.\n- Failure of non-operative conservative physical therapy and pharmacotherapy.\n- Diagnostic imaging confirms advanced joint space narrowing.\n\nWe request an immediate override of this denial.\n\nSincerely,\nAttending Physician, MD`,
+    summary: `Clinical Medical Necessity Evaluation complete for "${cptCode}" (Denial Reason: ${denialReason}).`,
+    appealLetter: `RE: Formal Appeal for Prior Authorization / Claim Reversal\nCPT Code: ${cptCode}\nDenial Reason: ${denialReason}\n\nDear Medical Director,\n\nWe are appealing the denial for ${cptCode}. ${hasConservativeTherapy ? 'The patient chart notes document completion of conservative non-operative management.' : 'Additional conservative therapy logs are required to fulfill CMS LCD criteria.'}\n\nSincerely,\nAttending Physician, MD`,
     cptAnalysis: [
       {
         code: cptCode,
-        status: 'REBUTTED_APPROVED',
-        medicalNecessityRationale: 'Patient completed conservative therapies and failed non-operative management.'
+        status,
+        medicalNecessityRationale: hasConservativeTherapy 
+          ? 'Clinical chart notes document progressive functional impairment and conservative therapy completion.' 
+          : 'Chart notes lack documented 6+ weeks of non-operative conservative physical therapy mandated by CMS LCD guidelines.'
       }
     ],
-    peerToPeerScript: '1. State patient completed 12+ weeks physical therapy.\n2. Reference severe joint space narrowing on x-ray.\n3. Request immediate authorization override.'
+    peerToPeerScript: hasConservativeTherapy 
+      ? '1. Reference patient physical therapy completion.\n2. Present diagnostic imaging findings.\n3. Request immediate authorization reversal.' 
+      : '1. Acknowledge missing therapy documentation.\n2. Request 30-day extension to attach physical therapy logbooks.'
   };
 }

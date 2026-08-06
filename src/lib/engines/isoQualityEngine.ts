@@ -18,24 +18,33 @@ export async function processIsoQualityEngine(params: {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const prompt = `You are a Senior ISO 9001 & AS9100 Quality Auditor.
-Organization: ${organizationName}
-Standard: ${standard}
-Notes: ${qmsNotes}
+      const prompt = `You are an objective ISO 9001:2015 & AS9100D Quality Management System (QMS) Auditor.
+
+Organization Name: "${organizationName}"
+Target Standard: "${standard}"
+Submitted QMS Process Notes:
+"""
+${qmsNotes}
+"""
+
+Instructions:
+Evaluate QMS processes strictly against ISO 9001 Clause 8 (Operation), Clause 7.1.5 (Traceability/Calibration), and AS9100D guidelines.
+Check serialized inspection routing, calibration logbooks, and corrective action workflows.
+Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") based on actual QMS compliance.
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "Executive QMS audit summary for ${organizationName}.",
-  "overallScore": 92,
-  "status": "APPROVED",
+  "summary": "Objective QMS audit summary for ${organizationName}.",
+  "overallScore": 80,
+  "status": "NEEDS_REVISION",
   "items": [
     {
-      "clause": "ISO 9001 Clause 8.5.1 - Control of Production",
-      "topic": "Process Validation & Traceability",
+      "clause": "ISO 9001 / AS9100 Clause",
+      "topic": "Audit Topic",
       "status": "PASS",
       "riskRating": "LOW",
-      "findings": "Production routing sheets document serialized component inspection checkpoints.",
-      "recommendation": "Maintain calibrated equipment logbooks."
+      "findings": "Actual finding from text.",
+      "recommendation": "Required QMS action."
     }
   ]
 }`;
@@ -50,30 +59,38 @@ Return ONLY valid JSON matching this exact structure:
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn('[isoQualityEngine] Gemini call failed, utilizing dedicated local engine fallback.');
+      console.warn('[isoQualityEngine] Gemini call failed, utilizing objective local evaluator.');
     }
   }
 
+  // Objective Local Rule Evaluator
+  const lowerText = qmsNotes.toLowerCase();
+  const hasCalibration = lowerText.includes('calibrat') || lowerText.includes('gauge') || lowerText.includes('nist') || lowerText.includes('traceab');
+  const hasProcessControl = lowerText.includes('routing') || lowerText.includes('inspection') || lowerText.includes('serial') || lowerText.includes('control');
+
+  const score = (hasCalibration ? 45 : 20) + (hasProcessControl ? 45 : 20);
+  const status = score >= 80 ? 'APPROVED' : score >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
+
   return {
-    summary: `Automated ISO 9001 & AS9100 QMS Audit complete for "${organizationName}" under ${standard}.`,
-    overallScore: 92,
-    status: 'APPROVED',
+    summary: `ISO 9001 & AS9100 QMS Audit complete for "${organizationName}" under ${standard}. Evaluated objectively.`,
+    overallScore: score,
+    status,
     items: [
       {
         clause: 'ISO 9001 Clause 8.5.1 / AS9100 Section 8.5',
         topic: 'Control of Production & Service Provision',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Quality Management System processes comply with ISO 9001:2015 Clause 8 requirements.',
-        recommendation: 'Ensure annual internal QMS audit is documented prior to registrar surveillance audit.'
+        status: hasProcessControl ? 'PASS' : 'FAIL',
+        riskRating: hasProcessControl ? 'LOW' : 'HIGH',
+        findings: hasProcessControl ? 'Production routing sheets document serialized component inspection checkpoints.' : 'QMS notes lack serialized routing sheets and documented in-process inspection sign-offs.',
+        recommendation: 'Implement serialized routing travelers for all active manufacturing runs.'
       },
       {
-        clause: 'ISO 9001 Clause 7.1.5 Monitoring & Measuring Resources',
-        topic: 'Calibration & Measurement Traceability',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Inspection gauges and digital calipers verified against NIST-traceable standards.',
-        recommendation: 'Archive monthly calibration certificates.'
+        clause: 'ISO 9001 Clause 7.1.5 - Monitoring & Measuring Resources',
+        topic: 'Measurement Traceability & Equipment Calibration',
+        status: hasCalibration ? 'PASS' : 'FAIL',
+        riskRating: hasCalibration ? 'LOW' : 'HIGH',
+        findings: hasCalibration ? 'Inspection tools verified against NIST-traceable calibration standards.' : 'QMS notes do not verify monthly tool calibration logs or NIST-traceable certificates.',
+        recommendation: 'Archive monthly NIST-traceable calibration certificates prior to audit.'
       }
     ]
   };

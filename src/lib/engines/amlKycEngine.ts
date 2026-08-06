@@ -18,24 +18,33 @@ export async function processAmlKycEngine(params: {
   if (apiKey) {
     try {
       const ai = new GoogleGenAI({ apiKey });
-      const prompt = `You are a Senior AML & KYC Specialist.
-Entity: ${entityName}
-Jurisdiction: ${jurisdiction}
-Notes: ${transactionNotes}
+      const prompt = `You are an objective Senior Anti-Money Laundering (AML) Compliance & FATF KYC Specialist.
+
+Entity Name: "${entityName}"
+Jurisdiction: "${jurisdiction}"
+Submitted Transaction & KYC Notes:
+"""
+${transactionNotes}
+"""
+
+Instructions:
+Evaluate the entity and transactions strictly against FATF 40 Recommendations and FinCEN Customer Due Diligence (CDD) rules.
+Assess Ultimate Beneficial Ownership (UBO), PEP screening, rapid structuring, and offshore transfers.
+Assign overallScore (0-100) and status ("APPROVED" | "NEEDS_REVISION" | "REJECTED") based purely on factual risk indicators.
 
 Return ONLY valid JSON matching this exact structure:
 {
-  "summary": "Executive AML & KYC risk audit summary for ${entityName}.",
-  "overallScore": 87,
-  "status": "APPROVED",
+  "summary": "Objective AML & KYC risk audit summary for ${entityName}.",
+  "overallScore": 75,
+  "status": "NEEDS_REVISION",
   "items": [
     {
-      "requirement": "FATF Recommendation 10 - Customer Due Diligence",
-      "topic": "Beneficial Ownership Verification",
+      "requirement": "FATF / FinCEN Standard",
+      "topic": "Audit Topic",
       "status": "PASS",
       "riskRating": "LOW",
-      "findings": "Ultimate Beneficial Ownership (UBO) verified above 25% threshold.",
-      "recommendation": "Maintain annual PEP screening logs."
+      "findings": "Actual finding from notes.",
+      "recommendation": "Required compliance action."
     }
   ]
 }`;
@@ -50,30 +59,40 @@ Return ONLY valid JSON matching this exact structure:
         if (jsonMatch) return JSON.parse(jsonMatch[0]);
       }
     } catch (e) {
-      console.warn('[amlKycEngine] Gemini call failed, utilizing dedicated local engine fallback.');
+      console.warn('[amlKycEngine] Gemini call failed, utilizing objective local evaluator.');
     }
   }
 
+  // Objective Local Rule Evaluator
+  const lowerText = transactionNotes.toLowerCase();
+  const hasUbo = lowerText.includes('ubo') || lowerText.includes('beneficial') || lowerText.includes('owner') || lowerText.includes('25%');
+  const hasSanctions = lowerText.includes('pep') || lowerText.includes('sanction') || lowerText.includes('screening') || lowerText.includes('fincen');
+  const hasStructuringRisk = lowerText.includes('cash') || lowerText.includes('structuring') || lowerText.includes('offshore') || lowerText.includes('shell');
+
+  const score = (hasUbo ? 40 : 15) + (hasSanctions ? 40 : 15) - (hasStructuringRisk ? 30 : 0);
+  const finalScore = Math.max(10, Math.min(99, score));
+  const status = finalScore >= 80 ? 'APPROVED' : finalScore >= 50 ? 'NEEDS_REVISION' : 'REJECTED';
+
   return {
-    summary: `Automated AML & KYC Risk Audit complete for "${entityName}" under ${jurisdiction}.`,
-    overallScore: 87,
-    status: 'APPROVED',
+    summary: `Objective AML & KYC Risk Audit complete for "${entityName}" under ${jurisdiction}.`,
+    overallScore: finalScore,
+    status,
     items: [
       {
         requirement: 'FATF Recommendation 10 & FinCEN CDD Rule',
         topic: 'Ultimate Beneficial Owner (UBO) Verification',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'Beneficial ownership structure verified against official corporate registry database.',
-        recommendation: 'Conduct periodic sanctions & PEP screening every 6 months.'
+        status: hasUbo ? 'PASS' : 'FAIL',
+        riskRating: hasUbo ? 'LOW' : 'HIGH',
+        findings: hasUbo ? 'Beneficial ownership structure verified above 25% ownership threshold.' : 'Transaction notes lack verified Ultimate Beneficial Ownership (UBO) corporate documentation.',
+        recommendation: hasUbo ? 'Conduct periodic PEP screening.' : 'Obtain notarized UBO ownership organigram prior to account approval.'
       },
       {
-        requirement: 'FinCEN Suspicious Activity Report (SAR) Thresholds',
-        topic: 'Transaction Monitoring & Structuring Detection',
-        status: 'PASS',
-        riskRating: 'LOW',
-        findings: 'No rapid multi-account structuring or un-hedged high-risk offshore wire transfers detected.',
-        recommendation: 'Maintain automated transaction monitoring thresholds above $10,000 USD.'
+        requirement: 'FinCEN Suspicious Activity Report (SAR) Guidelines',
+        topic: 'Transaction Monitoring & Offshore Transfer Risk',
+        status: !hasStructuringRisk ? 'PASS' : 'FAIL',
+        riskRating: !hasStructuringRisk ? 'LOW' : 'HIGH',
+        findings: !hasStructuringRisk ? 'No multi-account cash structuring or unhedged shell company transfers detected.' : 'Potential high-risk offshore cash transfer patterns detected requiring SAR review.',
+        recommendation: 'Maintain automated transaction monitoring logs for transactions > $10,000 USD.'
       }
     ]
   };
