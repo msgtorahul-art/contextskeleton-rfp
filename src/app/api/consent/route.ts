@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth';
 import { decrementCredits, hasBillingAccess } from '@/lib/stripe';
+import { generateContentWithRetry } from '@/lib/geminiHelper';
 
 export async function POST(req: NextRequest) {
   try {
@@ -20,11 +21,6 @@ export async function POST(req: NextRequest) {
 
     if (!specText || specText.length === 0) {
       return NextResponse.json({ error: 'Specification or drawing text is required' }, { status: 400 });
-    }
-
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ error: 'Gemini API key not configured' }, { status: 500 });
     }
 
     const prompt = `You are a Senior NZ Building Code (NZBC) Compliance Auditor evaluating building plans and architectural specifications for council submission.
@@ -55,27 +51,15 @@ Perform a thorough pre-audit against the New Zealand Building Code (NZBC) and re
 }
 `;
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: 'application/json', temperature: 0.2 },
-      }),
+    const resultText = await generateContentWithRetry({
+      model: 'gemini-2.5-flash',
+      contents: [{ role: 'user', parts: [{ text: prompt }] }]
     });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Gemini API Error in Consent Auditor:', errText);
-      return NextResponse.json({ error: 'Failed to analyze consent specifications' }, { status: 500 });
-    }
-
-    const data = await response.json();
-    const resultText = data.candidates?.[0]?.content?.parts?.[0]?.text;
     
     let auditReport: any;
     try {
-      auditReport = JSON.parse(resultText);
+      const jsonMatch = resultText.match(/\{[\s\S]*\}/);
+      auditReport = JSON.parse(jsonMatch ? jsonMatch[0] : resultText);
     } catch (e) {
       auditReport = {
         summary: resultText || 'Pre-audit analysis completed for NZBC specifications.',
@@ -104,6 +88,6 @@ Perform a thorough pre-audit against the New Zealand Building Code (NZBC) and re
     });
   } catch (error) {
     console.error('Consent Audit API Error:', error);
-    return NextResponse.json({ error: 'An unexpected error occurred during consent audit' }, { status: 500 });
+    return NextResponse.json({ error: 'An unexpected error occurred during consent audit. Please try again.' }, { status: 500 });
   }
 }
